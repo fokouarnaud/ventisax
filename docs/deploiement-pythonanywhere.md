@@ -2,6 +2,23 @@
 
 Compte autorisé : `ventisax`. Le lancement éditorial et l'accès réel par OTP restent à terminer.
 
+## Accès administrateur et contact confirmés
+
+Le porteur a défini son mot de passe dans la console privée ; Django a confirmé son enregistrement.
+La connexion du compte `fokou` a réussi dans le Browser intégré. Le facteur Courriel a été choisi,
+puis le porteur a reçu et validé son OTP. L’administration Unfold a ensuite été affichée :
+`docs/screenshots/pythonanywhere-admin-email-verified.jpg`. Aucun mot de passe ni code n’est consigné ici.
+
+Le numéro WhatsApp public fourni par le porteur a été enregistré via le formulaire de configuration
+générale dans Unfold, avec confirmation de modification réussie. Les pages Contact fr/en affichent
+le lien exact `https://wa.me/237652317898` ; capture française :
+`docs/screenshots/pythonanywhere-whatsapp-live.jpg`. Ces coordonnées sont enregistrées dans la base
+distante et restent modifiables par l’administrateur ; aucune base SQLite n’est poussée dans Git.
+
+Les codes de récupération, leur conservation hors hébergement et une récupération réelle restent
+à finaliser, ainsi que la sauvegarde téléchargée et la restauration distante isolée.
+Les sections suivantes retracent les étapes antérieures et leurs limites au moment des observations.
+
 ## SMTP et HTTPS — reprise réussie
 
 La console a retrouvé sa connexion. Une sauvegarde SQLite cohérente et les médias ont été

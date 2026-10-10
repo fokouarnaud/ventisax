@@ -389,8 +389,11 @@ du 12 octobre 2026, au futur, sans écraser les modifications éditoriales ulté
   `otp_email` et contrôles de production réussis. La réception et l’enrôlement restent à vérifier.
 - [x] Contrôle HTTP distant complet réussi : accueils fr/en et CSS 200, fichiers privés 404,
   admin anonyme 302 vers connexion, connexion 200, cookies sécurisés et HTTP → HTTPS vérifiés.
-- [ ] Mot de passe administrateur défini par saisie privée, OTP reçu et enrôlé, connexion réelle
-  à Unfold et récupération démontrées. Une invite de mot de passe ne prouve pas un accès utilisable.
+- [x] Mot de passe administrateur défini par saisie privée ; authentification réussie, facteur
+  Courriel enrôlé après réception et validation du code par le porteur, accès réel à Unfold confirmé.
+- [x] Numéro WhatsApp public fourni ensuite par le porteur, enregistré via Unfold et lien
+  `https://wa.me/237652317898` observé sur Contact en français et en anglais.
+- [ ] Codes de récupération conservés hors du site et récupération réelle démontrée.
 
 - [x] Chargement privé de `.env`, priorité des variables du processus et refus du debug dans `config.production` éprouvés en processus isolés.
 - [x] Initialisation du brief bilingue idempotente, sans remplacement éditorial ni jalon inventé ; coordonnées invalides refusées sans publication partielle.
