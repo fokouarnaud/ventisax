@@ -36,3 +36,18 @@ Retirer `--preparing` lorsque la configuration authentique est publiée. Le scri
 Effectuer et télécharger une sauvegarde privée, puis démontrer sa restauration isolée suivant `docs/exploitation.md`. Cette preuve distante et les critères de lancement de la Definition of Done restent ouverts.
 
 Capture de l'interruption de console : `docs/screenshots/pythonanywhere-console.jpg`.
+
+## Recontrôle de la page Web à la demande du porteur
+
+La page Web a été rouverte dans un onglet neuf après l'erreur réseau de l'ancien onglet.
+Les paramètres persistants suivants ont été lus : Python 3.13 ; source et répertoire de travail
+`/home/ventisax/ventisax` ; virtualenv `/home/ventisax/.virtualenvs/ventisax` ; mappings `/static/`
+et `/media/` vers les répertoires correspondants du projet ; Force HTTPS activé et certificat fourni.
+L'éditeur WSGI a confirmé le code enregistré et `DJANGO_SETTINGS_MODULE=config.production`.
+L'application a été rechargée, puis le bouton Reload est redevenu disponible.
+Capture de la configuration : `docs/screenshots/pythonanywhere-web-configured.jpg`.
+
+Le contrôle HTTP a de nouveau obtenu 503 pour les pages bilingues, 200 pour le CSS et 404 pour `.env`,
+puis a échoué par réinitialisation de connexion sur le contrôle SQLite. Une ouverture Browser neuve
+de `/en/` a également échoué par réinitialisation de connexion. Les paramètres Web sont donc
+effectivement enregistrés ; l'initialisation éditoriale et la vérification complète du site restent ouvertes.
