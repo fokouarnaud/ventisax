@@ -1,0 +1,897 @@
+# Ventisax — cadrage validé et entretien de conception
+
+Date du cadrage : 10 octobre 2026. Langue de travail : français.
+
+## Portée et utilisation de ce document
+
+Cette étape consigne le brief, les 34 questions de l'entretien, les options proposées, les réponses reçues et le cahier des charges validé. Elle porte sur la documentation ; le développement de l'application fera l'objet d'une instruction distincte.
+
+Pour les travaux futurs, utiliser les décisions consolidées comme référence et conserver l'historique de l'entretien. Les questions ci-dessous sont des archives : ne pas les reposer ni traiter leurs anciennes formulations comme des tâches à exécuter. Une nouvelle instruction explicite de l'utilisateur peut faire évoluer le cadrage ; documenter alors la décision modifiée.
+
+État constaté avant consignation : dépôt sans application Django, avec un fichier AGENTS.md vide. Aucune application ni aucun déploiement n'a été réalisé pendant cette étape.
+
+## Ajustements visuels autorisés — 10 octobre 2026
+
+La demande explicite « Exécute le projet et ouvre l'application dans le Browser Plugin intégré » autorise l'exécution locale et les corrections de présentation de l'application Django désormais présente. Le brief et l'entretien ci-dessous sont conservés comme historique. Cette vérification locale ne constitue pas un lancement public.
+
+Décisions de style issues de l'inspection dans le navigateur intégré :
+
+- Conserver le bleu profond `#0b2d46`, le fond clair `#f4f7f8`, l'accent turquoise `#68ddce`, les polices système et les assets locaux. Aucune nouvelle direction graphique ni dépendance frontend.
+- Séparer visuellement le sélecteur de langue de la navigation principale. Jusqu'à 960 px, placer l'identité et la langue sur la première ligne, puis la navigation en dessous ; jusqu'à 700 px, répartir ses quatre liens sur deux colonnes, avec 8 px entre les cibles. Cela évite les dispositions différentes observées entre français et anglais à 360 px. Les liens conservent au moins 44 px de hauteur et les destinations localisées existantes.
+- Sur mobile, porter les titres du fil de nouvelles de 1,05 à 1,125 rem, avec un interligne de 1,4, et les descriptions des cartes secteur à 1 rem. Conserver la hiérarchie des titres et les textes administrables.
+- Jusqu'à 380 px, utiliser des marges latérales de 16 px et un remplissage de 20 px dans les cartes secteur et surfaces, afin de préserver la largeur de lecture sur les petits écrans.
+
+Preuves : 48 rendus des six pages publiques dans les deux langues, à 320, 360, 768 et 1 280 px, sans débordement horizontal mesuré ; focus du lien d'évitement transféré au contenu ; changement de langue du détail, filtre, pagination et contact parcourus au clavier. Les 63 tests passent ; `manage.py check` ne signale aucune erreur et `makemigrations --check --dry-run` aucune migration manquante. Les modifications de présentation sont vérifiées par rendu et régressions existantes, conformément à l'exception proportionnée du skill TDD ; aucun nouveau comportement métier n'est ajouté.
+
+L'aperçu utilise `scripts/preview_site.py`, une base et des médias temporaires et un bandeau de démonstration. Les contenus fictifs ne deviennent pas des réalisations publiques. Mesures et captures : `docs/screenshots/refinement-matrix.json`, `refinement-home-360.jpg`, `refinement-contact-320.jpg` et `refinement-home-desktop.jpg`. Les largeurs mobiles sont simulées ; un téléphone physique et un audit exhaustif d'accessibilité ne sont pas couverts par cette passe.
+
+### Retours Browser — menu et contrôles, 10 octobre 2026
+
+Les quatre commentaires explicites de l'utilisateur font évoluer la décision d'en-tête précédente : jusqu'à 960 px, la navigation est désormais repliée par défaut et ouverte par un bouton à trois barres. Elle conserve deux colonnes jusqu'à 700 px lorsqu'elle est ouverte. L'identité, le changement de langue et le bouton de menu restent visibles. Le bouton expose `aria-controls` et `aria-expanded` ; Entrée/Espace l'activent, Échap referme le menu et restitue le focus au bouton. Le passage à l'affichage ordinateur rend la navigation visible.
+
+Le changement de langue est un lien direct vers la traduction courante, présenté sous la forme « Français → English » / « English → Français », abrégée « FR → EN » / « EN → FR » sur mobile, avec un libellé accessible et une infobulle explicites. Il ne nécessite pas de liste déroulante pour les deux langues de la V1.
+
+Le bandeau de démonstration dispose d'une fermeture. Le choix est conservé uniquement dans la session de l'onglet via `sessionStorage` ; si ce stockage est indisponible, la fermeture fonctionne pour la page. Une mention permanente « Démo locale · données fictives » reste dans le pied de page de l'aperçu. Aucun contenu fictif n'est ajouté à la base éditoriale.
+
+Un lien flottant « Retour en haut » apparaît après 500 px de défilement. Son activation ramène en haut et transfère le focus à l'en-tête ; la préférence de réduction des mouvements désactive le défilement animé. Le pied de page réserve de l'espace pour éviter que le contrôle recouvre son lien Contact.
+
+Ces interactions utilisent un seul petit script local différé (`hub/static/hub/site.js`), dans le périmètre JavaScript minimal du PRD. La navigation est rendue visible par Django et repliée par le script : sans JavaScript, elle reste disponible. Aucun framework, traceur ni stockage de données personnelles n'est ajouté.
+
+Validation : test de contrôles accessibles d'abord en échec dans les deux langues (bouton de menu absent), puis suite à 65 tests réussis. Une correction du test traite correctement la présence des attributs HTML booléens, représentés par `None` dans `HTMLParser`. Interactions réelles exercées : ouverture par Entrée, fermeture par Échap et retour du focus, fermeture du bandeau conservée lors du passage au contact, bascule de langue sur le même contact, apparition et activation au clavier du retour en haut. Quatorze combinaisons fr/en à 320, 360, 495, 768, 960, 961 et 1 280 px sans débordement mesuré ; menu replié jusqu'à 960 px et visible au-delà. Preuves dans `docs/validation-interface.md` et `docs/screenshots/controls-matrix.json`. L'absence de JavaScript, le stockage bloqué, les lecteurs d'écran et un téléphone physique n'ont pas été exercés dans cette passe.
+
+## GOALS
+
+Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
+
+### 1. Objectifs fonctionnels prioritaires
+
+- **Rendre la progression réelle visible aux futurs clients de Yaoundé et ses environs (Cameroun).** Présenter « Ventisax — projet de groupe en développement », son parcours de formation et son ambition de future SARL, sans présenter des prestations ou ventes comme déjà disponibles.
+- **Présenter deux secteurs en préparation : climatisation/froid et matériel électronique.** Chaque fiche synthétique expose description, état préparation/actif, apprentissages et prochaine étape. Permettre l'ajout ultérieur de secteurs concrets, leur ordre d'affichage et un lien vers leur site dédié lorsqu'il existe.
+- **Publier des nouvelles réelles et datées.** Une nouvelle concerne zéro, un ou plusieurs secteurs ; distinguer date du jalon et date de première publication. Afficher le fil par date du jalon, avec filtre par secteur et pagination de 10 nouvelles. Sans association publique, la nouvelle apparaît comme une nouvelle du groupe.
+- **Offrir un parcours français/anglais complet.** Prévoir accueil, présentation du projet et du parcours, fiches secteur, liste et détail des nouvelles, puis contact. Entrer en français ; utiliser /fr/ et /en/, des URL stables après publication et un sélecteur menant à la traduction du même contenu. Bloquer la publication si l'une des deux traductions est incomplète.
+- **Permettre une gestion autonome dans Unfold.** Un administrateur modifie présentations, coordonnées, secteurs, nouvelles et traductions ; utilise brouillons et publication explicite. La dépublication conserve les données. Retirer un secteur masque ses associations publiques sans dépublier les nouvelles ; bloquer la suppression d'un secteur référencé.
+- **Faciliter le contact par WhatsApp et e-mail.** Afficher des liens directs vers les coordonnées publiques. Évaluer l'utilité du hub par les contacts reçus et la régularité des publications.
+- **Conditionner le lancement à du contenu authentique.** Disposer de la présentation bilingue, des coordonnées, des deux fiches bilingues et d'au moins une nouvelle réelle bilingue. Un jalon de formation est admissible ; aucun contenu fictif ne doit être publié comme une réalisation.
+
+### 2. Contraintes techniques
+
+- **Stack : Django, SQLite et Django Unfold.** Rendre les pages publiques avec les templates Django, du CSS et un minimum de JavaScript. Garder une structure de pages fixe et tous les contenus publics administrables. Administration en français.
+- **TDD pour les comportements applicatifs**, selon le skill [test-driven-development](C:/Users/cedric/.codex/skills/test-driven-development/SKILL.md) : écrire un test de comportement, observer son échec pour la raison attendue, implémenter le minimum, puis refactoriser avec les vérifications pertinentes au vert. Pour un refactoring, une couverture existante significative peut suffire. Pour la prose et les changements sans effet comportemental, utiliser une vérification proportionnée plutôt que des tests reproduisant le texte source. Ne jamais affaiblir un test pour le faire passer ; signaler toute vérification non exécutée.
+- **Contrats à vérifier :** publication bilingue, exclusion des brouillons, dates et tri, stabilité des URL, filtres/pagination, retrait des secteurs, validation des images, authentification à deux facteurs et restauration des sauvegardes. Vérifier aussi les parcours réels sur mobile et au clavier avant lancement.
+- **Hébergement : PythonAnywhere gratuit Beginner**, une application avec un worker, dans un budget global de 512 Mio incluant code, dépendances, SQLite, statiques et médias. Utiliser l'adresse gratuite PythonAnywhere et assurer le renouvellement mensuel ; revérifier les limites de l'offre au déploiement.
+- **Contenus légers :** texte simple, liens dans des champs dédiés et une image facultative par nouvelle. Limiter l'envoi à 2 Mio, réduire le plus grand côté à 1 600 pixels maximum, compresser et fournir le texte alternatif dans les deux langues. Les vidéos restent des liens externes.
+- **Administration protégée :** mot de passe unique, second facteur par application mobile, codes de récupération conservés hors du site et limitation des tentatives. Utiliser HTTPS et conserver les secrets hors de Git.
+- **Exploitation manuelle :** le porteur du projet assure renouvellement et sauvegardes cohérentes de SQLite et des médias, téléchargées hors hébergement chaque semaine où il publie et avant chaque mise à jour technique. Tester la restauration avant lancement.
+- **Interface sobre et accessible :** bleu profond, fond clair, accent turquoise, adaptation mobile et navigation clavier.
+
+### 3. Périmètre strictement Hors-Scope
+
+Les éléments suivants sont exclus de la première version. Leur ajout nécessite une décision explicite de l'utilisateur et une mise à jour du cadrage.
+
+- Boutique, catalogue commercial détaillé, commandes, paiements, réservation de prestations et toute présentation d'une offre actuellement opérationnelle.
+- Comptes visiteurs, espace client, commentaires, formulaire de contact, stockage des messages et notifications de formulaire.
+- Recherche interne, outils de suivi d'audience et tableau de statistiques de consultation.
+- Développement, déploiement et contenus détaillés des sites sectoriels ; source de contenus partagée entre plusieurs sites ; domaine personnalisé et sous-domaines Ventisax au lancement.
+- Secteurs supplémentaires affichés sans activité ou contenu concret ; réalisations fictives ; affichage de Ventisax comme SARL déjà constituée.
+- Équipe éditoriale, rôles multiples et circuit d'approbation des publications.
+- Constructeur de pages, éditeur riche, HTML libre, Markdown, historique structuré des changements d'état et indicateurs chiffrés de progression.
+- Galeries par nouvelle et téléversement de vidéos ou de PDF.
+- API publique, frontend séparé ou application React.
+- Automatisation externe de sauvegarde ou de surveillance dans cette version ; l'entretien convenu reste manuel.
+
+## PRD — Ventisax, hub de progression — V1
+
+### 1. Contexte, problème et résultat attendu
+
+Ventisax est un projet de futur groupe SARL, actuellement informel et en formation. Ses premières branches prévues sont la climatisation/froid et le matériel électronique. Le porteur du projet ne dispose pas encore de preuves publiables ni d'offres opérationnelles.
+
+Le hub doit permettre à un futur client de **comprendre le projet, situer son implantation à Yaoundé et ses environs et constater une progression réelle**, puis prendre contact par WhatsApp ou e-mail. Il présente des faits et des étapes de formation, sans promettre de vente ni de prestation actuellement disponible.
+
+La présente spécification transforme les GOALS validés en exigences de première version. Elle définit des comportements attendus ; elle ne constitue ni une application implémentée ni une autorisation de déploiement. Les détails de règles et de données ci-dessous explicitent le cadrage pour éviter des choix contradictoires lors du développement.
+
+**Publics et rôles :**
+
+| Rôle | Besoin principal | Accès |
+| --- | --- | --- |
+| Visiteur francophone ou anglophone, futur client local | Comprendre le projet, ses secteurs et sa progression, puis contacter son porteur | Lecture publique sans compte |
+| Porteur du projet, administrateur unique | Préparer, traduire, publier et retirer les contenus ; gérer les coordonnées | Unfold, authentification à deux facteurs |
+| Porteur du projet, responsable de l'exploitation | Renouveler l'hébergement, sauvegarder et restaurer les données | Opérations manuelles privées |
+
+**Réussite produit :** les deux secteurs sont compréhensibles, le statut de projet est explicite, les jalons sont authentiques et lisibles dans les deux langues, les coordonnées fonctionnent et l'administrateur peut publier sans modifier le code. L'utilité sera appréciée par les retours reçus et la régularité des publications, sans traceur de visiteurs ni objectif chiffré arbitraire de conversion.
+
+### 2. Périmètre et parcours publics
+
+Toutes les fonctions de cette V1 sont nécessaires au cadrage retenu. Les exclusions de GOALS restent applicables : aucune boutique, compte visiteur, messagerie, API publique, équipe éditoriale ou site sectoriel à construire dans ce projet.
+
+| Page | Contenu et comportement requis |
+| --- | --- |
+| Accueil | Identité « Ventisax — projet de groupe en développement », résumé du parcours, implantation, deux secteurs au lancement, dernières nouvelles publiées et accès au contact |
+| Présentation | Vision du futur groupe, statut actuel et parcours de formation ; textes administrables, sans revendication de société déjà constituée |
+| Fiche secteur | Nom, description, état préparation/actif, apprentissages, prochaine étape, nouvelles associées et lien facultatif vers le site dédié |
+| Liste des nouvelles | Jalons publiés du plus récent au plus ancien selon leur date réelle, filtre par secteur public et 10 éléments par page |
+| Détail d'une nouvelle | Titre, date du jalon, texte, image facultative et alternative traduite, secteurs publics associés et liens externes facultatifs |
+| Contact | Implantation et liens WhatsApp/e-mail valides ; aucun formulaire ni stockage d'un message visiteur |
+
+**Navigation :** routes /fr/ et /en/, redirection de l'entrée / vers /fr/, français par défaut. La langue est explicite dans l'URL. Le sélecteur de langue conserve la page ou le contenu courant ; sur la liste filtrée, il conserve le secteur sélectionné. La pagination peut revenir à la première page lors d'un changement de langue ou de filtre.
+
+**États à traiter :** liste sans nouvelle, secteur sans nouvelle, filtre sans résultat, nouvelle sans image, absence de site dédié, contenu introuvable ou retiré. Les états vides expliquent l'absence sans inventer de contenu. Un contenu dépublié répond 404 à son ancienne adresse publique, dans les deux langues ; une image retirée ne doit pas rester affichée sur la page.
+
+Les routes de pages autres que les préfixes de langue restent des détails de réalisation. Aucun endpoint d'API n'est requis.
+
+### 3. User Stories et critères d'acceptation
+
+#### US-01 — Comprendre Ventisax
+
+En tant que futur client, je veux comprendre la situation actuelle de Ventisax afin de juger le projet sur des informations honnêtes.
+
+- L'accueil et la présentation indiquent le statut de projet en développement, la formation et l'implantation à Yaoundé et ses environs.
+- Aucun texte de lancement ne présente la SARL ou une offre commerciale comme déjà opérationnelle.
+- Les deux secteurs et les accès à la progression et au contact sont visibles et utilisables dans les deux langues.
+
+#### US-02 — Consulter un secteur
+
+En tant que visiteur, je veux connaître l'état et la prochaine étape d'un secteur afin de suivre son évolution.
+
+- Une fiche publique expose description, état, apprentissages et prochaine étape dans la langue courante.
+- Les secteurs suivent l'ordre administré ; seuls les secteurs publiés sont proposés dans la navigation et les filtres.
+- Le lien vers un site dédié apparaît uniquement lorsqu'une URL est renseignée ; son absence ne produit aucun lien factice.
+
+#### US-03 — Lire un jalon réel
+
+En tant que visiteur, je veux lire une nouvelle datée afin de comprendre une étape concrète du parcours.
+
+- Le détail affiche la date du jalon, distincte de la date de publication, et le texte de la langue courante.
+- L'absence d'image ou de lien externe ne bloque pas la lecture.
+- Une nouvelle peut concerner plusieurs secteurs ; seuls ses secteurs publics sont affichés. Sans association publique, elle relève du groupe.
+
+#### US-04 — Filtrer et parcourir les nouvelles
+
+En tant que visiteur, je veux retrouver les jalons d'un secteur sans lire tout le fil.
+
+- Le filtre retourne chaque nouvelle publiée associée au secteur choisi une seule fois, y compris les nouvelles multisecteurs.
+- La liste contient au plus 10 nouvelles par page, conserve le filtre lors de la pagination et applique un tri déterministe.
+- Une liste vide reste une page normale avec un message explicite. Un secteur inconnu/retiré ou une page de pagination invalide/non existante retourne 404 ; sans contenu, la première page reste valide.
+
+#### US-05 — Changer de langue
+
+En tant que visiteur anglophone ou francophone, je veux accéder à la traduction du même contenu afin de poursuivre ma lecture.
+
+- Les pages, intitulés de navigation, états vides et messages publics existent en français et en anglais.
+- Le sélecteur mène à la traduction du même secteur ou de la même nouvelle ; le filtre reste cohérent sur la liste.
+- Aucun contenu public incomplet ne provoque un mélange silencieux des langues.
+
+#### US-06 — Contacter le porteur du projet
+
+En tant que futur client, je veux ouvrir WhatsApp ou mon logiciel de messagerie avec les bonnes coordonnées.
+
+- Le lien WhatsApp utilise un numéro au format international ; le lien e-mail utilise l'adresse publique renseignée.
+- Les liens sont accessibles sur mobile et au clavier ; leurs libellés décrivent leur destination.
+- Le hub n'enregistre pas le message ni un événement de suivi du clic. L'envoi et la réception se déroulent dans les services externes.
+
+#### US-07 — Modifier la présentation et les coordonnées
+
+En tant qu'administrateur, je veux actualiser les contenus généraux dans Unfold sans modifier le code.
+
+- Une configuration générale unique gère la présentation bilingue, le parcours, l'implantation et les coordonnées publiques.
+- Une modification invalide est refusée sans remplacer les valeurs précédemment enregistrées.
+- Les mises à jour valides sont visibles sur les pages concernées ; les contenus déjà en ligne restent complets dans les deux langues.
+
+#### US-08 — Gérer les secteurs
+
+En tant qu'administrateur, je veux préparer et ordonner les secteurs afin de présenter une évolution concrète du groupe.
+
+- Je peux créer un brouillon, compléter les deux langues, ordonner, publier et dépublier une fiche.
+- L'état préparation/actif est indépendant de la visibilité ; au lancement les deux secteurs sont en préparation.
+- L'ajout ultérieur d'un secteur utilise la même structure, sans changement de code ; il exige du contenu réel avant publication.
+
+#### US-09 — Préparer une nouvelle
+
+En tant qu'administrateur, je veux saisir un jalon, ses traductions et ses associations sans dupliquer son contenu.
+
+- Un brouillon peut être incomplet et n'est jamais visible publiquement.
+- Je saisis une date de jalon, les textes français/anglais, zéro à plusieurs secteurs, une image facultative et des liens externes facultatifs.
+- Les liens ont des libellés traduits ; les associations ne créent aucun doublon dans les listes.
+
+#### US-10 — Publier des contenus complets
+
+En tant qu'administrateur, je veux publier explicitement afin de maîtriser ce que les visiteurs voient.
+
+- La publication d'un secteur ou d'une nouvelle est refusée si un contenu requis manque dans une langue ; les erreurs identifient les champs à compléter.
+- La publication valide rend les deux versions accessibles ensemble ; la première publication d'une nouvelle est horodatée une seule fois.
+- Modifier un titre ou republier ne change ni les URL déjà publiques ni l'horodatage de première publication. Un contenu publié ne peut pas être enregistré dans un état incomplet ; il faut le dépublier pour travailler sur un brouillon incomplet.
+
+#### US-11 — Retirer un contenu sans perdre les données
+
+En tant qu'administrateur, je veux dépublier un contenu afin de le retirer du public tout en pouvant le retravailler.
+
+- Le contenu disparaît des pages, listes et accès directs publics dans les deux langues, mais reste dans Unfold.
+- Dépublier un secteur ne dépublie pas ses nouvelles ; les associations en base sont conservées et leurs liens publics masqués.
+- Supprimer un secteur associé à une nouvelle, même en brouillon, est refusé. Retirer l'association ou dépublier sont des actions distinctes.
+
+#### US-12 — Ajouter une image légère
+
+En tant qu'administrateur, je veux illustrer une nouvelle sans saturer le stockage.
+
+- Une seule image est possible par nouvelle. Un envoi supérieur à 2 Mio ou un fichier non décodable comme image est refusé.
+- Une image acceptée est réduite à 1 600 pixels maximum sur son plus grand côté sans agrandir les petites images, puis compressée ; seule la version utile au site est conservée.
+- Les alternatives française et anglaise sont obligatoires pour publier une nouvelle illustrée. Remplacer/retirer l'image évite l'accumulation de fichiers devenus inutiles, sans casser les autres contenus.
+
+#### US-13 — Sécuriser l'administration
+
+En tant qu'administrateur, je veux protéger l'accès aux contenus même si mon mot de passe est compromis.
+
+- Une session non authentifiée, sans second facteur ou sans droit administratif ne peut consulter ni modifier les données d'Unfold.
+- Le code temporaire par application mobile est requis ; les tentatives abusives sont limitées. Aucun accès alternatif ne contourne le second facteur.
+- Des codes de récupération utilisables une seule fois et une procédure privée de récupération sont disponibles et testés ; aucun secret n'apparaît dans Git ou les pages publiques.
+
+#### US-14 — Sauvegarder et maintenir le hub
+
+En tant que responsable de l'exploitation, je veux récupérer les contenus et maintenir l'application en ligne.
+
+- Une procédure manuelle couvre renouvellement mensuel, sauvegarde cohérente de SQLite et des médias hors hébergement chaque semaine de publication et avant une mise à jour technique.
+- Une restauration dans un environnement isolé restitue textes, traductions, associations et images ; elle est démontrée avant lancement.
+- L'espace total réellement utilisé sur le compte est mesuré sous 512 Mio avant mise en ligne ; le quota n'est pas considéré comme réservé aux médias.
+
+#### US-15 — Lire sur mobile et au clavier
+
+En tant que visiteur, je veux parcourir le hub sur un téléphone ou sans souris.
+
+- Toutes les pages restent lisibles sans débordement horizontal sur petits écrans ; la navigation, les filtres et les liens fonctionnent au clavier.
+- Le focus est visible, les champs ont des libellés, les images ont des alternatives et les états ne reposent pas sur la seule couleur.
+- L'interface utilise la direction sobre validée : bleu profond, fond clair et accent turquoise.
+
+### 4. Règles métier et invariants
+
+| ID | Règle |
+| --- | --- |
+| RM-01 | Un visiteur ne lit que des contenus publiés. Aucune authentification publique n'est nécessaire ; les brouillons ne sont pas exposés par une URL devinable. |
+| RM-02 | Les deux traductions requises sont présentes et non composées uniquement d'espaces avant publication ; les textes éditoriaux généraux sont également complets avant lancement. |
+| RM-03 | Préparation/actif décrit le secteur ; brouillon/publié décrit sa visibilité. Passer un secteur à actif ne crée pas de boutique ou d'offre de prestation sur le hub. |
+| RM-04 | Une nouvelle appartient à zéro ou plusieurs secteurs ; une paire nouvelle/secteur est unique. La visibilité d'un secteur ne modifie pas les associations stockées. |
+| RM-05 | La date du jalon est une date civile saisie ; la première publication est un horodatage automatique immuable après initialisation. Tri : date du jalon décroissante, puis identifiant décroissant pour départager les égalités. Fuseau d'affichage : Africa/Douala. |
+| RM-06 | Pas de programmation automatique de publication : l'action de publication rend le contenu visible immédiatement. Les jalons annoncés comme accomplis correspondent à des faits réels ; leur authenticité relève de la validation éditoriale du porteur. |
+| RM-07 | Chaque identifiant d'URL est unique par type de contenu et par langue. Il peut être préparé en brouillon, puis reste verrouillé après la première publication, même après dépublication. Une collision est refusée avant la mise en ligne. |
+| RM-08 | La publication est une transition cohérente : aucune version ne devient publique si la validation d'une traduction, d'un lien ou d'une image échoue. La même validation s'applique aux modifications d'un contenu déjà publié. |
+| RM-09 | Dépublier conserve les données. Supprimer un secteur référencé est bloqué, indépendamment de l'état de la nouvelle associée. Aucun retrait de secteur ne supprime en cascade une nouvelle. |
+| RM-10 | Les textes simples sont échappés à l'affichage. Les liens de contenus et sites dédiés n'acceptent que des URL http/https ; aucun javascript:, data: ni HTML arbitraire. Les liens de contact sont construits à partir d'un e-mail validé et d'un numéro international validé. |
+| RM-11 | Les 2 Mio s'appliquent au fichier envoyé : 2 097 152 octets maximum, limite incluse. Vérifier le décodage réel, limiter les images dangereuses pour les ressources et ne pas se fier seulement à l'extension. Aucun SVG actif, vidéo, PDF ou fichier animé n'est accepté comme illustration. |
+| RM-12 | Le retrait public concerne les pages et leurs liens ; une URL de média déjà partagée n'est pas une ressource confidentielle. Ne jamais publier une image privée en supposant que dépublier la nouvelle suffit à révoquer toutes ses copies. |
+
+Les précisions de tri, d'erreurs de pagination, d'intégrité des liens et de traitement des médias sont des conventions opérationnelles de ce PRD. Elles n'ajoutent pas de fonctionnalités hors des GOALS.
+
+### 5. Modélisation logique des données
+
+#### 5.1 Principes
+
+Le modèle métier minimal utilise **quatre entités persistantes**, plus une association nouvelle/secteur. L'authentification repose sur les entités du système Django et du composant de second facteur, sans réimplémenter leur cryptographie.
+
+Pour cette V1 limitée à deux langues, les attributs traduits utilisent des **paires de champs suffixés _fr et _en dans la même entité**. L'état de publication est commun aux deux langues. Pas d'entité de traduction générique ni de gestion d'une troisième langue. Les champs éditoriaux peuvent être incomplets en brouillon ; les exigences de complétude s'appliquent lors de la publication.
+
+Les identifiants sont des clés internes ; les visiteurs utilisent les identifiants d'URL localisés. Les dates de création et de dernière modification servent à la gestion interne, sans créer un historique des versions.
+
+#### 5.2 Entités métier
+
+| Entité | Attributs logiques requis | Contraintes |
+| --- | --- | --- |
+| ConfigurationGenerale | Identifiant fixe ; identité/resumé d'accueil, présentation du projet, parcours et implantation en paires fr/en ; e-mail public ; numéro WhatsApp international ; date de modification | Une seule configuration ; textes et coordonnées valides avant lancement et après toute modification de la configuration publique ; aucune configuration de secrets dans cette entité |
+| Secteur | Identifiant ; nom, identifiant d'URL, description, apprentissages et prochaine étape en paires fr/en ; état préparation/actif ; visibilité brouillon/publié ; ordre d'affichage ; URL facultative du site dédié ; date de première publication ; dates de création/modification | Identifiant d'URL unique par langue ; état distinct de la visibilité ; première publication conservée pour verrouiller les URL ; suppression protégée si référencé |
+| Nouvelle | Identifiant ; titre, identifiant d'URL et corps en paires fr/en ; date du jalon ; date de première publication facultative avant publication ; visibilité brouillon/publié ; fichier image facultatif et alternatives fr/en ; dates de création/modification | Publication conditionnée aux deux langues ; date de première publication définie automatiquement une seule fois ; une seule image ; alternatives obligatoires si image ; URL immuables après publication |
+| LienNouvelle | Identifiant ; référence à Nouvelle ; URL http/https ; libellé fr/en ; ordre d'affichage | Zéro à plusieurs liens par nouvelle ; libellés requis dans les deux langues pour publier la nouvelle ; un lien est détenu par une seule nouvelle |
+| NouvelleSecteur (association) | Référence à Nouvelle ; référence à Secteur | Unicité du couple ; zéro à plusieurs associations des deux côtés ; ne contient ni texte dupliqué ni état de publication |
+
+Il n'est pas nécessaire d'ajouter une entité Image : le fichier facultatif et ses alternatives sont rattachés à Nouvelle. Les médias existent sur disque et doivent être sauvegardés avec SQLite.
+
+#### 5.3 Relations et cycle de vie
+
+```mermaid
+erDiagram
+    Nouvelle ||--o{ LienNouvelle : possede
+    Nouvelle ||--o{ NouvelleSecteur : concerne
+    Secteur ||--o{ NouvelleSecteur : est_associe
+```
+
+- ConfigurationGenerale est indépendante des secteurs et des nouvelles. Les contenus généraux sont structurés par les pages fixes, sans entité Page ni blocs arbitraires.
+- Une Nouvelle possède zéro à plusieurs LienNouvelle. La suppression explicite d'une nouvelle supprime ses liens et associations propres, sans supprimer aucun secteur ; la dépublication reste l'action normale de retrait.
+- Un Secteur référencé par une Nouvelle ne peut pas être supprimé. Un secteur sans association peut être supprimé explicitement ; aucun retrait ne doit détruire une autre entité métier.
+- Les fichiers retirés ou remplacés sont nettoyés seulement après la réussite de la modification correspondante, en vérifiant qu'ils ne sont plus utilisés. Un échec de validation ne détruit pas l'image existante.
+- Ordre des secteurs et des liens : ordre d'affichage croissant, puis identifiant croissant en cas d'égalité.
+
+#### 5.4 Entités de sécurité et données exclues
+
+- **Utilisateur administratif** : compte Django avec mot de passe haché et droit administratif. Un seul compte est exploité au lancement ; pas de table client ni d'inscription publique.
+- **Dispositif de second facteur** et **codes de récupération** : liés au compte administratif et gérés par le composant de sécurité choisi lors de la réalisation. Les secrets restent privés ; un code de récupération consommé ne peut pas être réutilisé.
+- La limitation des tentatives utilise le mécanisme de sécurité retenu, sans ajouter d'outil d'analyse des visiteurs.
+- Aucune entité Commande, Paiement, Client, MessageContact, Commentaire, StatistiqueVisiteur, PourcentageProgression ou HistoriqueEtat n'est requise.
+
+### 6. Contraintes non fonctionnelles et exploitation
+
+- **Architecture :** Django, SQLite, Unfold, templates serveur, CSS et JavaScript minimal. Pas de service frontend distinct, d'API publique ou de dépendance de publication à une tâche planifiée.
+- **Simplicité éditoriale :** paragraphes en texte simple et liens séparés ; traductions manuelles dans Unfold. Aucun service de traduction automatique n'est nécessaire.
+- **Sécurité :** HTTPS, paramètres de production adaptés, secrets hors Git, protection des actions de modification, contrôle administratif et second facteur sur tous les chemins d'accès. Le parcours d'enrôlement ou de récupération n'autorise pas à accéder aux contenus avant vérification.
+- **Légèreté :** servir des images optimisées, réserver leur place dans la mise en page et charger les illustrations hors écran à la demande. Ne pas ajouter de vidéos hébergées, de galerie ou de scripts de suivi.
+- **Accessibilité :** documents dans la bonne langue, structure de titres cohérente, contraste lisible, focus visible, navigation clavier et messages compréhensibles. Une animation éventuelle doit respecter la réduction des mouvements.
+- **Hébergement :** une application et un worker sur PythonAnywhere gratuit ; 512 Mio pour l'ensemble du compte. Vérifier les caractéristiques réelles et la capacité restante lors du déploiement. Le domaine personnalisé reste reporté.
+- **Exploitation :** documenter installation, migrations, fichiers statiques/médias, redémarrage, renouvellement mensuel et procédure de sauvegarde/restauration. Une base copiée pendant des écritures doit utiliser une méthode de sauvegarde SQLite cohérente ; un simple fichier copié sans contrôle ne prouve pas la restauration.
+- **Observabilité minimale :** erreurs techniques consultables pour le diagnostic, sans exposer secrets ou données d'authentification et sans suivi d'audience. La mesure d'utilité produit reste manuelle.
+
+### 7. Definition of Done — critères stricts de validation
+
+Ces cases décrivent des **preuves à produire lors du futur développement**. Elles ne sont pas cochées par la rédaction du PRD. Aucun pourcentage global de couverture ou score synthétique ne remplace les scénarios observés.
+
+#### 7.1 Une fonctionnalité est terminée uniquement si
+
+- [ ] Ses User Stories et critères d'acceptation sont satisfaits par un comportement observable ; aucune maquette, valeur codée en dur ou simulation ne remplace une fonction requise.
+- [ ] Le TDD respecte le skill référencé dans GOALS : pour un nouveau comportement ou une correction, le test échoue d'abord pour la bonne raison, puis passe après la modification ; le refactoring conserve les vérifications au vert. Les exceptions proportionnées prévues par le skill sont déclarées.
+- [ ] Les tests ciblés et les régressions pertinentes passent ; aucun test requis n'est ignoré ou affaibli pour obtenir un succès. Le compte rendu contient les commandes, résultats observés et limites éventuelles.
+- [ ] Le parcours réel est exercé, au-delà des tests : interaction dans Unfold ou consultation des pages selon la fonction. Les branches d'échec et les limites pertinentes sont également vérifiées.
+- [ ] Les changements de modèle ont des migrations applicables sur une base SQLite neuve et, si des données existent déjà, sur une copie de celles-ci sans perte inattendue.
+- [ ] Les données de test restent séparées des contenus publics. Aucun secret, mot de passe ou code de récupération n'est ajouté au dépôt.
+
+#### 7.2 La V1 développée est terminée uniquement si la matrice suivante passe
+
+| Contrat | Scénarios minimaux à démontrer | Stories |
+| --- | --- | --- |
+| Identité et pages | Toutes les pages en français/anglais ; statut de projet et implantation cohérents ; pas d'offre fictive | US-01, US-02 |
+| Publication bilingue | Brouillon incomplet invisible ; traduction vide ou faite d'espaces refusée ; publication complète accessible dans les deux langues ; modification invalidante d'un contenu public refusée | US-05, US-07, US-08, US-09, US-10 |
+| Dates et URL | Deux jalons publiés dans un ordre différent de leur date réelle ; égalités triées de manière stable ; changement de titre puis dépublication/republication sans changement d'URL ni d'horodatage initial ; collision d'URL refusée | US-03, US-10 |
+| Filtre et pagination | Zéro, une, dix et onze nouvelles ; nouvelle multisecteurs sans doublon ; pagination avec filtre conservé ; page et secteur invalides traités selon le contrat | US-04 |
+| Langues | Entrée / en français ; bascule du même détail ; filtre conservé au changement de langue ; libellés et états vides traduits | US-05 |
+| Retrait et intégrité | Nouvelle retirée introuvable ; secteur retiré absent des filtres/liens mais nouvelles conservées ; suppression d'un secteur référencé par un brouillon refusée ; republication rétablit ses associations visibles | US-08, US-11 |
+| Textes et liens | Texte ressemblant à du HTML affiché sans exécution ; URL dangereuse refusée ; liens externes optionnels ordonnés avec libellés traduits | US-03, US-09 |
+| Médias | Absence d'image ; image décodable à la limite de 2 Mio ; fichier supérieur à la limite refusé ; faux fichier image refusé ; grande image réduite ; petite image non agrandie ; alternatives incomplètes bloquantes ; remplacement sans perte en cas d'échec et nettoyage après succès | US-12 |
+| Contact | Liens WhatsApp et e-mail construits avec les valeurs administrées, ouverts sur appareils adaptés, accessibles au clavier ; aucun message ni événement de suivi créé dans le hub | US-06, US-07 |
+| Administration | Données modifiables dans Unfold ; tentatives sans compte, avec mot de passe seul ou sans droit refusées ; code temporaire valide accepté ; limitation des tentatives démontrée ; code de récupération utilisable une seule fois ; absence de voie de contournement | US-07, US-08, US-09, US-13 |
+| Mobile et clavier | Parcours sur largeurs 360, 768 et 1 280 pixels, sans débordement ; navigation, filtre, pagination, changement de langue et contact au clavier ; focus et alternatives présents | US-15 |
+| Restauration | Sauvegarde cohérente puis restauration dans un environnement isolé ; textes, langues, secteurs, associations, dates et fichiers images restitués | US-14 |
+
+Les dimensions d'écran et jeux de données sont des cas de vérification, pas de nouvelles fonctionnalités. Utiliser des valeurs attendues indépendantes de l'implémentation et ne simuler que les frontières externes nécessaires. L'authenticité des contenus et la qualité des traductions exigent une relecture humaine ; un champ non vide ne les prouve pas.
+
+#### 7.3 La mise en ligne est prête uniquement si
+
+- [ ] Le porteur fournit et relit les textes français/anglais, les coordonnées publiques, les deux secteurs en préparation et au moins une nouvelle réelle. Les illustrations éventuelles sont autorisées à la publication.
+- [ ] L'application fonctionne effectivement sur le compte PythonAnywhere choisi : pages publiques, ressources statiques, médias, SQLite et administration protégée. Aucun résultat local ne tient lieu de preuve de déploiement.
+- [ ] L'espace total utilisé sur le compte est mesuré **strictement inférieur à 512 Mio** ; la mesure et la marge restante sont consignées. Les limites réelles de l'offre ont été revérifiées.
+- [ ] Les contrôles Django de production sont exécutés et leurs constats traités ; HTTPS et la confidentialité des secrets sont vérifiés. Une éventuelle particularité de la plateforme est expliquée, sans masquer un défaut non résolu.
+- [ ] Le second facteur est enrôlé pour le compte administrateur et les codes de récupération sont conservés hors du site. Le parcours normal et la récupération ont été exercés.
+- [ ] Une sauvegarde restaurable est conservée hors hébergement. Le responsable sait exécuter la procédure et renouveler le site avant l'échéance mensuelle.
+- [ ] Le compte rendu de livraison identifie les preuves, commandes, environnement, éventuelles limites et opérations de retour à la version précédente. Un blocage critique de sécurité, de traduction, de données ou de restauration empêche de déclarer le lancement prêt.
+
+#### 7.4 Conformité de sécurité locale — audit du 10 octobre 2026
+
+La demande explicite d'audit autorise ces corrections. Le rapport [docs/audit-securite.md](docs/audit-securite.md) consigne reproductions, correctifs, commandes et limites. Ces cases actent uniquement les critères effectivement éprouvés ; les conditions de lancement de 7.3 restent indépendantes.
+
+- [x] Sondes SQL sur connexion, recherche Unfold et filtre secteur : aucun accès indu, élargissement de résultat ou destruction observés.
+- [x] Payloads XSS rendus comme texte sur pages bilingues, listes/formulaires et message de succès Unfold ; liens javascript/data refusés, image polyglotte réencodée sans HTML.
+- [x] POST admin sans CSRF ou avec origine étrangère refusés sans modification ; POST légitime réussi dans le navigateur intégré.
+- [x] Reprise POST de l'enrôlement TOTP reproduite puis corrigée : un appareil confirmé bloque setup/QR, même depuis une session antérieure ou un wizard en cours.
+- [x] Cookie de premier enrôlement reproduit comme réutilisable puis corrigé par rotation ; rotation de connexion, expiration, déconnexion, liaison appareil/utilisateur et permissions métier vérifiées.
+- [x] Sessions limitées à 30 minutes d'inactivité, cookies non persistants/HttpOnly/SameSite ; debug par défaut désactivé, clé absente bloquante et paramètres HTTPS/Secure/HSTS vérifiés dans un environnement synthétique.
+- [x] TDD observé sur les défauts corrigés ; 92 tests réussis, check et check --deploy sans problème dans leurs environnements respectifs, aucune migration manquante, pip check et smoke/restauration réussis.
+- [x] Essais Browser et données synthétiques isolés de la base éditoriale ; captures sans secrets conservées dans docs/screenshots/security-*.jpg.
+- [ ] Avant lancement : éprouver certificat, proxy, cookies Secure et mappings sur le compte PythonAnywhere réel, recontrôler les dépendances contre les avis de sécurité et satisfaire 7.3. Cette passe locale n'est ni un audit exhaustif ni une certification.
+
+Décisions modifiées : développement local avec DJANGO_DEBUG=1 explicite ; suite utilisant config.test_settings ; limite d'inactivité de 30 minutes ; compte déjà équipé d'un facteur confirmé orienté vers la récupération privée, sans reprise de l'enrôlement initial. Le brief et l'historique de l'entretien sont conservés.
+
+### 8. Dépendances, risques et séquence de réalisation
+
+**Dépendances externes :** disponibilité du compte PythonAnywhere et de sa configuration, fourniture des coordonnées et contenus authentiques par le porteur, rédaction/relecture manuelle en anglais et en français. Les identifiants techniques et versions de dépendances compatibles seront fixés lors de la réalisation ; ne pas ajouter une fonction pour compenser des contenus absents.
+
+**Risques à surveiller :** quota disque consommé par l'environnement et les médias ; cadence de traduction du seul administrateur ; oubli du renouvellement mensuel ; sauvegarde partielle ou non restaurable ; mauvaise intégration du second facteur dans Unfold. Chacun correspond à une vérification ou une procédure exigée dans la Definition of Done.
+
+**Ordre recommandé lorsque le développement sera autorisé :**
+
+1. Préparer le socle Django/SQLite, le harnais de tests, les entités et leurs contraintes ; tests comportementaux avant les fonctions.
+2. Mettre en place Unfold, la sécurité administrative, la configuration générale et les transitions de publication bilingue.
+3. Construire les pages publiques, la navigation bilingue, les URL stables, filtres, pagination et contacts.
+4. Ajouter le traitement des images, exercer les échecs et finaliser les parcours mobile/clavier.
+5. Vérifier la matrice de la V1, préparer et démontrer sauvegarde/restauration, puis contrôler le déploiement et les conditions de lancement avec les contenus réels.
+
+Les preuves techniques et les confirmations éditoriales doivent être distinguées. Tant qu'un critère strict n'est pas satisfait, rapporter ce qui est réalisé et ce qui reste à vérifier, sans déclarer la V1 ou son lancement terminés.
+
+## Brief initial et analyse
+
+Le porteur du projet souhaite créer une application web Django avec SQLite et une administration Unfold pour son futur groupe Ventisax SARL. Le projet, encore informel et en formation, prévoit plusieurs branches : climatisation/froid, vente de matériel électronique, puis d'autres activités. Le hub général doit présenter le projet et sa progression ; les futurs sites sectoriels porteront les contenus détaillés. Le brief évoquait un hébergement de « 500 Mo ».
+
+L'entretien a séparé trois ambitions initialement mélangées : présenter le groupe, montrer la progression et attirer des clients. L'objectif prioritaire retenu est de montrer la progression aux clients potentiels. Aucune preuve n'est actuellement publiable et aucune prestation ni vente n'est proposée au lancement. La communication doit donc expliciter le stade de formation, sans faire passer des ambitions pour des activités opérationnelles.
+
+Précisions libres reçues :
+
+- Hébergeur : **PythonAnywhere**, compte gratuit **Beginner**. L'offre est déjà choisie ; le dépôt ne contient toutefois aucune application existante.
+- Implantation actuelle : **Yaoundé et ses environs (Cameroun)**. Cette implantation ne constitue pas une promesse de prestations disponibles.
+
+## Décisions consolidées
+
+### Choix explicites de l'utilisateur
+
+- Objectif : montrer une progression réelle aux futurs clients locaux, plutôt que proposer une offre commerciale immédiate.
+- Identité publique : « Ventisax — projet de groupe en développement ». La SARL est une ambition future, pas le statut actuel affiché.
+- Deux secteurs au lancement : climatisation/froid et matériel électronique, tous deux en préparation. Ajouter les autres secteurs lorsqu'ils deviennent concrets.
+- Hub synthétique : fiches courtes et nouvelles datées ; liens vers les sites sectoriels uniquement lorsqu'ils sont disponibles. Les détails, réalisations et offres des futurs sites dédiés restent hors de cette version.
+- Pages : accueil, présentation du projet et du parcours, fiches secteur, liste et détail des nouvelles, contact.
+- Public bilingue français/anglais. Publication bloquée tant que les deux versions ne sont pas renseignées ; pas de repli silencieux vers le français sur les pages anglaises.
+- Tous les contenus publics et les coordonnées sont modifiables dans Unfold ; structure des pages fixe, sans constructeur de pages.
+- Un seul administrateur ; brouillons et publication explicite, sans circuit de validation éditoriale.
+- Contact par liens WhatsApp et e-mail ; aucun message visiteur stocké dans SQLite.
+- Aucun compte visiteur, formulaire, commentaire, boutique, recherche interne ou outil de suivi d'audience en première version.
+- Mesure d'utilité : retours reçus par WhatsApp/e-mail et régularité des publications.
+- Textes simples avec paragraphes ; liens saisis séparément, sans HTML libre, Markdown ni éditeur riche.
+- Chaque secteur décrit son état actuel, les apprentissages et la prochaine étape en texte ; aucun score ni pourcentage de progression.
+- Une nouvelle peut être associée à zéro, un ou plusieurs secteurs. Sans secteur public associé, elle apparaît comme une nouvelle du groupe.
+- Date du jalon distincte de la date de première publication, horodatée automatiquement. Le fil suit la date du jalon, affichée au visiteur.
+- Adresses distinctes /fr/ et /en/, identifiants d'URL propres à chaque langue, fixés à la première publication et conservés ensuite. Le sélecteur de langue mène à la traduction du même contenu.
+- Dépublication sans perte des données. Les nouvelles publiées restent visibles lorsqu'un secteur est retiré ; leurs associations non publiques sont masquées. La suppression d'un secteur référencé est bloquée.
+- Une image facultative par nouvelle, optimisée à l'envoi. Vidéos par liens externes uniquement ; aucune vidéo ni aucun PDF téléversé.
+- Interface sobre et technique : bleu profond, fond clair, accent turquoise.
+- Django rend les pages HTML avec CSS et JavaScript minimal ; aucune API publique ni aucun frontend séparé.
+- SQLite et administration Django Unfold, conformément au brief initial.
+- Accès administratif avec mot de passe unique, second facteur par application mobile, codes de récupération conservés hors du site et limitation des tentatives de connexion.
+- Lancement sur l'adresse gratuite PythonAnywhere. Domaine Ventisax et sites sectoriels reportés.
+- Entretien manuel assuré par le porteur du projet : renouvellement mensuel et sauvegardes hors hébergement chaque semaine où il publie, ainsi qu'avant chaque mise à jour technique.
+- Lancement après renseignement de la présentation, des coordonnées, des deux fiches secteur et d'au moins une nouvelle réelle, avec les contenus éditoriaux en français et en anglais. Aucun contenu fictif publié.
+
+### Valeurs par défaut annoncées et validées
+
+Les valeurs suivantes ont été annoncées avant Q34 et acceptées lors de la validation globale :
+
+- Français à l'entrée du site et administration en français.
+- Pagination de 10 nouvelles par page.
+- Interface adaptée au mobile ; navigation accessible au clavier.
+- Image limitée à 2 Mio à l'envoi, puis réduite à 1 600 pixels maximum sur son plus grand côté et compressée.
+
+Le plan final, explicitement repris pour exécution par l'utilisateur, complète ce cadrage avec :
+
+- Ordre d'affichage administrable des secteurs.
+- Texte alternatif traduit pour les images.
+- Routes publiques /fr/ et /en/ ; aucune API publique à ajouter à cette étape.
+
+### Données et comportements à prévoir lors du développement
+
+- **Configuration générale** : présentation bilingue du projet et du parcours, implantation et coordonnées WhatsApp/e-mail.
+- **Secteur** : nom et descriptions bilingues, état préparation/actif, apprentissages, prochaine étape, ordre d'affichage, publication et lien facultatif vers le site dédié.
+- **Nouvelle** : titres et textes bilingues, identifiants d'URL par langue, date du jalon, date de première publication, brouillon/publication, image facultative avec texte alternatif traduit, liens externes et associations aux secteurs.
+- **Affichage public** : filtrage par secteur et pagination, contenus publiés uniquement, masquage des associations aux secteurs dépubliés, changement de langue vers le même contenu.
+
+Ce cadrage décrit les données attendues, sans créer de modèles Django, de migrations ou de dépendances pendant l'étape documentaire.
+
+## Hébergement et exploitation retenus
+
+Les caractéristiques ont été vérifiées dans la documentation officielle pendant l'entretien, le 10 octobre 2026 :
+
+- Compte gratuit PythonAnywhere : **512 Mio d'espace disque**, une application web, un worker et échéance d'un mois à renouveler. Les « 500 Mo » du brief désignent donc le stockage, pas la RAM. Source : [Free Accounts Features](https://help.pythonanywhere.com/pages/FreeAccountsFeatures/).
+- Les domaines personnalisés nécessitent un compte payant. Le lancement utilise l'adresse de type identifiant.pythonanywhere.com. Source : [Custom Domains](https://help.pythonanywhere.com/pages/CustomDomains/).
+- Le budget disque doit couvrir code, dépendances, SQLite, fichiers statiques, médias et autres fichiers du compte ; il ne s'agit pas d'un quota réservé aux photos.
+- Les sauvegardes doivent constituer un ensemble cohérent de SQLite et des médias, téléchargé hors PythonAnywhere. Une copie sur le même compte ne remplace pas cette sauvegarde externe.
+- Revérifier les limites de l'offre lors du déploiement : les caractéristiques d'hébergement peuvent évoluer. Aucun accès au compte de l'utilisateur n'a été effectué ; son usage disque et sa configuration ne sont pas vérifiés.
+
+## Informations à fournir avant lancement
+
+- Coordonnées WhatsApp et e-mail destinées à être rendues publiques.
+- Présentation réelle du projet et du parcours, en français et en anglais.
+- Contenus français et anglais des deux fiches secteur : description, apprentissages et prochaine étape.
+- Première nouvelle réelle : date du jalon, titre et texte dans les deux langues ; image facultative, avec droit de publication et textes alternatifs si utilisée.
+- Identifiant/adresse PythonAnywhere et paramètres de déploiement nécessaires, sans inscrire de mots de passe, secrets ni codes de récupération dans ce document ou dans Git.
+
+## Critères de validation du futur développement
+
+Ces vérifications sont prévues pour l'application future ; elles n'ont pas été exécutées pendant la consignation documentaire.
+
+- Parcours français et anglais complets, entrée française et changement de langue vers le même contenu.
+- Publication impossible lorsque les traductions requises sont incomplètes ; brouillons absents du public.
+- Titres modifiables sans casser les URL déjà publiées.
+- Tri par date du jalon, filtres par secteur, pagination et états vides fonctionnels.
+- Dépublication des secteurs sans perte des nouvelles ; liens non publics masqués et suppression d'un secteur référencé bloquée.
+- Rejet des fichiers invalides et des images trop volumineuses ; réduction et compression des images acceptées, textes alternatifs traduits.
+- Refus d'accès administratif sans second facteur, limitation des tentatives et procédure de récupération testée.
+- Sauvegarde puis restauration cohérente de SQLite et des médias.
+- Affichage mobile et navigation clavier vérifiés ; déploiement réel sous le quota disque et renouvellement mensuel documenté.
+- Contenus de lancement réels et bilingues ; aucun exemple fictif présenté comme une réalisation.
+
+## Historique des 34 questions et réponses
+
+Les intitulés des options sont conservés. La mention « Recommended » indique la recommandation faite pendant l'entretien, pas une réponse implicite. Les sélections sans précision libre sont signalées lorsqu'elles n'ont pas suffi à répondre.
+
+### Q1 — Objectif
+
+**Question :** Si le hub ne devait réussir qu'une seule chose au lancement, laquelle justifierait son existence ? « Présenter plusieurs branches » décrit son contenu, pas son utilité.
+
+**Options :**
+
+1. **Obtenir des contacts (Recommended)** — Convaincre un prospect de te contacter grâce à une présentation honnête des activités et à des preuves concrètes.
+2. **Présenter le futur groupe** — Expliquer la vision Ventisax et orienter vers les sites des secteurs, sans priorité commerciale immédiate.
+3. **Montrer ta progression** — Faire du hub un portfolio de formation et de réalisations destiné aux futurs clients et partenaires.
+
+**Réponse reçue :** « Montrer ta progression ».
+
+### Q2 — Public
+
+**Question :** Tu choisis de montrer ta progression. Mais à qui veux-tu prouver quoi en priorité ? Un client veut savoir si tu peux résoudre son problème aujourd'hui ; un recruteur veut évaluer tes compétences ; un partenaire veut juger ton potentiel. Lequel doit guider le contenu du hub au lancement ?
+
+**Options :**
+
+1. **Clients potentiels (Recommended)** — Montrer des réalisations et compétences vérifiables pour gagner leur confiance et préparer de futures prestations.
+2. **Recruteurs et formateurs** — Documenter tes apprentissages, méthodes et résultats pour obtenir un stage, un emploi ou une validation.
+3. **Futurs partenaires** — Présenter ton parcours et les ambitions du groupe pour attirer des collaborateurs ou partenaires.
+
+**Réponse reçue :** « Clients potentiels (Recommended) ».
+
+### Q3 — Preuves
+
+**Question :** Un futur client n'a aucune raison de croire une liste de compétences auto-déclarées. Quelle preuve concrète peux-tu publier dès maintenant, avec tes propres contenus et l'autorisation de les montrer ? Choisis le niveau le plus solide dont tu disposes réellement ; précise les exemples en texte libre si nécessaire.
+
+**Options :**
+
+1. **Exercices documentés (Recommended)** — Tu peux montrer des travaux de formation avec photos, explications et limites, clairement identifiés comme exercices.
+2. **Interventions réelles** — Tu as déjà réalisé des travaux pour des clients et peux publier leurs résultats avec les autorisations nécessaires.
+3. **Aucune preuve publiable** — Tu disposes seulement de ta présentation et de tes objectifs ; le lancement doit en tenir compte.
+
+**Réponse reçue :** « Aucune preuve publiable ».
+
+### Q4 — Offre
+
+**Question :** Si un visiteur te contacte demain pour acheter du matériel ou faire réparer une climatisation, que peux-tu effectivement lui proposer aujourd'hui ? Le site doit-il présenter Ventisax comme un projet en formation, une activité déjà opérationnelle, ou distinguer les deux selon le secteur ?
+
+**Options :**
+
+1. **Projet en formation (Recommended)** — Présenter ton parcours et recueillir des prises de contact, sans proposer de vente ni de prestation actuellement disponible.
+2. **Offre selon le secteur** — Indiquer précisément les secteurs déjà opérationnels et ceux encore en préparation ; tu devras détailler les offres disponibles.
+3. **Activité opérationnelle** — Présenter des prestations ou produits que tu peux déjà fournir et gérer concrètement dès le lancement.
+
+**Réponse reçue :** « Projet en formation (Recommended) ».
+
+### Q5 — Secteurs
+
+**Question :** Pourquoi afficher « plein d'autres branches » si elles n'ont encore ni activité ni contenu ? Pour le lancement, acceptes-tu de limiter le hub à la climatisation/froid et à la vente de matériel électronique, toutes deux clairement indiquées comme en préparation, et d'ajouter les autres secteurs seulement lorsqu'ils deviennent concrets ?
+
+**Options :**
+
+1. **Oui, deux secteurs (Recommended)** — Deux secteurs visibles au lancement ; l'administration permettra d'en ajouter plus tard.
+2. **Climatisation seulement** — Concentrer le lancement sur ton parcours en climatisation/froid et introduire l'électronique ultérieurement.
+3. **Davantage de secteurs** — Afficher d'autres secteurs dès le lancement ; tu devras les nommer et justifier leur présence.
+
+**Réponse reçue :** « Oui, deux secteurs (Recommended) ».
+
+### Q6 — Frontière
+
+**Question :** Tu évoques un futur site comme clim.ventisax. Quelle frontière veux-tu fixer pour éviter de maintenir deux fois les mêmes contenus : le hub garde une courte présentation et l'état d'avancement de chaque secteur, tandis que les futurs sites dédiés portent les articles détaillés, réalisations et offres ?
+
+**Options :**
+
+1. **Oui, hub synthétique (Recommended)** — Chaque secteur a une fiche courte sur le hub et un lien affiché seulement quand son site dédié est disponible.
+2. **Tout sur le hub** — Le hub héberge aussi les contenus détaillés ; les sites sectoriels sont reportés à une phase ultérieure.
+3. **Contenus partagés** — Le hub et les sites sectoriels devront exploiter une source commune, ce qui élargit l'architecture à prévoir.
+
+**Réponse reçue :** « Oui, hub synthétique (Recommended) ».
+
+### Q7 — Progrès
+
+**Question :** Tu veux un hub synthétique dont l'objectif principal reste de montrer ta progression. Qu'est-ce qu'un visiteur verra réellement évoluer : des nouvelles datées du groupe et de ta formation, ou seulement le résumé actuel de chaque secteur ? Sans contenus datés, il verra ton état présent, mais pas ton parcours.
+
+**Options :**
+
+1. **Nouvelles datées (Recommended)** — Publier de courts jalons liés à un ou plusieurs secteurs, avec date, texte et photo facultative, en plus des fiches synthétiques.
+2. **Fiches mises à jour** — Mettre à jour le niveau et les prochaines étapes de chaque secteur, sans fil de publications ni historique public.
+3. **Les deux avec historique** — Afficher les nouvelles datées et conserver un historique structuré des changements de statut de chaque secteur.
+
+**Réponse reçue :** « Nouvelles datées (Recommended) ».
+
+### Q8 — Contact
+
+**Question :** Quel canal veux-tu réellement surveiller pour les prises de contact ? Un formulaire impose stockage, protection contre le spam et traitement des messages. Pour cette première version, acceptes-tu de proposer uniquement des liens WhatsApp et e-mail, sans enregistrer les messages des visiteurs dans SQLite ?
+
+**Options :**
+
+1. **WhatsApp et e-mail (Recommended)** — Des liens directs vers tes coordonnées publiques ; aucun formulaire ni boîte de réception à maintenir sur le site.
+2. **Formulaire enregistré** — Les visiteurs envoient un message conservé dans SQLite et consultable dans Unfold, sans dépendre d'une livraison par e-mail.
+3. **Formulaire avec e-mail** — Les messages sont conservés et une notification est envoyée par e-mail, avec gestion des échecs de livraison.
+
+**Réponse reçue :** « WhatsApp et e-mail (Recommended) ».
+
+### Q9 — Gestion
+
+**Question :** Qui publiera les contenus dans Unfold au lancement ? As-tu réellement besoin d'une équipe avec validation éditoriale, ou seras-tu seul à créer des brouillons puis à les publier ?
+
+**Options :**
+
+1. **Moi seul (Recommended)** — Un seul administrateur gère les contenus, avec brouillon et publication explicite, sans circuit de validation.
+2. **Plusieurs éditeurs** — Plusieurs personnes publient directement avec des permissions distinctes de l'administration technique.
+3. **Équipe avec validation** — Des rédacteurs préparent les contenus et un responsable autorise leur publication.
+
+**Réponse reçue :** « Moi seul (Recommended) ».
+
+### Q10 — 500 Mo
+
+**Question :** Les « 500 Mo » limitent quoi exactement ? Donne aussi le nom de l'hébergeur et de l'offre si tu les connais : sans cela, on ne peut pas vérifier que Django peut tourner ni que SQLite et les photos survivent à un redéploiement.
+
+**Options :**
+
+1. **À confirmer (Recommended)** — Tu ne connais pas encore la nature exacte de la limite ; indique l'hébergeur ou le lien de l'offre en réponse libre.
+2. **Espace disque persistant** — Les 500 Mo couvrent les fichiers conservés, notamment la base SQLite et les médias ; précise l'offre concernée.
+3. **Mémoire vive** — Les 500 Mo sont la RAM disponible pour exécuter l'application ; précise les limites de disque et l'offre si connues.
+
+**Réponse reçue :** « À confirmer (Recommended) ».
+
+**Résolution ultérieure :** l'offre identifiée à Q12 dispose de 512 Mio d'espace disque selon sa documentation officielle.
+
+### Q11 — Hébergeur
+
+**Question :** L'hébergement est-il déjà choisi ? Ton brief dit que le site est déployé, mais le dépôt ne contient aucune application. Il faut lever cette contradiction avant de figer l'architecture.
+
+**Options :**
+
+1. **Pas encore choisi (Recommended)** — Les 500 Mo constituent un objectif provisoire ; le choix d'une offre compatible Django avec stockage persistant reste à faire.
+2. **Offre déjà souscrite** — Tu disposes d'un hébergement ; indique son nom et l'offre exacte en réponse libre pour permettre la vérification.
+3. **Application ailleurs** — Une application existe hors de ce dépôt ; indique son emplacement ou son URL pour qu'elle soit prise en compte.
+
+**Réponse reçue :** « Offre déjà souscrite ».
+
+### Q12 — Offre
+
+**Question :** Quel est le nom exact de l'hébergeur et de l'offre souscrite, ou le lien vers sa fiche technique ? Utilise la réponse libre pour les préciser. C'est un prérequis : un hébergement de pages statiques ou limité à PHP ne suffit pas pour exécuter Django.
+
+**Options :**
+
+1. **Je fournis les références (Recommended)** — Indiquer en réponse libre le nom de l'hébergeur et de l'offre, ou un lien public vers ses caractéristiques.
+2. **Références indisponibles** — Suspendre la validation du déploiement ; continuer à définir le produit en signalant ce prérequis non résolu.
+
+**Première réponse reçue :** « Je fournis les références (Recommended) », sans les références elles-mêmes.
+
+**Relance de la même Q12 :** Quel est le nom exact de ton hébergeur et de l'offre souscrite ? Écris-les directement ici, ou colle le lien vers les caractéristiques de l'offre. Sans cette information, la compatibilité avec Django et la persistance de SQLite restent invérifiables.
+
+**Précision libre reçue :** « L'hébergeur choisi est PythonAnywhere et l'offre souscrite est le compte gratuit ("Beginner" plan). »
+
+### Q13 — Domaine
+
+**Question :** Acceptes-tu de lancer le hub sur l'adresse gratuite PythonAnywhere et de reporter le domaine Ventisax ainsi que les sous-domaines sectoriels ? Il faut choisir : ton budget actuel ne permet pas d'héberger cette ambition de domaines sur cette offre.
+
+**Options :**
+
+1. **Oui, adresse gratuite (Recommended)** — La première version reste sur PythonAnywhere gratuit ; le domaine et les sites sectoriels seront traités ultérieurement.
+2. **Domaine dès le lancement** — Le domaine Ventisax devient obligatoire ; le plan devra inclure une offre payante et l'achat du domaine.
+
+**Réponse reçue :** « Oui, adresse gratuite (Recommended) ».
+
+### Q14 — Identité
+
+**Question :** Tu n'as pas encore constitué la SARL. Acceptes-tu que le site affiche « Ventisax — projet de groupe en développement », présente ton rôle et ta formation, et réserve « future SARL » à la description de ton ambition ? Afficher « Ventisax SARL » comme identité actuelle contredirait la situation que tu décris.
+
+**Options :**
+
+1. **Oui, statut explicite (Recommended)** — Utiliser Ventisax comme nom du projet et expliquer clairement que la société est en préparation.
+2. **Marque seule** — Afficher simplement Ventisax, sans mention SARL, et préciser le stade de formation dans la page de présentation.
+3. **Société déjà constituée** — Corriger le brief : Ventisax est déjà une SARL constituée et son identité devra refléter cette situation.
+
+**Réponse reçue :** « Oui, statut explicite (Recommended) ».
+
+### Q15 — Langues
+
+**Question :** Le hub doit-il être uniquement en français au lancement ? Une version bilingue exige de traduire et maintenir chaque fiche et chaque nouvelle : comptes-tu réellement alimenter deux langues dès maintenant ?
+
+**Options :**
+
+1. **Français uniquement (Recommended)** — Tous les contenus et la navigation sont en français pour la première version.
+2. **Français et anglais** — Chaque page et publication doit disposer de versions française et anglaise maintenues par toi.
+
+**Réponse reçue :** « Français et anglais ».
+
+### Q16 — Traduction
+
+**Question :** Tu seras seul à publier dans deux langues. Si la version anglaise d'une nouvelle n'est pas prête, faut-il bloquer sa publication ou permettre une publication française d'abord ? Choisis une règle nette pour éviter des pages anglaises partiellement françaises.
+
+**Options :**
+
+1. **Deux langues obligatoires (Recommended)** — Une fiche ou nouvelle ne devient publique que lorsque ses contenus français et anglais sont renseignés ; une seule publication rend les deux versions visibles.
+2. **Publication indépendante** — Chaque traduction a son propre état de publication ; les listes anglaises omettent les contenus qui ne sont disponibles qu'en français.
+3. **Repli vers le français** — Le contenu français apparaît sur la version anglaise en l'absence de traduction, avec une indication explicite.
+
+**Réponse reçue :** « Deux langues obligatoires (Recommended) ».
+
+### Q17 — Nouvelles
+
+**Question :** Une nouvelle peut-elle concerner plusieurs secteurs, ou le groupe dans son ensemble ? Par exemple, ta progression en gestion peut servir aux deux branches. Acceptes-tu une nouvelle unique associée à zéro, un ou plusieurs secteurs, plutôt que de dupliquer son contenu ?
+
+**Options :**
+
+1. **Oui, liens multiples (Recommended)** — Une nouvelle peut être liée à plusieurs secteurs ; sans secteur associé, elle concerne le groupe.
+2. **Un seul secteur** — Chaque nouvelle relève exactement d'un secteur ou du groupe, avec un choix exclusif.
+
+**Réponse reçue :** « Oui, liens multiples (Recommended) ».
+
+### Q18 — Médias
+
+**Question :** Avec 512 Mio pour le code, les dépendances, SQLite et les médias, acceptes-tu une seule image par nouvelle, automatiquement réduite et compressée, et des liens externes pour les vidéos ? Des vidéos téléversées ou des galeries de photos originales rendraient cette enveloppe beaucoup plus difficile à tenir.
+
+**Options :**
+
+1. **Une image et liens (Recommended)** — Une image facultative par nouvelle, optimisée à l'envoi ; aucune vidéo ni PDF stocké sur le hub.
+2. **Galeries de photos** — Plusieurs images optimisées par nouvelle, avec un nombre limité et un budget de stockage à définir.
+3. **Images et documents** — Une image et des PDF téléversés ; il faudra définir les limites et leur gestion dans le budget disque.
+
+**Réponse reçue :** « Une image et liens (Recommended) ».
+
+### Q19 — Édition
+
+**Question :** Quel niveau de mise en forme veux-tu dans Unfold ? Pour des nouvelles courtes, acceptes-tu un texte simple avec paragraphes et liens dans des champs dédiés, ou te faut-il réellement un éditeur riche avec titres, listes et liens intégrés ?
+
+**Options :**
+
+1. **Texte simple (Recommended)** — Des champs simples pour les textes français et anglais ; les liens sont saisis séparément, sans HTML libre.
+2. **Éditeur riche** — Un éditeur permet titres, listes, emphase et liens ; le contenu est nettoyé avant affichage.
+3. **Markdown** — Tu saisis du Markdown pour les contenus ; l'application le convertit et sécurise son affichage.
+
+**Réponse reçue :** « Texte simple (Recommended) ».
+
+### Q20 — Pages
+
+**Question :** Pour cette première version, acceptes-tu ce parcours : accueil avec ta progression récente, présentation de Ventisax et de ton parcours, une fiche par secteur, liste et détail des nouvelles, puis contact ? Une boutique, un espace client, des commentaires ou une recherche interne répondraient à d'autres besoins que ceux définis jusqu'ici.
+
+**Options :**
+
+1. **Oui, ce parcours (Recommended)** — Ces pages suffisent ; les nouvelles sont filtrables par secteur et paginées, sans comptes visiteurs ni fonctions commerciales.
+2. **Parcours plus réduit** — Regrouper présentation, secteurs et contact sur l'accueil ; seules les nouvelles ont des pages distinctes.
+3. **Fonction essentielle manquante** — Préciser en réponse libre la fonction supplémentaire indispensable et le besoin concret auquel elle répond.
+
+**Réponse reçue :** « Oui, ce parcours (Recommended) ».
+
+### Q21 — Entretien
+
+**Question :** Qui assurera le renouvellement mensuel du site et la récupération des contenus si SQLite ou les médias sont perdus ? Acceptes-tu d'en être responsable, avec une sauvegarde téléchargée hors de PythonAnywhere chaque semaine où tu publies et avant chaque mise à jour technique ? Une copie conservée seulement sur le même compte ne suffit pas.
+
+**Options :**
+
+1. **Oui, entretien manuel (Recommended)** — Tu renouvelles le site chaque mois et conserves hors hébergement des sauvegardes cohérentes de SQLite et des médias.
+2. **Automatisation indispensable** — Le plan doit prévoir un mécanisme externe de sauvegarde et de surveillance ; il faudra choisir le service et son budget.
+3. **Autre responsable** — Une autre personne assure ces opérations ; préciser son rôle et sa disponibilité en réponse libre.
+
+**Réponse reçue :** « Oui, entretien manuel (Recommended) ».
+
+### Q22 — Territoire
+
+**Question :** À quel territoire tes futurs clients appartiennent-ils principalement ? Dire que Ventisax est un projet en formation ne suffit pas : un visiteur doit aussi comprendre où tu te situes et où tu envisages d'exercer. Précise la ville et le pays en réponse libre si tu choisis une cible locale.
+
+**Options :**
+
+1. **Une ville et ses environs (Recommended)** — La présentation et le contact indiquent une implantation locale précise, cohérente avec les futures interventions.
+2. **Un pays entier** — Le projet vise un public national ; préciser le pays et ton implantation actuelle.
+3. **Public international** — Le hub présente un parcours sans zone de prestation définie, destiné à des visiteurs de plusieurs pays.
+
+**Réponse reçue :** « Une ville et ses environs (Recommended) », sans nom de lieu. Précision demandée à Q23.
+
+### Q23 — Implantation
+
+**Question :** Quelle ville et quel pays veux-tu afficher comme implantation actuelle de Ventisax ? Tu as choisi une cible locale, mais sans nommer le lieu. Donne la ville, le pays et les environs visés ; il faut distinguer cette implantation actuelle d'une future zone d'intervention.
+
+**Options :** aucune ; réponse libre demandée directement dans le chat.
+
+**Réponse reçue :** « Yaoundé et ses environs (Cameroun) ».
+
+### Q24 — Dates
+
+**Question :** Veux-tu distinguer la date de l'étape racontée de la date de publication ? Si tu documentes aujourd'hui une formation suivie il y a deux mois, une seule date risque de déformer ton parcours.
+
+**Options :**
+
+1. **Oui, deux dates (Recommended)** — Tu renseignes la date de l'étape ; la première publication est datée automatiquement. Le fil suit la date de l'étape, affichée au visiteur.
+2. **Publication uniquement** — Le fil suit la première publication ; les dates des événements sont mentionnées librement dans le texte.
+
+**Réponse reçue :** « Oui, deux dates (Recommended) ».
+
+### Q25 — Secteurs
+
+**Question :** Sur chaque fiche secteur, acceptes-tu une structure commune : description, état actuel (« en préparation » ou « actif »), ce que tu apprends, prochaine étape et lien facultatif vers le site dédié ? Ou veux-tu un suivi chiffré ? Un pourcentage de progression serait trompeur sans critères permettant de calculer ce que signifie « terminé ».
+
+**Options :**
+
+1. **Étapes en texte (Recommended)** — Les deux secteurs utilisent cette structure commune ; tu actualises les textes et l'état depuis Unfold, sans score de progression.
+2. **Checklist structurée** — Chaque secteur possède des objectifs ordonnés et cochables ; il faudra définir ce qu'un objectif accompli signifie.
+3. **Progression chiffrée** — Le site affiche un indicateur calculé ; les critères, poids et règles d'évolution devront être définis avant de le développer.
+
+**Réponse reçue :** « Étapes en texte (Recommended) ».
+
+### Q26 — Autonomie
+
+**Question :** Si tu changes ton e-mail, ton texte de présentation ou ton prochain objectif, veux-tu pouvoir le faire seul dans Unfold ? Je recommande d'y gérer tous les contenus publics — présentation, coordonnées, secteurs, nouvelles et traductions — et de garder la mise en page dans le code. As-tu réellement besoin de déplacer ou créer librement des blocs de page ?
+
+**Options :**
+
+1. **Contenus dans Unfold (Recommended)** — Tu modifies les contenus et coordonnées depuis l'administration ; les pages suivent une structure fixe.
+2. **Secteurs et nouvelles seulement** — Les coordonnées et pages de présentation restent dans le code et nécessitent une mise à jour technique.
+3. **Constructeur de pages** — Tu peux également réorganiser et créer des blocs de page, ce qui ajoute une gestion de structure et de traduction.
+
+**Réponse reçue :** « Contenus dans Unfold (Recommended) ».
+
+### Q27 — Retrait
+
+**Question :** Quand tu voudras retirer une nouvelle ou un secteur du public, veux-tu pouvoir le dépublier sans perdre son contenu ? Et si une nouvelle cite un secteur retiré, acceptes-tu qu'elle reste visible avec ses autres associations publiques, ou comme nouvelle du groupe si aucune ne reste ?
+
+**Options :**
+
+1. **Oui, retrait sans perte (Recommended)** — Les contenus dépubliés restent dans Unfold ; les nouvelles publiées masquent leurs liens vers les secteurs retirés. La suppression d'un secteur lié est bloquée.
+2. **Masquer aussi les nouvelles** — Dépublier un secteur retire du public toutes les nouvelles qui lui sont associées, même celles concernant plusieurs secteurs.
+3. **Suppression définitive** — Tu privilégies la suppression ; il faudra définir le devenir des nouvelles et des liens existants avant de l'autoriser.
+
+**Réponse reçue :** « Oui, retrait sans perte (Recommended) ».
+
+### Q28 — Adresses
+
+**Question :** Si tu corriges le titre d'une nouvelle dans six mois, son lien déjà partagé sur WhatsApp doit-il continuer à fonctionner ? Acceptes-tu des adresses distinctes /fr/ et /en/, avec un identifiant d'URL propre à chaque langue, fixé à la première publication et conservé ensuite ?
+
+**Options :**
+
+1. **Oui, liens stables (Recommended)** — Les corrections de titre ne modifient pas les URL ; le changement de langue conduit à la traduction du même contenu.
+2. **URL commune aux langues** — Les routes /fr/ et /en/ partagent un même identifiant de contenu, même si cet identifiant est moins naturel dans une langue.
+3. **URL modifiable** — Tu peux changer les URL après publication ; l'application doit conserver des redirections depuis les anciennes adresses.
+
+**Réponse reçue :** « Oui, liens stables (Recommended) ».
+
+### Q29 — Audience
+
+**Question :** Comment sauras-tu si le hub est utile ? Pour la première version, acceptes-tu de juger son utilité par les contacts reçus et ta régularité de publication, sans intégrer d'outil de suivi des visiteurs ? Ou les statistiques de consultation sont-elles indispensables dès le lancement ?
+
+**Options :**
+
+1. **Contacts et publications (Recommended)** — Pas de traceur d'audience ni de tableau de statistiques ; tu évalues les retours reçus par WhatsApp et e-mail.
+2. **Statistiques indispensables** — Mesurer les pages consultées et les clics de contact ; il faudra choisir un outil et préciser les données conservées.
+
+**Réponse reçue :** « Contacts et publications (Recommended) ».
+
+### Q30 — Apparence
+
+**Question :** Quelle impression doit dominer à la première visite : un projet sérieux ancré dans les métiers techniques, un portfolio personnel de formation, ou un groupe aux ambitions institutionnelles ? La troisième option doit rester cohérente avec le fait que la société et ses activités sont encore en préparation.
+
+**Options :**
+
+1. **Sobre et technique (Recommended)** — Interface claire et légère, centrée sur les secteurs et les étapes concrètes ; bleu profond, fond clair et accent turquoise.
+2. **Portfolio personnel** — Ton parcours et ta présentation occupent le premier plan ; ton plus personnel et progression mise en avant.
+3. **Présentation institutionnelle** — La vision du futur groupe domine, avec une hiérarchie visuelle plus formelle et un statut de projet clairement affiché.
+
+**Réponse reçue :** « Sobre et technique (Recommended) ».
+
+### Q31 — Lancement
+
+**Question :** Sans preuve publiable aujourd'hui, veux-tu lancer dès que la présentation honnête du projet et les deux fiches bilingues sont prêtes, ou attendre au moins une première nouvelle réelle ? Une page remplie de fausses réalisations ou d'exemples de démonstration ruinerait l'objectif de confiance.
+
+**Options :**
+
+1. **Attendre une vraie nouvelle (Recommended)** — Le lancement exige présentation, coordonnées, deux fiches secteur et au moins un jalon réel renseignés en français et en anglais.
+2. **Lancer sans nouvelle** — Le site présente le projet et les secteurs ; le fil affiche un état vide explicite jusqu'à ta première publication.
+
+**Réponse reçue :** « Attendre une vraie nouvelle (Recommended) ».
+
+**Précision donnée pendant l'entretien :** un jalon peut raconter une étape réelle de formation ; il n'a pas besoin de prétendre démontrer une compétence déjà acquise.
+
+### Q32 — Technique
+
+**Question :** As-tu un besoin concret qui impose une application JavaScript séparée ? Pour ce hub de présentation, acceptes-tu que Django rende directement les pages HTML, avec du CSS et un minimum de JavaScript, sans API publique ni React ? Cela réduit les dépendances et le travail de déploiement sur ton compte gratuit.
+
+**Options :**
+
+1. **Oui, templates Django (Recommended)** — Django fournit les pages publiques et Unfold l'administration ; pas d'API ni de processus frontend séparé.
+2. **Frontend séparé requis** — Préciser en réponse libre le besoin interactif qui justifie une API et un frontend distinct dès la première version.
+
+**Réponse reçue :** « Oui, templates Django (Recommended) ».
+
+### Q33 — Accès
+
+**Question :** Ton compte Unfold pourra modifier tout ce que les visiteurs lisent. Acceptes-tu une authentification à deux facteurs par application mobile, avec des codes de récupération conservés hors du site, en plus d'un mot de passe unique et d'une limitation des tentatives de connexion ?
+
+**Options :**
+
+1. **Oui, deux facteurs (Recommended)** — L'administration exige mot de passe et code temporaire ; une procédure de récupération est documentée et testée.
+2. **Mot de passe seulement** — Un mot de passe robuste et unique, HTTPS et limitation des tentatives protègent l'accès ; pas de second facteur en première version.
+
+**Réponse reçue :** « Oui, deux facteurs (Recommended) ».
+
+### Q34 — Validation
+
+**Contexte annoncé avant la question :** hub bilingue de progression pour les futurs clients de Yaoundé et ses environs ; Ventisax présenté comme projet de groupe en développement ; deux secteurs en préparation, nouvelles réelles et liens WhatsApp/e-mail ; templates Django, SQLite et Unfold sur l'adresse gratuite PythonAnywhere ; gestion individuelle des contenus, double authentification, sauvegardes et renouvellement mensuel. Valeurs par défaut proposées : français à l'entrée du site, administration en français, 10 nouvelles par page, interface adaptée au mobile, images limitées à 2 Mio à l'envoi puis réduites à 1 600 pixels maximum. Coordonnées exactes et textes bilingues à fournir avant lancement.
+
+**Question :** Ce cadrage, y compris les valeurs par défaut annoncées, correspond-il à ce que tu veux réellement construire ? Signale toute contradiction maintenant : ce document doit guider l'implémentation, pas simplement refléter une suite de choix cochés.
+
+**Options :**
+
+1. **Oui, cadrage validé (Recommended)** — Finaliser le plan de consignation dans AGENTS.md et le cahier des charges de la première version.
+2. **Des points à corriger** — Préciser en réponse libre les décisions à revoir ; poursuivre l'entretien sur ces seuls points avant de finaliser.
+
+**Réponse reçue :** « Oui, cadrage validé (Recommended) ».
+
+**Confirmation ultérieure :** l'utilisateur a demandé explicitement l'exécution du plan « Cadrage de Ventisax et consignation dans AGENTS.md », qui limite cette étape à la documentation et réserve le développement à une instruction distincte.

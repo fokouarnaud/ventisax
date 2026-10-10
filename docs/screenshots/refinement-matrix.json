@@ -1,0 +1,1588 @@
+[
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "home",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "about",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "sector",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "news",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "detail",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": false,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305,
+    "imagesAfterVisualCheck": true,
+    "imageNote": "Première mesure pendant le chargement ; contrôle visuel suivant : complete=true, naturalWidth=900."
+  },
+  {
+    "width": 320,
+    "language": "fr",
+    "page": "contact",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "home",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "about",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "sector",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "news",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "detail",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "page": "contact",
+    "client": 305,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 305
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "home",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "about",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "sector",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "news",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "detail",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "page": "contact",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "home",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "about",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "sector",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "news",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "detail",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "page": "contact",
+    "client": 345,
+    "h1": 1,
+    "header": 197,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 345
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "home",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "about",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "sector",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "news",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "detail",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "page": "contact",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "home",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "about",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "sector",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "news",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "detail",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "page": "contact",
+    "client": 753,
+    "h1": 1,
+    "header": 145.875,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 753
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "home",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "about",
+    "client": 1280,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1280
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "sector",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "news",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "detail",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "page": "contact",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "fr",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Accueil"
+      },
+      {
+        "height": 44,
+        "text": "Présentation"
+      },
+      {
+        "height": 44,
+        "text": "Nouvelles"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "English"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "home",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "about",
+    "client": 1280,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1280
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "sector",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "news",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "detail",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1265
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "page": "contact",
+    "client": 1265,
+    "h1": 1,
+    "header": 99,
+    "images": true,
+    "lang": "en",
+    "nav": [
+      {
+        "height": 44,
+        "text": "Home"
+      },
+      {
+        "height": 44,
+        "text": "About"
+      },
+      {
+        "height": 44,
+        "text": "News"
+      },
+      {
+        "height": 44,
+        "text": "Contact"
+      },
+      {
+        "height": 44,
+        "text": "Français"
+      }
+    ],
+    "scroll": 1265
+  }
+]

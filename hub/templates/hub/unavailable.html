@@ -1,0 +1,3 @@
+{% extends 'hub/base.html' %}
+{% block title %}Ventisax · {% if lang == 'fr' %}En préparation{% else %}In preparation{% endif %}{% endblock %}
+{% block content %}<div class="container error-page"><section class="surface error-card"><p class="eyebrow">{% if lang == 'fr' %}En préparation{% else %}In preparation{% endif %}</p><h1>Ventisax</h1><p class="lead">{{ labels.unavailable }}</p><div class="actions"><a class="button" href="{{ language_url }}">{% if lang == 'fr' %}English{% else %}Français{% endif %}</a></div></section></div>{% endblock %}

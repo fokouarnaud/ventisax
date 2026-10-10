@@ -1,0 +1,3 @@
+{% extends 'hub/base.html' %}
+{% block title %}404 · Ventisax{% endblock %}
+{% block content %}<div class="container error-page"><section class="surface error-card"><p class="error-code" aria-hidden="true">404</p><h1>{% if lang == 'fr' %}Page introuvable{% else %}Page not found{% endif %}</h1><p class="lead">{% if lang == 'fr' %}Ce contenu n’est pas disponible. Retrouvez les nouvelles publiées ou revenez à l’accueil.{% else %}This content is unavailable. Browse published news or return to the homepage.{% endif %}</p><div class="actions"><a class="button" href="{% url 'home' lang=lang %}">{{ labels.home }}</a><a class="button button-light" href="{% url 'news' lang=lang %}">{{ labels.news }}</a></div></section></div>{% endblock %}

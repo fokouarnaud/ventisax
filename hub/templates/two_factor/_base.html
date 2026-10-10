@@ -1,0 +1,4 @@
+{% load static %}
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{% block title %}Accès Ventisax{% endblock %}</title><link rel="stylesheet" href="{% static 'hub/site.css' %}"><link rel="icon" href="{% static 'hub/ventisax-mark.svg' %}">{% block extra_media %}{% endblock %}</head>
+<body class="auth-body"><header class="container auth-header"><a class="brand" href="/fr/"><img src="{% static 'hub/ventisax-mark.svg' %}" width="44" height="44" alt=""><span><span class="brand-name">Ventisax</span><span class="brand-note">Administration sécurisée</span></span></a></header><main class="auth-main surface">{% block content_wrapper %}{% block content %}{% endblock %}{% endblock %}</main></body></html>

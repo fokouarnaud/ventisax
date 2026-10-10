@@ -1,0 +1,106 @@
+# Validation de l’interface — 10 octobre 2026
+
+Les templates Django des six pages publiques, des états indisponible/introuvable et du parcours de connexion
+utilisent les assets locaux. Le bleu profond, le fond clair et l’accent turquoise suivent le PRD.
+Le décor de l’accueil est un SVG de présentation ; il ne représente aucune réalisation du projet.
+
+## Environnement et preuves
+
+La vérification utilise le Browser Plugin, dans le navigateur intégré, avec un serveur Django sur l’adresse
+de boucle locale. `scripts/preview_site.py` crée une base SQLite et des médias temporaires. Un bandeau précise
+que tous les contenus de cet aperçu sont fictifs. La base éditoriale du projet reste vide.
+
+| Pages | Langues | Largeurs | Résultat observé |
+| --- | --- | --- | --- |
+| Accueil, présentation, secteur, liste des nouvelles, détail et contact | Français et anglais | 360, 768 et 1 280 px | 36 combinaisons ; aucun débordement horizontal ; un titre principal ; langue correcte ; images chargées |
+| Connexion | Français | 360 et 1 280 px | Formulaire lisible, labels présents, assets locaux ; aucun débordement |
+| Secteur sans nouvelle, filtre sans résultat, détail sans image | Français | Mobile ou ordinateur | Messages explicites ; lecture sans élément factice ni espace d’image vide |
+| Erreur 404 et absence de configuration | Français et anglais | Mobile ou ordinateur | Navigation de retour ou de langue disponible ; mise en page cohérente |
+
+La matrice mesurée se trouve dans `screenshots/layout-matrix.json`. Les captures `home-360.jpg`,
+`home-768.jpg`, `home-1280.jpg` et leurs équivalents pour les cinq autres pages permettent de revoir les layouts.
+`home-preview.jpg` montre le haut de l’accueil ; `login-mobile.jpg` et `login-desktop.jpg` montrent la connexion.
+Les captures sont des preuves de démonstration, pas des contenus à publier.
+
+## Interactions exercées
+
+- Sélection du secteur climatisation/froid : dix nouvelles sur la première page et deux sur la suivante.
+- Pagination conservant le filtre ; changement vers l’anglais conservant le secteur et revenant à la première page.
+- Tabulation vers le lien d’évitement et activation par Entrée : focus transféré au contenu principal.
+- Sélection du filtre au clavier, focus visible sur le bouton, soumission par Entrée et pagination au clavier.
+- Lecture du détail illustré en anglais, avec alternative traduite et dimensions réservées ; lecture d’un détail sans image.
+
+## Corrections issues de l’observation
+
+Les liens du fil d’Ariane et les étiquettes de secteurs ont été agrandis à au moins 44 pixels de hauteur.
+Le pied de page reste en bas des pages courtes. Le formulaire de connexion adopte une présentation verticale
+sur petit écran. Une priorité incorrecte de résolution des templates chargeait l’interface amont du second facteur :
+le dossier de templates du projet est désormais prioritaire et un test couvre l’absence d’assets distants.
+
+## Vérifications reproductibles
+
+```powershell
+.venv/Scripts/python -m pytest -q
+.venv/Scripts/python manage.py check
+.venv/Scripts/python manage.py makemigrations --check --dry-run
+.venv/Scripts/python manage.py collectstatic --noinput
+.venv/Scripts/python scripts/smoke_backend.py
+```
+
+`collectstatic` trouve les trois nouveaux assets du hub. Les avertissements de doublons des scripts Django admin
+correspondent aux remplacements fournis par Unfold ; ils ne concernent pas les assets du hub.
+
+Les largeurs mobiles sont simulées dans le navigateur de bureau. Un appareil physique, les technologies
+d’assistance, un audit exhaustif de contraste/accessibilité et l’ouverture des véritables coordonnées de contact
+n’ont pas été vérifiés. La mise en ligne et la validation des contenus réels restent des étapes distinctes.
+
+## Passe de précision visuelle — 10 octobre 2026
+
+L'application a été exécutée dans le Browser Plugin intégré avec `scripts/preview_site.py --port 8002`.
+L'en-tête mobile présentait auparavant une ligne de langue pleine largeur en français à 360 px,
+alors que la version anglaise gardait les cinq liens sur une ligne. Le sélecteur est désormais séparé
+de la navigation : identité et langue en première ligne jusqu'à 960 px, navigation en dessous,
+puis deux colonnes jusqu'à 700 px. Les cibles gardent 44 px de hauteur avec 8 px entre les liens mobiles.
+Les titres des nouvelles gagnent un interligne de 1,4 et une taille de 1,125 rem ; les descriptions
+de secteurs utilisent 1 rem sur mobile. Jusqu'à 380 px, marges de 16 px et cartes remplies à 20 px.
+La palette, les polices système et le contenu métier restent ceux du PRD. Ces décisions sont consignées dans AGENTS.md.
+
+`screenshots/refinement-matrix.json` contient 48 mesures : six pages, français/anglais,
+320/360/768/1 280 px. Aucun débordement horizontal mesuré, un h1 par page, langue correcte
+et liens d'en-tête d'au moins 44 px. Une première mesure de l'image à 320 px a précédé son
+chargement ; le contrôle visuel suivant confirme `complete=true` et `naturalWidth=900`.
+Captures : `refinement-home-360.jpg`, `refinement-contact-320.jpg`, `refinement-home-desktop.jpg`.
+
+Au clavier, Entrée sur le lien d'évitement transfère le focus à `content` ; le sélecteur ouvre
+la traduction du même détail. Le filtre est manipulé avec la flèche puis Tab ; le bouton reçoit
+un contour visible. La pagination du secteur climatisation donne deux nouvelles en seconde page,
+puis la bascule en français conserve le secteur et revient aux dix éléments de la première page.
+Le lien Contact ouvre la page correspondante. Aucun envoi vers les coordonnées fictives n'est effectué.
+
+Vérifications observées : `.venv/Scripts/python -m pytest -q` → 63 tests réussis ;
+`.venv/Scripts/python manage.py check` → aucune erreur ;
+`.venv/Scripts/python manage.py makemigrations --check --dry-run` → aucune modification détectée.
+Il s'agit d'une passe de présentation, validée par rendu réel et tests existants, sans nouveau cycle TDD métier.
+Les limites concernant téléphone physique, technologies d'assistance et audit exhaustif restent applicables.
+
+## Retours Browser : quatre contrôles demandés
+
+- Menu à trois barres, replié jusqu'à 960 px, ouvert par Entrée/clic et fermé par Échap ; le focus revient au bouton. À partir de 961 px, navigation visible et bouton masqué.
+- Bandeau refermable au clavier ; fermeture conservée lors de la navigation vers Contact dans l'onglet. Mention de démonstration conservée dans le pied de page.
+- Lien de traduction explicite, avec langue actuelle et destination ; changement anglais/français depuis Contact conservant cette page.
+- Retour en haut absent avant défilement, visible après 500 px ; Ctrl+Fin sur Contact le rend visible. Entrée ramène à `scrollY=0` et transfère le focus à `page-top`.
+
+Le test `test_controles_publics_accessibles_et_script_local` échoue d'abord dans les deux langues
+sur l'absence de contrôle de menu, puis passe après implémentation. Le parseur HTML représente
+les attributs booléens présents par `None` : le test a été corrigé pour vérifier leur présence.
+La suite `.venv/Scripts/python -m pytest -q` donne **65 passed** ; `manage.py check`
+ne signale aucune erreur, `makemigrations --check --dry-run` aucune modification.
+
+Le navigateur intégré utilise l'aperçu isolé sur `http://127.0.0.1:8003/` pour charger les nouveaux assets.
+`screenshots/controls-matrix.json` mesure 14 combinaisons des deux langues à
+320/360/495/768/960/961/1 280 px : aucun débordement, état du menu conforme au seuil.
+`controls-mobile.jpg` montre l'en-tête compact et `controls-back-to-top.jpg` le bouton flottant.
+
+Sans JavaScript, la navigation est laissée visible par le HTML/CSS. Le stockage indisponible et
+la réduction des mouvements sont traités dans le script. Ces trois configurations, les lecteurs
+d'écran et un téléphone physique n'ont pas été exercés ; elles ne sont pas déclarées validées ici.

@@ -1,0 +1,114 @@
+[
+  {
+    "width": 320,
+    "language": "fr",
+    "client": 305,
+    "menuHidden": true,
+    "scroll": 305,
+    "toggleHidden": false
+  },
+  {
+    "width": 320,
+    "language": "en",
+    "client": 305,
+    "menuHidden": true,
+    "scroll": 305,
+    "toggleHidden": false
+  },
+  {
+    "width": 360,
+    "language": "fr",
+    "client": 345,
+    "menuHidden": true,
+    "scroll": 345,
+    "toggleHidden": false
+  },
+  {
+    "width": 360,
+    "language": "en",
+    "client": 345,
+    "menuHidden": true,
+    "scroll": 345,
+    "toggleHidden": false
+  },
+  {
+    "width": 495,
+    "language": "fr",
+    "client": 480,
+    "menuHidden": true,
+    "scroll": 480,
+    "toggleHidden": false
+  },
+  {
+    "width": 495,
+    "language": "en",
+    "client": 480,
+    "menuHidden": true,
+    "scroll": 480,
+    "toggleHidden": false
+  },
+  {
+    "width": 768,
+    "language": "fr",
+    "client": 753,
+    "menuHidden": true,
+    "scroll": 753,
+    "toggleHidden": false
+  },
+  {
+    "width": 768,
+    "language": "en",
+    "client": 753,
+    "menuHidden": true,
+    "scroll": 753,
+    "toggleHidden": false
+  },
+  {
+    "width": 960,
+    "language": "fr",
+    "client": 945,
+    "menuHidden": true,
+    "scroll": 945,
+    "toggleHidden": false
+  },
+  {
+    "width": 960,
+    "language": "en",
+    "client": 945,
+    "menuHidden": true,
+    "scroll": 945,
+    "toggleHidden": false
+  },
+  {
+    "width": 961,
+    "language": "fr",
+    "client": 946,
+    "menuHidden": false,
+    "scroll": 946,
+    "toggleHidden": true
+  },
+  {
+    "width": 961,
+    "language": "en",
+    "client": 946,
+    "menuHidden": false,
+    "scroll": 946,
+    "toggleHidden": true
+  },
+  {
+    "width": 1280,
+    "language": "fr",
+    "client": 1265,
+    "menuHidden": false,
+    "scroll": 1265,
+    "toggleHidden": true
+  },
+  {
+    "width": 1280,
+    "language": "en",
+    "client": 1265,
+    "menuHidden": false,
+    "scroll": 1265,
+    "toggleHidden": true
+  }
+]
