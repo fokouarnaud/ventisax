@@ -384,6 +384,13 @@ du 12 octobre 2026, au futur, sans écraser les modifications éditoriales ulté
 
 - [x] Initialisation sans WhatsApp et annonce autorisée éprouvées après échec initial ;
   suite complète à 99 tests réussis, contrôles Django sans erreur et aucune migration manquante.
+- [x] SMTP Gmail authentifié avec TLS, message de test accepté pour l’adresse du porteur,
+  secret enregistré uniquement dans `.env` privé (600), option e-mail activée, six migrations
+  `otp_email` et contrôles de production réussis. La réception et l’enrôlement restent à vérifier.
+- [x] Contrôle HTTP distant complet réussi : accueils fr/en et CSS 200, fichiers privés 404,
+  admin anonyme 302 vers connexion, connexion 200, cookies sécurisés et HTTP → HTTPS vérifiés.
+- [ ] Mot de passe administrateur défini par saisie privée, OTP reçu et enrôlé, connexion réelle
+  à Unfold et récupération démontrées. Une invite de mot de passe ne prouve pas un accès utilisable.
 
 - [x] Chargement privé de `.env`, priorité des variables du processus et refus du debug dans `config.production` éprouvés en processus isolés.
 - [x] Initialisation du brief bilingue idempotente, sans remplacement éditorial ni jalon inventé ; coordonnées invalides refusées sans publication partielle.

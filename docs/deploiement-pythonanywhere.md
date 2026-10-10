@@ -2,6 +2,29 @@
 
 Compte autorisé : `ventisax`. Le lancement éditorial et l'accès réel par OTP restent à terminer.
 
+## SMTP et HTTPS — reprise réussie
+
+La console a retrouvé sa connexion. Une sauvegarde SQLite cohérente et les médias ont été
+copiés dans `/home/ventisax/private_backups/pre-email-20261010`, répertoire privé 700.
+Cette copie distante ne remplace pas une sauvegarde téléchargée et restaurée hors hébergement.
+
+Gmail a accepté l’authentification SMTP avec TLS et un message de test adressé au porteur.
+Le secret a été saisi sans écho ni inscription dans l’historique des commandes, puis enregistré
+dans `.env` (600), hors Git. `DJANGO_EMAIL_OTP=1` est activé. Les six migrations du composant
+`otp_email` et `check --deploy` ont réussi ; l’application a été rechargée.
+L’acceptation SMTP ne prouve pas encore la réception ni l’usage d’un OTP réel.
+
+Le script `check_deployment.py`, exécuté sur PythonAnywhere contre l’URL publique, a réussi
+sans modification des assertions : fr/en et CSS 200 ; `.env`, SQLite et média privé 404 ;
+admin anonyme 302 ; connexion 200 ; cookies sécurisés, protection contre l’encadrement,
+HSTS et redirection HTTP vers HTTPS vérifiés. La connexion française a également été affichée
+dans le Browser intégré. Preuve : `docs/screenshots/pythonanywhere-https-email-ready.jpg`.
+
+Le compte `fokou` existe. La commande privée `changepassword fokou` est positionnée à son
+invite de saisie ; aucun résultat de définition du mot de passe n’est encore confirmé.
+Réception, enrôlement du facteur e-mail, connexion réelle à Unfold et récupération restent ouverts.
+Les sections suivantes conservent les constats précédents.
+
 ## État actualisé après initialisation autorisée
 
 - Commit `e2b02f6` poussé sur main après develop et avance rapide ; récupéré sur le serveur.
