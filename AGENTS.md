@@ -374,6 +374,17 @@ Décisions modifiées : développement local avec DJANGO_DEBUG=1 explicite ; sui
 
 #### 7.5 Préparation du déploiement — 10 octobre 2026
 
+Décision actualisée à la demande « remplir les données initiales en ligne, modifiables plus tard » :
+le contact e-mail validé permet l’initialisation sans inventer de numéro WhatsApp. Ce champ est
+facultatif ; s’il est absent, aucun lien WhatsApp n’est rendu. Un numéro renseigné conserve
+la validation internationale. Le porteur pourra l’ajouter dans Unfold. Le brief historique
+reste conservé ; les critères de lancement et de récupération restent soumis à leurs preuves.
+L’option explicite `--announce-classes` initialise seulement l’annonce bilingue autorisée
+du 12 octobre 2026, au futur, sans écraser les modifications éditoriales ultérieures.
+
+- [x] Initialisation sans WhatsApp et annonce autorisée éprouvées après échec initial ;
+  suite complète à 99 tests réussis, contrôles Django sans erreur et aucune migration manquante.
+
 - [x] Chargement privé de `.env`, priorité des variables du processus et refus du debug dans `config.production` éprouvés en processus isolés.
 - [x] Initialisation du brief bilingue idempotente, sans remplacement éditorial ni jalon inventé ; coordonnées invalides refusées sans publication partielle.
 - [x] Parcours e-mail OTP éprouvé avec transport de test en mémoire : mot de passe seul refusé par Unfold, code accepté une fois, expiration et limitation des renvois vérifiées. Cela ne prouve pas une livraison SMTP réelle.

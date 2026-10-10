@@ -125,12 +125,15 @@ Le choix de méthode permet aussi l’application mobile. Les codes de récupér
 Initialiser les contenus validés uniquement avec de vraies coordonnées publiques :
 
 ```bash
-python manage.py seed_content --email ADRESSE_PUBLIQUE --whatsapp +NUMERO_INTERNATIONAL
+python manage.py seed_content --email ADRESSE_PUBLIQUE --announce-classes
 ```
 
-Cette commande crée la présentation bilingue et les deux secteurs en préparation ; elle conserve
-les contenus déjà présents et ne crée aucune nouvelle fictive. Préparer dans Unfold l’annonce du début des cours
-et de la présentation des locaux prévus le 12 octobre 2026. Ne pas la présenter comme un événement déjà accompli.
+Cette commande crée la présentation bilingue, les deux secteurs en préparation et, avec
+`--announce-classes`, l’annonce autorisée du début des cours et de la présentation des locaux
+prévus le 12 octobre 2026. Elle conserve les contenus déjà présents. Sans cette option, aucune nouvelle n’est créée.
+Ajouter `--whatsapp +NUMERO_INTERNATIONAL` uniquement avec un numéro public authentique.
+Le numéro peut être ajouté ultérieurement dans Unfold ; sans numéro, seul le contact e-mail apparaît.
+Ne pas présenter l’annonce comme un événement déjà accompli.
 Relire les traductions et les contacts avant publication.
 
 Dans **Web → Add a new web app**, choisir **Manual configuration**, puis **Python 3.13**.

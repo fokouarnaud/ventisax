@@ -2,7 +2,8 @@
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from hub.models import ConfigurationGenerale, Secteur
+from datetime import date
+from hub.models import ConfigurationGenerale, Secteur, Nouvelle
 
 
 class Command(BaseCommand):
@@ -10,7 +11,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--email", required=True)
-        parser.add_argument("--whatsapp", required=True)
+        parser.add_argument("--whatsapp", default="")
+        parser.add_argument("--announce-classes", action="store_true", help="Publier l’annonce autorisée du 12 octobre 2026.")
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -43,6 +45,15 @@ class Command(BaseCommand):
                     prochaine_etape_en="Begin training and document the first actual milestones.",
                     ordre=order, etat="preparation", publie=True,
                 ))
+            if options["announce_classes"]:
+                Nouvelle.objects.get_or_create(slug_fr="debut-cours-presentation-locaux-2026", defaults=dict(
+                    slug_en="classes-start-premises-presentation-2026",
+                    titre_fr="Annonce : début des cours et présentation des locaux",
+                    titre_en="Announcement: classes begin and premises presentation",
+                    corps_fr="Le début des cours et la présentation des locaux sont prévus le 12 octobre 2026. Cette annonce présente la prochaine étape de formation de Ventisax ; un compte rendu sera publié après l’événement.",
+                    corps_en="The start of classes and the presentation of the premises are scheduled for 12 October 2026. This announcement presents the next training step for Ventisax; a report will be published after the event.",
+                    date_jalon=date(2026, 10, 12), publie=True,
+                ))
         except ValidationError as exc:
             raise CommandError(str(exc)) from exc
-        self.stdout.write(self.style.SUCCESS("Brief initialisé ; contenus existants conservés. Aucun jalon créé."))
+        self.stdout.write(self.style.SUCCESS("Brief initialisé ; contenus existants conservés."))

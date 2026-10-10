@@ -200,7 +200,7 @@ class ConfigurationGenerale(ValidatedModel):
     implantation_fr = models.CharField(max_length=250)
     implantation_en = models.CharField(max_length=250)
     email = models.EmailField()
-    whatsapp = models.CharField(max_length=16, validators=[RegexValidator(r"^\+[1-9][0-9]{7,14}$", "Numéro international requis (+…).")])
+    whatsapp = models.CharField(max_length=16, blank=True, default="", validators=[RegexValidator(r"^\+[1-9][0-9]{7,14}$", "Numéro international requis (+…).")])
     modifie_le = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -223,7 +223,7 @@ class ConfigurationGenerale(ValidatedModel):
 
     @property
     def whatsapp_url(self):
-        return "https://wa.me/" + self.whatsapp[1:]
+        return "https://wa.me/" + self.whatsapp[1:] if self.whatsapp else ""
 
     @property
     def email_url(self):
