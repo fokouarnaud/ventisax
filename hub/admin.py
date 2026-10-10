@@ -17,6 +17,11 @@ class SecureAdminSite(AdminSiteOTPRequiredMixin, UnfoldAdminSite):
     site_header = "Administration Ventisax"
     site_title = "Ventisax"
 
+    def get_urls(self):
+        from django.urls import path
+        from .database_admin import database_view
+        return [path("database/", self.admin_view(database_view), name="database_versions")] + super().get_urls()
+
     def admin_view(self, view, cacheable=False):
         protected = super().admin_view(view, cacheable=cacheable)
 
@@ -34,7 +39,7 @@ site = SecureAdminSite(name="admin")
 
 class PublicationAdmin(ModelAdmin):
     formfield_overrides = {models.URLField: {"assume_scheme": "https"}}
-    readonly_fields = ("publie", "premiere_publication", "cree_le", "modifie_le")
+    readonly_fields = ("uuid", "publie", "premiere_publication", "cree_le", "modifie_le")
     actions = ("publish_selected", "unpublish_selected")
     list_filter = ("publie",)
 
@@ -69,6 +74,7 @@ class LienInline(TabularInline):
     model = LienNouvelle
     formfield_overrides = {models.URLField: {"assume_scheme": "https"}}
     extra = 0
+    readonly_fields = ("uuid",)
 
 
 class SecteurInline(TabularInline):
@@ -85,7 +91,7 @@ class NouvelleAdmin(PublicationAdmin):
 
 @admin.register(ConfigurationGenerale, site=site)
 class ConfigurationAdmin(ModelAdmin):
-    readonly_fields = ("modifie_le",)
+    readonly_fields = ("uuid", "modifie_le")
 
     def has_add_permission(self, request):
         return super().has_add_permission(request) and not ConfigurationGenerale.objects.exists()

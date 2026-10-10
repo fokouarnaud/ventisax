@@ -59,6 +59,11 @@ Il ne modifie pas `db.sqlite3` ni les médias du projet.
 
 ## Exploitation et lancement
 
+La gestion manuelle de la base courante et d’un backup est accessible depuis l’accueil Unfold.
+Voir [la procédure des versions de base](docs/versions-bd.md) pour sauvegarder, charger,
+interchanger, télécharger ou envoyer la courante par e-mail. Appliquer la migration `0007`
+après sauvegarde avant d’utiliser ces commandes. Les contenus reçoivent des UUID sans changement d’URL.
+
 La procédure est dans `docs/exploitation.md`. Le déploiement PythonAnywhere, les contenus authentiques,
 leur relecture et l’enrôlement du véritable administrateur restent à effectuer avant lancement.
 Les templates publics et les assets locaux sont maintenant mis en forme et vérifiés dans le navigateur en français

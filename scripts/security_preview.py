@@ -29,6 +29,9 @@ def main():
         root = Path(directory)
         settings.DATABASES["default"]["NAME"] = root / "db.sqlite3"
         settings.MEDIA_ROOT = root / "media"
+        settings.DATABASE_BACKUP_DIR = root / "backups"
+        settings.EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+        settings.EMAIL_FILE_PATH = root / 'emails'
         settings.VENTISAX_PREVIEW = True
         settings.DEBUG = False
         django.setup()

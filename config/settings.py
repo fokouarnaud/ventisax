@@ -21,6 +21,7 @@ INSTALLED_APPS = [
 if os.environ.get("DJANGO_EMAIL_OTP", "0") == "1":
     INSTALLED_APPS += ["django_otp.plugins.otp_email", "two_factor.plugins.email"]
 MIDDLEWARE = [
+    "hub.database_versions.DatabaseAccessMiddleware",
     "django.middleware.security.SecurityMiddleware", "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware", "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware", "django_otp.middleware.OTPMiddleware",
@@ -45,6 +46,9 @@ LANGUAGE_CODE = "fr"
 TIME_ZONE = "Africa/Douala"
 USE_I18N = True
 USE_TZ = True
+DATABASE_BACKUP_DIR = BASE_DIR / "backups" / "admin"
+DATABASE_MAX_BYTES = 20 * 1024 * 1024
+DATABASE_EMAIL_MAX_BYTES = 10 * 1024 * 1024
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"

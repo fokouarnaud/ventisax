@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator, RegexValidator
 from django.utils import timezone
 from urllib.parse import quote
+import uuid
 from .images import optimize
 
 
@@ -18,6 +19,7 @@ class ValidatedModel(models.Model):
 
 
 class Publication(ValidatedModel):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     publie = models.BooleanField(default=False)
     slug_fr = models.SlugField(max_length=200, blank=True, default="")
     slug_en = models.SlugField(max_length=200, blank=True, default="")
@@ -153,7 +155,8 @@ class NouvelleSecteur(models.Model):
 
 def schedule_image_cleanup(name, storage):
     def cleanup():
-        if not Nouvelle.objects.filter(image=name).exists():
+        from .database_versions import backup_image_referenced
+        if not Nouvelle.objects.filter(image=name).exists() and not backup_image_referenced(name):
             storage.delete(name)
     transaction.on_commit(cleanup)
 
@@ -165,6 +168,7 @@ def cleanup_deleted_image(sender, instance, **kwargs):
 
 
 class LienNouvelle(ValidatedModel):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     nouvelle = models.ForeignKey(Nouvelle, on_delete=models.CASCADE, related_name="liens")
     url = models.URLField(validators=[URLValidator(schemes=["http", "https"])])
     libelle_fr = models.CharField(max_length=200, blank=True)
@@ -188,6 +192,7 @@ class LienNouvelle(ValidatedModel):
 
 
 class ConfigurationGenerale(ValidatedModel):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
     identite_fr = models.CharField(max_length=250)
     identite_en = models.CharField(max_length=250)
@@ -228,3 +233,12 @@ class ConfigurationGenerale(ValidatedModel):
     @property
     def email_url(self):
         return "mailto:" + quote(self.email, safe="@.")
+
+
+class DatabaseVersion(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(id=1), name="database_version_singleton")]

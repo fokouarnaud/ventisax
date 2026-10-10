@@ -1,0 +1,6 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block content %}
+{% if request.user.is_superuser %}<p class="mb-6"><a class="text-primary-600 underline" href="{% url 'admin:database_versions' %}">Gérer les versions de base de données</a></p>{% endif %}
+{% include "unfold/helpers/dashboard_default.html" %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% load tz %}
+{% block content %}
+<div class="max-w-4xl">
+<p class="mb-4"><a class="text-primary-600 underline" href="{% url 'admin:index' %}">Retour à l’administration</a> · <a class="text-primary-600 underline" href="?download=current">Télécharger la base courante</a>{% if backup %} · <a class="text-primary-600 underline" href="?download=backup">Télécharger le backup</a>{% endif %}</p>
+<p class="mb-4">Deux emplacements : base courante et base backup. Chaque activation conserve les accès actuels et ferme les sessions. Les médias restent séparés. Arrêter les commandes et autres processus qui écrivent dans la base avant toute opération.</p>
+<section class="border rounded p-4 mb-4"><h2 class="font-bold">Base courante</h2><p class="break-all">UUID : {{ current.uuid }}</p><p>Création : {{ current.created_at|localtime|date:"d/m/Y H:i:s T" }} ({{ local_zone }}) · UTC : {{ current.created_at|utc|date:"c" }}</p></section>
+<section class="border rounded p-4 mb-4"><h2 class="font-bold">Base backup</h2>{% if backup %}<p class="break-all">UUID : {{ backup.uuid }}</p><p>Création : {{ backup.created_at|localtime|date:"d/m/Y H:i:s T" }} ({{ local_zone }}) · UTC : {{ backup.created_at|utc|date:"c" }}</p><p>{{ backup.size|filesizeformat }}</p>{% else %}<p>Aucun backup.</p>{% endif %}</section>
+{% if form.errors %}<div role="alert" tabindex="-1" autofocus class="border border-red-500 p-4 mb-4"><h2 class="font-bold">Opération refusée</h2><ul>{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}{% for field in form %}{% for error in field.errors %}<li>{% if not field.is_hidden %}<a href="#{{ field.id_for_label }}">{{ field.label }} : {{ error }}</a>{% else %}{{ error }}{% endif %}</li>{% endfor %}{% endfor %}</ul></div>{% endif %}
+<form method="post" enctype="multipart/form-data" class="border rounded p-4 mb-4">{% csrf_token %}
+<h2 class="font-bold mb-4">Sauvegarder, charger ou interchanger</h2>
+<p class="mb-4">La sauvegarde remplace le backup. L’activation ou la permutation place l’ancienne base courante dans le backup. Un fichier doit avoir le même schéma et les mêmes migrations que l’application.</p>
+<p class="mb-4"><label for="id_database">{{ form.database.label }}</label><br>{{ form.database }}</p>
+<p class="mb-4">{{ form.confirm }} <label for="id_confirm">{{ form.confirm.label }}</label></p>
+<div class="flex flex-wrap gap-3">
+<button type="submit" name="action" value="save" class="bg-primary-600 text-white rounded px-4 py-3">Sauvegarder la courante en backup</button>
+<button type="submit" name="action" value="swap" class="border rounded px-4 py-3">Interchanger courante et backup</button>
+<button type="submit" name="action" value="upload_backup" class="border rounded px-4 py-3">Charger le fichier en backup</button>
+<button type="submit" name="action" value="upload_current" class="border rounded px-4 py-3">Charger le fichier comme courante</button>
+</div></form>
+<form method="post" class="border rounded p-4">{% csrf_token %}<h2 class="font-bold mb-4">Envoyer la base courante</h2>
+<p class="mb-4"><label for="id_email">{{ form.email.label }}</label><br>{{ form.email }}<br>{{ form.email.help_text }}</p>
+<p class="mb-4">Pièce jointe SQLite datée en UTC avec UUID, limitée à 10 Mio. Elle contient les données privées de l’administration. Les médias ne sont pas inclus.</p>
+<button type="submit" name="action" value="email" class="bg-primary-600 text-white rounded px-4 py-3">Envoyer la base courante par e-mail</button>
+</form></div>
+{% endblock %}

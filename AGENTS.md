@@ -41,6 +41,10 @@ Validation : test de contrôles accessibles d'abord en échec dans les deux lang
 
 ## GOALS
 
+### Évolution autorisée — versions de bases, 10 octobre 2026
+
+La demande explicite de l’utilisateur autorise le développement sur `develop`, puis un commit, de la gestion manuelle des bases dans Unfold : une base courante et un backup persistants, sauvegarde, chargement compatible dans chaque emplacement, permutation et un bouton d’envoi daté de la courante par e-mail à l’administrateur ou à une adresse saisie. Elle autorise aussi les UUID pour les versions et les contenus métier, ainsi que le stockage des instants UTC avec affichage local. Les identifiants internes et les URL existantes sont conservés. Cette décision fait évoluer l’exploitation manuelle initiale ; elle n’ajoute aucune automatisation externe ni autorisation de déploiement. La procédure et les limites sont dans `docs/versions-bd.md`. Conserver l’historique du cadrage ci-dessous.
+
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
 ### 1. Objectifs fonctionnels prioritaires

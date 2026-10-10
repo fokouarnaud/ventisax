@@ -27,6 +27,7 @@ def main():
         root = Path(temp)
         settings.DATABASES["default"]["NAME"] = root / "db.sqlite3"
         settings.MEDIA_ROOT = root / "media"
+        settings.DATABASE_BACKUP_DIR = root / "admin-backups"
         settings.ALLOWED_HOSTS = ["127.0.0.1"]
         application = get_wsgi_application()
         call_command("migrate", verbosity=0)
