@@ -2,6 +2,31 @@
 
 Compte autorisé : `ventisax`. Le lancement éditorial et l'accès réel par OTP restent à terminer.
 
+## État actualisé après initialisation autorisée
+
+- Commit `e2b02f6` poussé sur main après develop et avance rapide ; récupéré sur le serveur.
+- Migration `hub.0006` et `check --deploy` réussis. Suite locale : 99 tests réussis.
+- `seed_content --email ADRESSE_PUBLIQUE --announce-classes` exécuté sur la base distante :
+  une configuration générale, deux secteurs publics en préparation et une nouvelle publique.
+  L’annonce bilingue présente le début des cours et la présentation des locaux comme prévus
+  le 12 octobre 2026. Les contenus restent modifiables dans Unfold.
+- Aucun numéro WhatsApp inventé : champ facultatif, contact e-mail conservé, lien WhatsApp masqué
+  jusqu’à l’ajout d’un numéro international valide.
+- Après Reload, les accueils français et anglais ont été affichés dans le Browser intégré.
+  Capture : `docs/screenshots/pythonanywhere-content-live.jpg`. Le contrôle HTTP a obtenu
+  200 pour les deux accueils et le CSS, 404 pour `.env`, puis une réinitialisation de connexion
+  au contrôle SQLite. Le contact anglais et la console ont ensuite rencontré la même coupure.
+  La vérification complète HTTPS reste ouverte ; le script n’a pas été affaibli.
+- Compte administrateur `fokou` créé avec l’adresse fournie ; aucun mot de passe utilisable
+  n’est encore défini. Il ne constitue donc pas encore un accès fonctionnel. La saisie privée
+  du mot de passe et l’enrôlement du second facteur restent à terminer.
+- Paramètres Gmail préparés dans `.env` privé (permissions 600), sans secret SMTP.
+  L’option OTP e-mail reste désactivée tant que l’envoi réel n’est pas possible.
+  Aucun e-mail réel n’a été envoyé. La connexion Google autorisée a atteint la validation
+  sur téléphone ; création du mot de passe d’application et réception restent à vérifier.
+
+Les sections suivantes conservent l’historique des vérifications précédentes.
+
 ## Résultats observés
 
 - Commit initial `d4796f4` créé sur develop, fusionné par avance rapide sur main et poussé vers le dépôt GitHub demandé.
