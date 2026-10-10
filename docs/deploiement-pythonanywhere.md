@@ -51,3 +51,9 @@ Le contrôle HTTP a de nouveau obtenu 503 pour les pages bilingues, 200 pour le 
 puis a échoué par réinitialisation de connexion sur le contrôle SQLite. Une ouverture Browser neuve
 de `/en/` a également échoué par réinitialisation de connexion. Les paramètres Web sont donc
 effectivement enregistrés ; l'initialisation éditoriale et la vérification complète du site restent ouvertes.
+
+La console a ensuite retrouvé sa connexion. Une lecture directe des modèles a confirmé :
+configuration générale 0, secteurs 0, nouvelles 0 et compte `fokou` absent.
+La commande envoyée pendant la précédente coupure n'avait donc pas préparé ces données.
+L'absence de configuration générale explique le 503 de préparation ; aucun paramètre Web manquant
+n'a été constaté lors de ce recontrôle.
