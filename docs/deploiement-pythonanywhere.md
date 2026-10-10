@@ -1,6 +1,42 @@
 # Déploiement PythonAnywhere — 10 octobre 2026
 
-Compte autorisé : `ventisax`. Le lancement éditorial et l'accès réel par OTP restent à terminer.
+Compte autorisé : `ventisax`. L'accès réel par OTP a été confirmé lors du déploiement initial ; les codes de récupération restent à finaliser.
+
+## Gestion des versions de base déployée
+
+Le commit `1bf988b` a été fusionné par avance rapide de develop vers main et les deux branches
+ont été poussées. Le serveur a récupéré main ; la migration `hub.0007` est appliquée.
+`check --deploy` réussit et `collectstatic` confirme 160 fichiers inchangés. L'application a été
+réactivée et rechargée après une interruption des écritures pour la sauvegarde et la migration.
+
+Avant mise à jour, SQLite et médias ont été sauvegardés dans
+`/home/ventisax/private_backups/pre-versions-20261010` sous permissions privées.
+La restauration distante dans `restore-versions-20261010` a réussi. L'archive a été téléchargée
+hors hébergement, puis restaurée localement : manifest SHA-256, intégrité SQLite, relations et
+présence des médias référencés vérifiés. Le téléchargement navigateur décompresse le transport
+gzip : la copie persistante est donc nommée `C:/Users/cedric/.codex/backups/ventisax/pre-versions-20261010.tar`.
+Son SHA-256 correspond au flux tar décompressé distant :
+`f029a019609214c7c4641126dc5c68042acddc5c3c4a89ecfde663a1d5bed6e8`.
+Aucune sauvegarde ni donnée d'authentification n'est suivie dans Git.
+
+Sur Python 3.13, SQLite expose `serialize` et `deserialize`. Un export réel de la base migrée
+(335 872 octets) a passé le validateur de compatibilité de la nouvelle gestion des versions.
+Les données restent : une configuration, deux secteurs, une nouvelle, zéro lien ; UUID présents
+sur tous les contenus, superadministrateur et facteur e-mail confirmé conservés. L'espace total
+mesuré par `du -sh /home/ventisax` est 136 Mio, sous le quota affiché de 512 Mio.
+
+Le script `check_deployment.py` réussit sans modification : fr/en et CSS 200 ; `.env`, SQLite
+et média privé 404 ; admin anonyme 302 ; connexion 200 ; protections HTTPS vérifiées.
+Les deux accueils ont aussi été affichés dans le navigateur intégré ; capture :
+`docs/screenshots/pythonanywhere-versions-live.png`.
+
+La suite locale de la fonctionnalité compte 118 tests réussis. L'ouverture authentifiée de
+`/admin/database/` après ce déploiement reste à vérifier : l'identifiant `fokou` avec le mot de
+passe fourni pour cette opération a été refusé ; aucun changement de mot de passe ni contournement
+du second facteur n'a été effectué. Aucun e-mail contenant la base ni échange des bases de
+production n'a été exécuté pendant le déploiement. Les tests locaux couvrent ces comportements.
+Les sauvegardes de maintenance privées antérieures restent conservées pour le retour arrière ;
+les deux emplacements de l'interface sont distincts de ces archives de déploiement.
 
 ## Accès administrateur et contact confirmés
 
