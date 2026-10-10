@@ -161,3 +161,6 @@ Noter l’échéance affichée dans Web et renouveler manuellement chaque mois.
 Effectuer une sauvegarde et une restauration isolée selon `docs/exploitation.md` avant lancement et chaque mise à jour.
 Pour mettre à jour ensuite : arrêter les écritures, sauvegarder, `git pull --ff-only origin main`,
 installer les exigences, migrer, collecter les statiques, contrôler, puis recharger l’application.
+
+L'état réellement constaté et les étapes encore ouvertes sont consignés dans
+[docs/deploiement-pythonanywhere.md](docs/deploiement-pythonanywhere.md).

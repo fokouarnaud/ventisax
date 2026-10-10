@@ -1,0 +1,38 @@
+# Déploiement PythonAnywhere — 10 octobre 2026
+
+Compte autorisé : `ventisax`. Le lancement éditorial et l'accès réel par OTP restent à terminer.
+
+## Résultats observés
+
+- Commit initial `d4796f4` créé sur develop, fusionné par avance rapide sur main et poussé vers le dépôt GitHub demandé.
+- Commit `26c4229` : procédure README, `.env` privé, configuration production, OTP e-mail optionnel et initialisation bilingue ; même parcours develop → main → push.
+- 97 tests locaux réussis ; contrôles Django, migrations manquantes et dépendances sans problème.
+- Dépôt cloné puis mis à jour dans `/home/ventisax/ventisax`. Python 3.13.1 et virtualenv `/home/ventisax/.virtualenvs/ventisax` ; exigences installées, dont python-dotenv.
+- `.env` créé avec clé aléatoire générée sur le serveur, sans affichage ; permissions `600`, DEBUG désactivé, hôte limité au domaine du compte. Aucun secret ajouté à Git.
+- Migrations, `check --deploy` et collecte de 160 fichiers statiques exécutés avec succès. Les doublons admin signalés par collectstatic correspondent aux fichiers surchargés par Unfold, installé avant l'admin Django.
+- Application Manual configuration / Python 3.13 créée ; code, répertoire de travail, virtualenv, WSGI Django et mappings statiques/médias renseignés. Force HTTPS activé puis application rechargée.
+- `du -sh /home/ventisax` : **132 Mio**, soit environ **380 Mio de marge** sous 512 Mio à cette étape. Échéance affichée : **10 novembre 2026** ; renouvellement manuel requis.
+- Browser intégré : `/fr/` a affiché la page Django « En préparation » via HTTPS.
+- Contrôles HTTP : `/fr/` et `/en/` ont répondu 503 (configuration éditoriale absente), `/static/hub/site.css` 200 et `/.env` 404.
+
+## Limites et reprise
+
+La vérification HTTP a ensuite échoué par délai de connexion sur `/db.sqlite3`. La navigation anglaise et le tableau de bord PythonAnywhere ont également rencontré des délais de connexion ; la console s'est déconnectée. La cause réseau n'est pas établie. Ne pas interpréter ces contrôles partiels comme un lancement validé.
+
+La commande de préparation du compte `fokou` sans mot de passe utilisable et du brouillon bilingue annoncé pour le 12 octobre a été envoyée pendant la coupure, **sans résultat confirmé**. Vérifier l'état de la base avant de reprendre ; aucune affirmation de création ni de publication n'est justifiée à cette étape.
+
+Le numéro WhatsApp public n'a pas été fourni. Le jalon précisé par le porteur est le début des cours et la présentation des locaux **prévus le 12 octobre 2026** ; le texte préparé est une annonce d'événement à venir, pas une réalisation accomplie. La commande `seed_content` exige les contacts authentiques avant création de la configuration publique. Aucun contact de test n'est utilisé en production.
+
+L'option e-mail n'est pas activée sur le serveur : compte et secret SMTP manquants. Le test local utilise un transport en mémoire et ne prouve pas une livraison réelle. Aucun OTP réel n'a été envoyé. L'administrateur doit disposer d'un mot de passe utilisable et enrôler son facteur ; les contrôles d'accès OTP restent en place.
+
+Après rétablissement de la connexion, renseigner les contacts et SMTP privés, vérifier/créer le compte, tester réception et usage unique du code puis récupération, initialiser et relire les contenus, et terminer les contrôles suivants :
+
+```bash
+python scripts/check_deployment.py https://ventisax.pythonanywhere.com --preparing
+```
+
+Retirer `--preparing` lorsque la configuration authentique est publiée. Le script ne fait que des GET et ne modifie aucune donnée. Il contrôle aussi les chemins privés, l'administration anonyme, les cookies et la redirection HTTP → HTTPS ; ces derniers contrôles n'ont pas abouti lors de la coupure.
+
+Effectuer et télécharger une sauvegarde privée, puis démontrer sa restauration isolée suivant `docs/exploitation.md`. Cette preuve distante et les critères de lancement de la Definition of Done restent ouverts.
+
+Capture de l'interruption de console : `docs/screenshots/pythonanywhere-console.jpg`.

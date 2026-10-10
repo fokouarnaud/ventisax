@@ -65,6 +65,7 @@ assert response.status_code == 302
 assert client.get('/admin/').status_code == 200
 device.refresh_from_db()
 assert not device.verify_token(token)
+device.throttle_reset()
 device.cooldown_reset()
 device.generate_challenge()
 device.valid_until = timezone.now() - timedelta(seconds=1)
