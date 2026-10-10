@@ -1,8 +1,10 @@
 import os
 import secrets
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.environ.get("DJANGO_ENV_FILE", BASE_DIR / ".env"), override=False)
 DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
@@ -16,6 +18,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles", "django_otp", "django_otp.plugins.otp_totp", "django_otp.plugins.otp_static",
     "two_factor", "axes", "hub",
 ]
+if os.environ.get("DJANGO_EMAIL_OTP", "0") == "1":
+    INSTALLED_APPS += ["django_otp.plugins.otp_email", "two_factor.plugins.email"]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware", "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware", "django.middleware.csrf.CsrfViewMiddleware",
@@ -66,6 +70,19 @@ AXES_USERNAME_FORM_FIELD = "auth-username"
 AXES_USERNAME_CALLABLE = "hub.security.axes_username"
 AXES_HTTP_RESPONSE_CODE = 429
 AXES_RESET_ON_SUCCESS = True
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 20
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or "webmaster@localhost"
+OTP_EMAIL_SENDER = DEFAULT_FROM_EMAIL
+OTP_EMAIL_SUBJECT = "Ventisax — code de connexion"
+OTP_EMAIL_TOKEN_VALIDITY = 300
+OTP_EMAIL_COOLDOWN_DURATION = 60
+OTP_EMAIL_THROTTLE_FACTOR = 1
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True

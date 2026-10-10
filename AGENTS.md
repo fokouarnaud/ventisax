@@ -372,7 +372,17 @@ La demande explicite d'audit autorise ces corrections. Le rapport [docs/audit-se
 
 Décisions modifiées : développement local avec DJANGO_DEBUG=1 explicite ; suite utilisant config.test_settings ; limite d'inactivité de 30 minutes ; compte déjà équipé d'un facteur confirmé orienté vers la récupération privée, sans reprise de l'enrôlement initial. Le brief et l'historique de l'entretien sont conservés.
 
+#### 7.5 Préparation du déploiement — 10 octobre 2026
+
+- [x] Chargement privé de `.env`, priorité des variables du processus et refus du debug dans `config.production` éprouvés en processus isolés.
+- [x] Initialisation du brief bilingue idempotente, sans remplacement éditorial ni jalon inventé ; coordonnées invalides refusées sans publication partielle.
+- [x] Parcours e-mail OTP éprouvé avec transport de test en mémoire : mot de passe seul refusé par Unfold, code accepté une fois, expiration et limitation des renvois vérifiées. Cela ne prouve pas une livraison SMTP réelle.
+- [x] Suite complète : 97 tests réussis. La procédure PythonAnywhere figure à la fin de README.md.
+- [ ] SMTP réel, réception et récupération de l'administrateur, contacts publics et lancement vérifiés sur le compte distant.
+
 ### 8. Dépendances, risques et séquence de réalisation
+
+Décision explicite du 10 octobre 2026 : l'utilisateur autorise le déploiement sur son compte PythonAnywhere `ventisax`, les commits develop/main et demande les codes OTP par e-mail. L'option e-mail s'ajoute à l'application mobile via les composants existants, avec SMTP privé, expiration de cinq minutes, usage unique et renvoi limité. Le SMTP réel et la réception doivent être éprouvés avant de cocher le lancement. Les secrets restent hors Git. L'initialisation bilingue reprend le brief et exige les coordonnées publiques authentiques ; elle ne remplace pas les contenus existants. Le début des cours et la présentation des locaux sont annoncés pour le 12 octobre 2026, d'après la réponse du porteur ; cette date future ne prouve pas un événement accompli. Les critères de 7.3 restent ouverts tant que leurs preuves manquent.
 
 **Dépendances externes :** disponibilité du compte PythonAnywhere et de sa configuration, fourniture des coordonnées et contenus authentiques par le porteur, rédaction/relecture manuelle en anglais et en français. Les identifiants techniques et versions de dépendances compatibles seront fixés lors de la réalisation ; ne pas ajouter une fonction pour compenser des contenus absents.
 

@@ -79,3 +79,85 @@ Pour vérifier la page sans configuration, lancer `scripts/preview_site.py --emp
 Le CSS, l’icône, le décor de l’accueil et un petit script d’interactions résident dans `hub/static/hub/`.
 Le script replie le menu mobile, ferme le bandeau de démonstration et propose le retour en haut.
 Sans JavaScript, la navigation reste visible et utilisable. Aucune police distante ni aucun framework CSS externe n’est requis.
+
+## Publication sur PythonAnywhere gratuit
+
+Procédure pour le compte `ventisax`, avec Python 3.13. Aucun secret ni fichier SQLite ne doit être ajouté à Git.
+Références : [déployer Django](https://help.pythonanywhere.com/pages/DeployExistingDjangoProject/),
+[variables privées](https://help.pythonanywhere.com/pages/EnvironmentVariables/) et
+[limites du compte gratuit](https://help.pythonanywhere.com/pages/FreeAccountsFeatures/).
+
+Dans **Files → /home/ventisax → Open Bash console here** :
+
+```bash
+git clone --branch main https://github.com/fokouarnaud/ventisax.git /home/ventisax/ventisax
+python3.13 -m venv /home/ventisax/.virtualenvs/ventisax
+source /home/ventisax/.virtualenvs/ventisax/bin/activate
+cd /home/ventisax/ventisax
+pip install -r requirements.txt
+cp .env.example .env
+chmod 600 .env
+python -c "import secrets; from pathlib import Path; p=Path('.env'); p.write_text(p.read_text().replace('DJANGO_SECRET_KEY=','DJANGO_SECRET_KEY='+secrets.token_urlsafe(48)))"
+```
+
+La commande génère la clé sans l’afficher. Compléter `.env` dans l’éditeur privé PythonAnywhere.
+Les valeurs du processus prévalent sur celles du fichier. Ne jamais activer `DJANGO_DEBUG=1` en production.
+
+Pour l’OTP par e-mail demandé le 10 octobre 2026, renseigner un compte SMTP autorisé,
+son mot de passe d’application dans `EMAIL_HOST_PASSWORD` et `DJANGO_EMAIL_OTP=1`.
+Le mot de passe de connexion PythonAnywhere ou Django n’est pas un mot de passe SMTP.
+Les codes expirent après cinq minutes, ne sont utilisables qu’une fois et les renvois sont espacés de 60 secondes.
+La disponibilité et les restrictions SMTP du compte gratuit doivent être vérifiées sur le compte réel.
+Sans SMTP opérationnel, conserver l’application en préparation ; ne pas contourner le second facteur.
+
+```bash
+export DJANGO_SETTINGS_MODULE=config.production
+python manage.py migrate
+python manage.py check --deploy
+python manage.py collectstatic --noinput
+python manage.py createsuperuser --username fokou --email fokouvirtualone@gmail.com
+```
+
+Saisir le mot de passe dans l’invite privée. Avec l’OTP e-mail activé, le compte peut enrôler
+son adresse via `/account/two_factor/setup/` et doit prouver sa réception avant tout accès à Unfold.
+Le choix de méthode permet aussi l’application mobile. Les codes de récupération restent disponibles après vérification.
+
+Initialiser les contenus validés uniquement avec de vraies coordonnées publiques :
+
+```bash
+python manage.py seed_content --email ADRESSE_PUBLIQUE --whatsapp +NUMERO_INTERNATIONAL
+```
+
+Cette commande crée la présentation bilingue et les deux secteurs en préparation ; elle conserve
+les contenus déjà présents et ne crée aucune nouvelle fictive. Préparer dans Unfold l’annonce du début des cours
+et de la présentation des locaux prévus le 12 octobre 2026. Ne pas la présenter comme un événement déjà accompli.
+Relire les traductions et les contacts avant publication.
+
+Dans **Web → Add a new web app**, choisir **Manual configuration**, puis **Python 3.13**.
+Renseigner `/home/ventisax/ventisax` comme code source et répertoire de travail,
+et `/home/ventisax/.virtualenvs/ventisax` comme virtualenv. Remplacer le contenu du fichier WSGI proposé par :
+
+```python
+import os
+import sys
+
+project = '/home/ventisax/ventisax'
+if project not in sys.path:
+    sys.path.insert(0, project)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'config.production'
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+```
+
+Ajouter les mappings `/static/` → `/home/ventisax/ventisax/staticfiles/` et
+`/media/` → `/home/ventisax/ventisax/media/`. Aucun mapping pour le projet complet, `.env`, SQLite ou les sauvegardes.
+Activer **Force HTTPS**, puis **Reload**. Vérifier `/fr/`, `/en/`, les statiques et
+la connexion avec mot de passe puis OTP ; vérifier également que le mot de passe seul ne donne pas accès à `/admin/`.
+`config.production` fait confiance à l’en-tête HTTPS du proxy PythonAnywhere ; ne pas réutiliser cette configuration
+derrière un proxy qui laisse les visiteurs fixer cet en-tête.
+
+Mesurer `du -sh /home/ventisax` et garder une marge sous 512 Mio pour le compte entier.
+Noter l’échéance affichée dans Web et renouveler manuellement chaque mois.
+Effectuer une sauvegarde et une restauration isolée selon `docs/exploitation.md` avant lancement et chaque mise à jour.
+Pour mettre à jour ensuite : arrêter les écritures, sauvegarder, `git pull --ff-only origin main`,
+installer les exigences, migrer, collecter les statiques, contrôler, puis recharger l’application.
