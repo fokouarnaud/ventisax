@@ -10,6 +10,14 @@ import uuid
 from .images import optimize
 
 
+HTTP_URL = URLValidator(schemes=["http", "https"])
+
+
+def missing_text(obj, fields, message):
+    """Erreurs de validation pour les champs texte vides ou faits d'espaces."""
+    return {field: message for field in fields if not getattr(obj, field).strip()}
+
+
 class ValidatedModel(models.Model):
     class Meta:
         abstract = True
@@ -40,11 +48,8 @@ class Publication(ValidatedModel):
         super().clean()
         errors = {}
         if self.publie:
-            for field in (*self.translated_fields, "slug"):
-                for lang in ("fr", "en"):
-                    name = f"{field}_{lang}"
-                    if not getattr(self, name).strip():
-                        errors[name] = "Traduction obligatoire pour publier."
+            errors.update(missing_text(self, [f"{field}_{lang}" for field in (*self.translated_fields, "slug")
+                                              for lang in ("fr", "en")], "Traduction obligatoire pour publier."))
         if self.pk:
             old = type(self).objects.filter(pk=self.pk).first()
             if old and old.premiere_publication:
@@ -80,7 +85,7 @@ class Secteur(Publication):
     prochaine_etape_en = models.TextField(blank=True)
     etat = models.CharField(max_length=20, default="preparation", choices=[("preparation", "En préparation"), ("actif", "Actif")])
     ordre = models.PositiveIntegerField(default=0)
-    site_url = models.URLField(blank=True, validators=[URLValidator(schemes=["http", "https"])])
+    site_url = models.URLField(blank=True, validators=[HTTP_URL])
     translated_fields = ("nom", "description", "apprentissages", "prochaine_etape")
 
     class Meta(Publication.Meta):
@@ -126,10 +131,10 @@ class Nouvelle(Publication):
     alt_en = models.CharField(max_length=250, blank=True)
     secteurs = models.ManyToManyField(Secteur, through="NouvelleSecteur", related_name="nouvelles", blank=True)
     video_youtube = models.URLField("vidéo YouTube", blank=True,
-                                    validators=[URLValidator(schemes=["http", "https"])],
+                                    validators=[HTTP_URL],
                                     help_text="Vidéo non répertoriée ou publique (une vidéo privée ne se lit pas).")
-    instagram_url = models.URLField("lien Instagram", blank=True, validators=[URLValidator(schemes=["http", "https"])])
-    facebook_url = models.URLField("lien Facebook", blank=True, validators=[URLValidator(schemes=["http", "https"])])
+    instagram_url = models.URLField("lien Instagram", blank=True, validators=[HTTP_URL])
+    facebook_url = models.URLField("lien Facebook", blank=True, validators=[HTTP_URL])
     translated_fields = ("titre", "corps")
 
     class Meta(Publication.Meta):
@@ -166,8 +171,7 @@ class Nouvelle(Publication):
                     except ValidationError as exc:
                         raise ValidationError({"__all__": exc.messages}) from exc
             if self.image:
-                errors = {field: "Alternative traduite obligatoire." for field in ("alt_fr", "alt_en")
-                          if not getattr(self, field).strip()}
+                errors = missing_text(self, ("alt_fr", "alt_en"), "Alternative traduite obligatoire.")
                 if errors:
                     raise ValidationError(errors)
 
@@ -213,7 +217,7 @@ def cleanup_deleted_image(sender, instance, **kwargs):
 class LienNouvelle(ValidatedModel):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     nouvelle = models.ForeignKey(Nouvelle, on_delete=models.CASCADE, related_name="liens")
-    url = models.URLField(validators=[URLValidator(schemes=["http", "https"])])
+    url = models.URLField(validators=[HTTP_URL])
     libelle_fr = models.CharField(max_length=200, blank=True)
     libelle_en = models.CharField(max_length=200, blank=True)
     ordre = models.PositiveIntegerField(default=0)
@@ -223,8 +227,7 @@ class LienNouvelle(ValidatedModel):
         verbose_name = "lien de nouvelle"
 
     def validate_publication(self):
-        errors = {field: "Libellé traduit obligatoire." for field in ("libelle_fr", "libelle_en")
-                  if not getattr(self, field).strip()}
+        errors = missing_text(self, ("libelle_fr", "libelle_en"), "Libellé traduit obligatoire.")
         if errors:
             raise ValidationError(errors)
 
@@ -258,10 +261,8 @@ class ConfigurationGenerale(ValidatedModel):
 
     def clean(self):
         super().clean()
-        errors = {}
-        for field in self._meta.fields:
-            if field.name.endswith(("_fr", "_en")) and not getattr(self, field.name).strip():
-                errors[field.name] = "Texte obligatoire dans les deux langues."
+        errors = missing_text(self, [f.name for f in self._meta.fields if f.name.endswith(("_fr", "_en"))],
+                              "Texte obligatoire dans les deux langues.")
         if self.pk != 1:
             errors["id"] = "Une seule configuration est autorisée."
         if self._state.adding and type(self).objects.exists():

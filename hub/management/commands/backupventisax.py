@@ -1,4 +1,3 @@
-import hashlib
 import json
 import shutil
 import sqlite3
@@ -8,6 +7,8 @@ from pathlib import Path
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
+
+from hub.database_versions import sha256_tree
 
 
 class Command(BaseCommand):
@@ -38,8 +39,6 @@ class Command(BaseCommand):
             shutil.copytree(media, dest / "media")
         else:
             (dest / "media").mkdir()
-        hashes = {p.relative_to(dest).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                  for p in dest.rglob("*") if p.is_file()}
-        manifest = {"version": 1, "sha256": hashes}
+        manifest = {"version": 1, "sha256": sha256_tree(dest)}
         (dest / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         self.stdout.write(self.style.SUCCESS(f"Sauvegarde créée : {dest}. Télécharger hors hébergement."))
