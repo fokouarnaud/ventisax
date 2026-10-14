@@ -45,6 +45,17 @@ Validation : test de contrôles accessibles d'abord en échec dans les deux lang
 
 La demande explicite de l’utilisateur autorise le développement sur `develop`, puis un commit, de la gestion manuelle des bases dans Unfold : une base courante et un backup persistants, sauvegarde, chargement compatible dans chaque emplacement, permutation et un bouton d’envoi daté de la courante par e-mail à l’administrateur ou à une adresse saisie. Elle autorise aussi les UUID pour les versions et les contenus métier, ainsi que le stockage des instants UTC avec affichage local. Les identifiants internes et les URL existantes sont conservés. Cette décision fait évoluer l’exploitation manuelle initiale ; elle n’ajoute aucune automatisation externe ni autorisation de déploiement. La procédure et les limites sont dans `docs/versions-bd.md`. Conserver l’historique du cadrage ci-dessous.
 
+### Évolution autorisée — nouvelles-leçons et vidéo YouTube, 14 octobre 2026
+
+Un nouvel entretien (skill `grilling`) avec l'utilisateur a fixé ces décisions. Elles font évoluer le cadrage ; le reste de l'historique ci-dessous est conservé.
+
+- **Nouvelles-leçons** : chaque leçon de la formation Froid et Climatisation **réellement suivie** peut devenir une nouvelle : titre = module, `date_jalon` = date du cours, résumé dans le corps fr/en. Rien n'est publié sur les cours à venir ; pas de page Programme. Chaque leçon est rattachée au secteur Climatisation / froid, modules transversaux compris.
+- **Droits** : ni nom de formateur, ni extrait ou photo du manuel de cours ; résumé rédigé avec nos mots. Claude propose le texte fr/en, le porteur relit, saisit dans Unfold et publie.
+- **Vidéo** : champ facultatif `video_youtube`, limité à une vidéo YouTube unique (watch, shorts, embed, youtu.be ; playlists refusées). La vidéo doit être **non répertoriée** ou publique (une vidéo privée ne se lit pas). Le lecteur est **intégré directement** (iframe `youtube-nocookie.com`, généré à partir de l'identifiant vérifié, jamais d'un code HTML saisi). **Exception assumée à « aucun traceur »**, limitée à ce lecteur : YouTube reçoit une requête à l'affichage d'une nouvelle qui contient une vidéo. Les pages anglaises signalent « Video in French ».
+- **Réseaux** : champs facultatifs `instagram_url` et `facebook_url`, domaines vérifiés, affichés en **liens simples** (nouvel onglet, `rel="noopener noreferrer"`) ; aucun lecteur ni SDK Meta.
+- **Capsules** : leur appel à l'action ne doit pas promettre de prestation ; la capsule du module 3 est reformulée (« Un projet en clim ou en froid ? Parlons-en »).
+- **Livraison** : TDD sur `develop` et commit ; fusion `main` et déploiement seulement après accord explicite.
+
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
 ### 1. Objectifs fonctionnels prioritaires

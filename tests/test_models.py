@@ -142,3 +142,44 @@ def test_jalon_absent_refuse_et_brouillon_incomplet_autorise():
     with pytest.raises(ValidationError) as error:
         n.publish()
     assert "date_jalon" in error.value.message_dict
+
+
+@pytest.mark.parametrize("url", [
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://youtube.com/shorts/dQw4w9WgXcQ?feature=share",
+    "https://m.youtube.com/watch?v=dQw4w9WgXcQ&t=12s",
+    "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "https://youtu.be/dQw4w9WgXcQ?si=abc",
+])
+def test_video_youtube_accepte_formats_courants_et_extrait_id(url):
+    n = nouvelle(video_youtube=url)
+    assert n.youtube_id == "dQw4w9WgXcQ"
+
+
+@pytest.mark.parametrize("url", [
+    "https://vimeo.com/123456",
+    "https://www.youtube.com.evil.example/watch?v=dQw4w9WgXcQ",
+    "https://www.youtube.com/playlist?list=PL1234567890",
+    "https://www.youtube.com/watch?v=court",
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=PL1234567890",
+    "javascript:alert(1)",
+])
+def test_video_youtube_refuse_domaine_playlist_et_id_invalide(url):
+    with pytest.raises(ValidationError) as error:
+        nouvelle(video_youtube=url)
+    assert "video_youtube" in error.value.message_dict
+    assert models.Nouvelle.objects.count() == 0
+
+
+def test_liens_reseaux_limites_a_instagram_et_facebook():
+    n = nouvelle(instagram_url="https://www.instagram.com/reel/Cx1/", facebook_url="https://fb.watch/abc/")
+    assert n.youtube_id == ""
+    n2 = nouvelle("autre", facebook_url="https://www.facebook.com/ventisax/videos/1/")
+    assert n2.facebook_url
+    for field, url in (("instagram_url", "https://instagram.com.evil.example/reel/1/"),
+                       ("instagram_url", "https://www.facebook.com/x"),
+                       ("facebook_url", "https://www.instagram.com/reel/1/"),
+                       ("facebook_url", "data:text/html,x")):
+        with pytest.raises(ValidationError) as error:
+            nouvelle("refus", **{field: url})
+        assert field in error.value.message_dict

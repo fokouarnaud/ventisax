@@ -16,12 +16,14 @@ LABELS = {
                filter="Filtrer", previous="Précédent", next="Suivant", learning="Apprentissages",
                step="Prochaine étape", preparation="En préparation", active="Actif", site="Site du secteur",
                email="Contacter par e-mail", whatsapp="Contacter par WhatsApp", skip="Aller au contenu",
-               unavailable="Le projet prépare ses contenus bilingues."),
+               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="",
+               instagram="Voir sur Instagram", facebook="Voir sur Facebook"),
     "en": dict(home="Home", about="About", news="News", contact="Contact", sectors="Sectors",
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
                active="Active", site="Sector website", email="Contact by email", whatsapp="Contact on WhatsApp",
-               skip="Skip to content", unavailable="The project is preparing its bilingual content."),
+               skip="Skip to content", unavailable="The project is preparing its bilingual content.", video="Video",
+               video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook"),
 }
 
 
@@ -34,7 +36,8 @@ def localized(obj, lang, kind=None):
     if isinstance(obj, Nouvelle):
         data.update(date_jalon=obj.date_jalon, premiere_publication=obj.premiere_publication,
                     secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],
-                    liens=[{**localized(link, lang), "url": link.url} for link in obj.liens.all()])
+                    liens=[{**localized(link, lang), "url": link.url} for link in obj.liens.all()],
+                    youtube_id=obj.youtube_id, instagram_url=obj.instagram_url, facebook_url=obj.facebook_url)
         if hasattr(obj, "image") and obj.image:
             data.update(image_url=obj.image.url, image_width=obj.image.width, image_height=obj.image.height)
     return data

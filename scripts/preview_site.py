@@ -73,6 +73,9 @@ def seed():
             n.image = SimpleUploadedFile("demo.png", data.getvalue())
             n.alt_fr = "Illustration de démonstration : un V sur une grille."
             n.alt_en = "Sample illustration: a V on a grid."
+            n.video_youtube = "https://www.youtube.com/watch?v=M7lc1UVf-VE"  # vidéo publique de démonstration de Google
+            n.instagram_url = "https://www.instagram.com/"
+            n.facebook_url = "https://www.facebook.com/"
             n.save()
             LienNouvelle.objects.create(nouvelle=n, url="https://example.com", libelle_fr="Lien de démonstration", libelle_en="Sample link")
         n.publish()

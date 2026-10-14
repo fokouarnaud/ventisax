@@ -4,7 +4,8 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator, RegexValidator
 from django.utils import timezone
-from urllib.parse import quote
+from urllib.parse import parse_qs, quote, urlsplit
+import re
 import uuid
 from .images import optimize
 
@@ -90,6 +91,30 @@ class Secteur(Publication):
         return self.nom_fr or f"Secteur {self.pk} (brouillon)"
 
 
+YOUTUBE_HOSTS = {"youtube.com", "www.youtube.com", "m.youtube.com"}
+YOUTUBE_ID = re.compile(r"[A-Za-z0-9_-]{11}")
+SOCIAL_HOSTS = {"instagram_url": {"instagram.com", "www.instagram.com"},
+                "facebook_url": {"facebook.com", "www.facebook.com", "m.facebook.com", "fb.watch"}}
+
+
+def youtube_video_id(url):
+    """ID d'une vidéo YouTube (11 caractères) ou chaîne vide si l'URL n'en désigne pas une seule."""
+    parts = urlsplit(url)
+    query = parse_qs(parts.query)
+    if parts.scheme not in ("http", "https") or "list" in query:
+        return ""
+    host, segments = parts.hostname or "", [s for s in parts.path.split("/") if s]
+    if host == "youtu.be" and len(segments) == 1:
+        candidate = segments[0]
+    elif host in YOUTUBE_HOSTS and segments == ["watch"]:
+        candidate = query.get("v", [""])[0]
+    elif host in YOUTUBE_HOSTS and len(segments) == 2 and segments[0] in ("shorts", "embed"):
+        candidate = segments[1]
+    else:
+        return ""
+    return candidate if YOUTUBE_ID.fullmatch(candidate) else ""
+
+
 class Nouvelle(Publication):
     titre_fr = models.CharField(max_length=200, blank=True)
     titre_en = models.CharField(max_length=200, blank=True)
@@ -100,6 +125,11 @@ class Nouvelle(Publication):
     alt_fr = models.CharField(max_length=250, blank=True)
     alt_en = models.CharField(max_length=250, blank=True)
     secteurs = models.ManyToManyField(Secteur, through="NouvelleSecteur", related_name="nouvelles", blank=True)
+    video_youtube = models.URLField("vidéo YouTube", blank=True,
+                                    validators=[URLValidator(schemes=["http", "https"])],
+                                    help_text="Vidéo non répertoriée ou publique (une vidéo privée ne se lit pas).")
+    instagram_url = models.URLField("lien Instagram", blank=True, validators=[URLValidator(schemes=["http", "https"])])
+    facebook_url = models.URLField("lien Facebook", blank=True, validators=[URLValidator(schemes=["http", "https"])])
     translated_fields = ("titre", "corps")
 
     class Meta(Publication.Meta):
@@ -109,8 +139,21 @@ class Nouvelle(Publication):
     def __str__(self):
         return self.titre_fr or f"Nouvelle {self.pk} (brouillon)"
 
+    @property
+    def youtube_id(self):
+        return youtube_video_id(self.video_youtube) if self.video_youtube else ""
+
     def clean(self):
         super().clean()
+        errors = {}
+        if self.video_youtube and not self.youtube_id:
+            errors["video_youtube"] = "Lien d'une vidéo YouTube unique attendu (watch, shorts, embed ou youtu.be)."
+        for field, hosts in SOCIAL_HOSTS.items():
+            value = getattr(self, field)
+            if value and urlsplit(value).hostname not in hosts:
+                errors[field] = "Lien attendu vers " + ("Instagram." if field == "instagram_url" else "Facebook.")
+        if errors:
+            raise ValidationError(errors)
         if self.image and not self.image._committed:
             optimize(self.image.file)
         if self.publie:

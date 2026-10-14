@@ -59,3 +59,16 @@ La matrice publique compte 36 combinaisons : six types de pages, deux langues et
 Aucun débordement horizontal, image non chargée, langue de document incorrecte ou titre principal manquant
 n’a été observé. Le filtre, sa pagination et sa conservation lors d’un changement de langue ont été exercés,
 ainsi que le lien d’évitement et la soumission au clavier. Les détails figurent dans `validation-interface.md`.
+
+## Nouvelles-leçons : vidéo YouTube et liens réseaux — 14 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Formats YouTube acceptés et ID extrait ; domaines, playlists, ID invalides et `javascript:` refusés ; Instagram/Facebook limités à leurs domaines | `TypeError: Nouvelle() got unexpected keyword arguments: 'video_youtube'` (13 tests, champs absents) | 27 tests du modèle |
+| Détail : iframe `youtube-nocookie` construit depuis l'ID seul (paramètres de l'URL d'origine non réinjectés), titre localisé, `loading="lazy"`, `referrerpolicy` ; liens réseaux en nouvel onglet ; mention « Video in French » | Même absence de champs | **132 tests réussis** |
+
+Le test « détail sans vidéo ni réseaux » passait dès son ajout (comportement déjà vrai) ; il protège contre une régression.
+Rendu exercé dans l'aperçu isolé (`scripts/preview_site.py`) avec Playwright et Chrome : aucun débordement horizontal
+à 320, 360, 768 et 1 280 px en français et en anglais ; lecteur 9:16 de 246×437 px à 320 px, plafonné à 360×640 px.
+Non exercé : lecture effective de la vidéo (le navigateur sans interface ne charge pas le lecteur), saisie dans Unfold
+derrière le second facteur (la validation est portée par `Nouvelle.clean()`, appelée par le formulaire).

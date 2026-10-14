@@ -111,3 +111,28 @@ def test_filtre_tous_depuis_formulaire(client):
     response = client.get("/fr/nouvelles/?secteur=")
     assert response.status_code == 200
     assert response.context["page_obj"].paginator.count == 1
+
+
+def test_detail_video_youtube_et_liens_reseaux(client):
+    configuration()
+    nouvelle(publie=True, video_youtube="https://youtube.com/shorts/dQw4w9WgXcQ?si=trace",
+             instagram_url="https://www.instagram.com/reel/Cx1/", facebook_url="https://www.facebook.com/v/1/")
+    response = client.get("/fr/nouvelles/formation/")
+    html = response.content.decode()
+    assert 'src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"' in html
+    assert "si=trace" not in html
+    assert 'loading="lazy"' in html and 'referrerpolicy="strict-origin-when-cross-origin"' in html
+    assert 'title="Vidéo : Formation réelle"' in html
+    assert 'href="https://www.instagram.com/reel/Cx1/" target="_blank" rel="noopener noreferrer"' in html
+    assert 'href="https://www.facebook.com/v/1/" target="_blank" rel="noopener noreferrer"' in html
+    assert "Video in French" not in html
+    english = client.get("/en/nouvelles/formation-en/").content.decode()
+    assert 'title="Video: Actual training"' in english
+    assert "Video in French" in english
+
+
+def test_detail_sans_video_ni_reseaux(client):
+    configuration()
+    nouvelle(publie=True)
+    html = client.get("/fr/nouvelles/formation/").content.decode()
+    assert "<iframe" not in html and "instagram" not in html and "facebook" not in html

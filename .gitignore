@@ -53,3 +53,13 @@ media/
 staticfiles/
 backups/
 .coverage
+
+# Programme shorts pédagogiques : vidéos et audio volumineux jamais versionnés
+programme_shorts_pedago/*.mp4
+programme_shorts_pedago/*.avi
+programme_shorts_pedago/*.mov
+*.mp3
+*.wav
+
+# Supports de cours bruts (photos du manuel), hors dépôt
+videos/
