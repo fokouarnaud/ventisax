@@ -43,6 +43,7 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 - `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`.
 - `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
 - Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 132 tests ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).
 - Documentation : `README.md` (installation, déploiement PythonAnywhere), `docs/` (exploitation, déploiement, sécurité, validation d'interface, versions de base).
 
 ## Hors dépôt et outils associés

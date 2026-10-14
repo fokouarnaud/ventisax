@@ -104,3 +104,20 @@ Le navigateur intégré utilise l'aperçu isolé sur `http://127.0.0.1:8003/` po
 Sans JavaScript, la navigation est laissée visible par le HTML/CSS. Le stockage indisponible et
 la réduction des mouvements sont traités dans le script. Ces trois configurations, les lecteurs
 d'écran et un téléphone physique n'ont pas été exercés ; elles ne sont pas déclarées validées ici.
+
+## Refonte visuelle (typinclub) — 14 octobre 2026
+
+Référence relevée avec Playwright sur `https://typinclub.pythonanywhere.com/` (Lexend, fond `#f6f8f7`, accent vert,
+pilules, cartes arrondies, bandeau sombre). Transposition sur la palette Ventisax, sans changer gabarits structurels,
+URL ni scripts (seules deux étiquettes d'accueil retirées).
+
+| Contrôle | Résultat |
+| --- | --- |
+| Six pages publiques (accueil, nouvelles, détail, présentation, contact, secteur) à 1 280 et 390 px | Aucun débordement horizontal |
+| Police | Lexend locale chargée (`document.fonts`), aucun CSS distant (test de présentation) |
+| Menu mobile au clavier | Entrée ouvre (`aria-expanded=true`), Échap ferme et rend le focus au bouton |
+| Passage en format ordinateur | Navigation visible, bouton de menu masqué |
+| Suite automatisée | 132 tests réussis |
+
+Non couvert : téléphone physique, lecteur d'écran, contraste mesuré par outil (couleurs de texte reprises de la palette
+validée ; boutons blanc sur `#0b2d46` et `#0d665e` sur fonds clairs).

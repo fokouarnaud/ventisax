@@ -39,6 +39,17 @@ Ces interactions utilisent un seul petit script local différé (`hub/static/hub
 
 Validation : test de contrôles accessibles d'abord en échec dans les deux langues (bouton de menu absent), puis suite à 65 tests réussis. Une correction du test traite correctement la présence des attributs HTML booléens, représentés par `None` dans `HTMLParser`. Interactions réelles exercées : ouverture par Entrée, fermeture par Échap et retour du focus, fermeture du bandeau conservée lors du passage au contact, bascule de langue sur le même contact, apparition et activation au clavier du retour en haut. Quatorze combinaisons fr/en à 320, 360, 495, 768, 960, 961 et 1 280 px sans débordement mesuré ; menu replié jusqu'à 960 px et visible au-delà. Preuves dans `docs/validation-interface.md` et `docs/screenshots/controls-matrix.json`. L'absence de JavaScript, le stockage bloqué, les lecteurs d'écran et un téléphone physique n'ont pas été exercés dans cette passe.
 
+### Refonte visuelle inspirée de typinclub.pythonanywhere.com — 14 octobre 2026
+
+La demande explicite de l'utilisateur (« rendre le UI comme https://typinclub.pythonanywhere.com/ ») fait évoluer les décisions de style ci-dessus ; elles restent consignées comme historique. Le design de référence a été relevé avec Playwright (captures et styles calculés), puis transposé avec le skill taste, en préservant structure, URL, contenus administrables, scripts et accessibilité.
+
+- **Police** : Lexend auto-hébergée (`hub/static/hub/fonts/`, woff2 variable 300–800, latin et latin étendu, licence SIL OFL jointe) à la place des polices système. Aucune ressource distante.
+- **Palette conservée** : bleu profond `#0b2d46`, fond `#f4f7f8`, turquoise `#68ddce` ; le turquoise sombre `#0d665e` tient le rôle d'accent des liens et étiquettes ; texte `#13212c`.
+- **Composants** : en-tête collant translucide, « Contact » en bouton pilule bleu ; boutons, étiquettes, sélecteur de langue et pagination en pilule ; cartes 24 px, surfaces 20 px, champs 12 px. Hero clair, illustration dans un écran sombre arrondi ; secteurs en grille bento teintée ; nouvelles en cartes avec pastille de date ; bandeau d'appel au contact sombre ; pied de page clair ; lecteur vidéo vertical au cadre arrondi.
+- **Sobriété** : étiquettes en capitales réduites à deux sur l'accueil ; pas de mode sombre (cadrage en thème clair) ; aucun JavaScript ajouté.
+
+Vérifications : 132 tests réussis ; six pages publiques à 1 280 et 390 px sans débordement ; Lexend chargée ; menu mobile ouvert par Entrée, refermé par Échap avec retour du focus, navigation de nouveau visible au passage en format ordinateur.
+
 ## GOALS
 
 ### Évolution autorisée — versions de bases, 10 octobre 2026
