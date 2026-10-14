@@ -10,6 +10,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings"
 os.environ["DJANGO_DEBUG"] = "1"
+# Les variables du processus priment sur .env : un .env de production (hôte PythonAnywhere)
+# ne doit pas faire refuser 127.0.0.1 par l'aperçu local.
+os.environ["DJANGO_ALLOWED_HOSTS"] = "localhost,127.0.0.1"
 
 
 def seed():
@@ -87,7 +90,7 @@ def seed():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--port", type=int, default=8001, help="8000 est souvent pris par OpenShorts.")
     parser.add_argument("--empty", action="store_true", help="Prévisualiser le site sans configuration (503).")
     args = parser.parse_args()
     from django.conf import settings
