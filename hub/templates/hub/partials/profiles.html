@@ -1,0 +1,1 @@
+{% if profils %}<nav class="profiles" aria-label="{{ labels.follow }}"><p>{{ labels.follow }}</p><ul>{% for name, url in profils %}<li><a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ name }} <span aria-hidden="true">↗</span></a></li>{% endfor %}</ul></nav>{% endif %}

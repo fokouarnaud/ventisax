@@ -67,6 +67,22 @@ Un nouvel entretien (skill `grilling`) avec l'utilisateur a fixé ces décisions
 - **Capsules** : leur appel à l'action ne doit pas promettre de prestation ; la capsule du module 3 est reformulée (« Un projet en clim ou en froid ? Parlons-en »).
 - **Livraison** : TDD sur `develop` et commit ; fusion `main` et déploiement seulement après accord explicite.
 
+### Évolution autorisée — acquisition honnête, 15 octobre 2026
+
+L'utilisateur a soumis une stratégie marketing externe : offre d'installation et de dépannage industriels, « devis gratuit », formulaire, rubrique « Les coulisses de notre expertise », vidéos 100 % publiques et démarchage B2B. Un grill (skill `grilling`, Q1–Q16) l'a confrontée à la situation réelle. **Cette stratégie est consignée comme piste future, pas comme tâche à exécuter.** Décisions :
+
+- **Situation (Q1) :** aucune prestation n'est fournie ; le site reste un hub de progression. **Cible (Q2) :** particuliers et petits commerces de Yaoundé ; B2B reporté.
+- **Accroche (Q5) :** saisie dans Unfold, par exemple « Ventisax — bientôt votre technicien climatisation et froid à Yaoundé » et « Suivez notre formation, étape par étape », avec leur traduction anglaise. Le statut de projet reste explicite.
+- **Appel à l'action (Q6, Q9, Q10) :** bouton « Me prévenir à l'ouverture » / « Notify me at launch » dans le hero, le bandeau d'appel de l'accueil et sur Contact. Il ouvre `wa.me` avec un message fixe et bilingue qui demande le quartier, ou un `mailto:` pré-rempli sans numéro WhatsApp. Rien n'est stocké sur le site ; la pilule « Contact » de l'en-tête reste inchangée. Aucun formulaire ni devis.
+- **Rubrique (Q7) :** « Nouvelles » devient « Journal de formation » / « Training log » ; les URL `nouvelles/` ne changent pas. Le mot « expertise » n'est pas revendiqué.
+- **Profils (Q8) :** champs facultatifs `youtube_channel_url`, `facebook_url`, `tiktok_url` et `instagram_url` dans `ConfigurationGenerale`, à domaine vérifié, rendus en liens simples dans le pied de page et sur Contact.
+- **Vidéos (Q3) :** capsules courtes publiques ; vidéos de leçon non répertoriées ; mêmes interdits (formateur, manuel, apprenants ou locaux sans accord).
+- **Réseaux (Q11–Q14) :** Facebook, TikTok et YouTube Shorts (Instagram facultatif) ; WhatsApp Business sans catalogue avec l'étiquette « À prévenir » ; une capsule par leçon réellement suivie ; modèle de description dans `docs/acquisition.md`.
+- **Électronique (Q15) :** reste une fiche en préparation, sans mise en avant.
+- **Condition de bascule (Q16) :** devis, « Demander une intervention », proposition de valeur affirmative et démarchage B2B ne seront envisagés qu'après une nouvelle décision explicite du porteur, prise quand l'intervention est réellement possible ; le cadrage (hors-scope « formulaire de contact ») sera alors révisé.
+
+Livraison : TDD sur `develop` et commit ; fusion `main` et déploiement de la migration `0009` seulement après accord explicite.
+
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
 ### 1. Objectifs fonctionnels prioritaires

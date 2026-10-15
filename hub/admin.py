@@ -92,6 +92,14 @@ class NouvelleAdmin(PublicationAdmin):
 @admin.register(ConfigurationGenerale, site=site)
 class ConfigurationAdmin(ModelAdmin):
     readonly_fields = ("uuid", "modifie_le")
+    fieldsets = (
+        ("Textes", {"fields": ("identite_fr", "identite_en", "resume_fr", "resume_en", "presentation_fr",
+                               "presentation_en", "parcours_fr", "parcours_en", "implantation_fr", "implantation_en")}),
+        ("Coordonnées", {"fields": ("email", "whatsapp")}),
+        ("Réseaux", {"fields": ("youtube_channel_url", "facebook_url", "tiktok_url", "instagram_url"),
+                     "description": "Liens facultatifs vers les profils publics, affichés en liens simples."}),
+        ("Suivi", {"fields": ("uuid", "modifie_le")}),
+    )
 
     def has_add_permission(self, request):
         return super().has_add_permission(request) and not ConfigurationGenerale.objects.exists()

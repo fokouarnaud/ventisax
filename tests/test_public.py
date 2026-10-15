@@ -136,3 +136,39 @@ def test_detail_sans_video_ni_reseaux(client):
     nouvelle(publie=True)
     html = client.get("/fr/nouvelles/formation/").content.decode()
     assert "<iframe" not in html and "instagram" not in html and "facebook" not in html
+
+
+@pytest.mark.parametrize("lang,label,quartier", [("fr", "Me prévenir à l’ouverture", "Mon%20quartier"),
+                                                 ("en", "Notify me at launch", "My%20neighbourhood")])
+def test_bouton_me_prevenir_sur_accueil_et_contact(client, lang, label, quartier):
+    c = configuration()
+    home = client.get(f"/{lang}/").content.decode()
+    assert home.count('href="https://wa.me/237699123456?text=') == 2
+    assert label in home and quartier in home
+    contact = client.get(f"/{lang}/contact/").content.decode()
+    assert 'href="https://wa.me/237699123456?text=' in contact and label in contact
+    c.whatsapp = ""
+    c.save()
+    home = client.get(f"/{lang}/").content.decode()
+    assert home.count('href="mailto:contact@example.com?subject=') == 2
+    assert "wa.me" not in home
+
+
+@pytest.mark.parametrize("lang,label,old", [("fr", "Journal de formation", ">Nouvelles<"),
+                                            ("en", "Training log", ">News<")])
+def test_rubrique_journal_de_formation_sans_changer_les_url(client, lang, label, old):
+    configuration()
+    response = client.get(f"/{lang}/nouvelles/")
+    html = response.content.decode()
+    assert response.status_code == 200
+    assert f"<h1>{label}</h1>" in html and f"<title>{label} · Ventisax</title>" in html
+    assert old not in html and old not in client.get(f"/{lang}/").content.decode()
+
+
+def test_profils_reseaux_affiches_seulement_si_renseignes(client):
+    configuration(tiktok_url="https://www.tiktok.com/@ventisax", facebook_url="https://www.facebook.com/ventisax")
+    for page in ("", "contact/"):
+        html = client.get(f"/fr/{page}").content.decode()
+        assert 'href="https://www.tiktok.com/@ventisax" target="_blank" rel="noopener noreferrer"' in html
+        assert 'href="https://www.facebook.com/ventisax" target="_blank" rel="noopener noreferrer"' in html
+        assert "instagram" not in html and "youtube.com/@" not in html

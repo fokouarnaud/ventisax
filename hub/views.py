@@ -7,23 +7,30 @@ from django.urls import reverse
 from django.utils import translation
 from django.conf import settings
 
-from .models import ConfigurationGenerale, Nouvelle, Secteur
+from .models import SOCIAL_NAMES, ConfigurationGenerale, Nouvelle, Secteur
 
 
 LABELS = {
-    "fr": dict(home="Accueil", about="Présentation", news="Nouvelles", contact="Contact", sectors="Secteurs",
+    "fr": dict(home="Accueil", about="Présentation", news="Journal de formation", contact="Contact", sectors="Secteurs",
                empty="Aucune nouvelle publiée pour le moment.", group="Groupe", all="Tous les secteurs",
                filter="Filtrer", previous="Précédent", next="Suivant", learning="Apprentissages",
                step="Prochaine étape", preparation="En préparation", active="Actif", site="Site du secteur",
                email="Contacter par e-mail", whatsapp="Contacter par WhatsApp", skip="Aller au contenu",
                unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="",
-               instagram="Voir sur Instagram", facebook="Voir sur Facebook"),
-    "en": dict(home="Home", about="About", news="News", contact="Contact", sectors="Sectors",
+               instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
+               notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
+                              "et de froid. Mon quartier : ",
+               follow="Suivre Ventisax"),
+    "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
                active="Active", site="Sector website", email="Contact by email", whatsapp="Contact on WhatsApp",
                skip="Skip to content", unavailable="The project is preparing its bilingual content.", video="Video",
-               video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook"),
+               video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook",
+               notify="Notify me at launch",
+               notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
+                              "services open. My neighbourhood: ",
+               follow="Follow Ventisax"),
 }
 
 
@@ -94,7 +101,10 @@ def public(request, lang, page="home", slug=None):
     with translation.override(lang):
         if not config:
             return render(request, "hub/unavailable.html", context, status=503)
-        context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url)
+        labels = LABELS[lang]
+        context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url,
+                       notify_url=config.notify_url(labels["notify_message"], labels["notify"]),
+                       profils=[(SOCIAL_NAMES[f], getattr(config, f)) for f in config.profile_fields if getattr(config, f)])
         return render(request, "hub/page.html", context)
 
 

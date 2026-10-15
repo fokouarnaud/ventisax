@@ -26,7 +26,7 @@
     </div>
   </header>
   <main id="content" tabindex="-1">{% block content %}{% endblock %}</main>
-  <footer class="site-footer"><div class="container footer-inner"><div><p class="footer-brand">Ventisax</p><p>{{ config.implantation }}</p>{% if preview %}<p class="preview-note">{% if lang == 'fr' %}Démo locale · données fictives{% else %}Local demo · sample data{% endif %}</p>{% endif %}</div><p>{% if lang == 'fr' %}Projet de groupe en développement{% else %}Group project in development{% endif %}</p><a href="{% url 'contact' lang=lang %}">{{ labels.contact }} <span aria-hidden="true">↗</span></a></div></footer>
+  <footer class="site-footer"><div class="container footer-inner"><div><p class="footer-brand">Ventisax</p><p>{{ config.implantation }}</p>{% if preview %}<p class="preview-note">{% if lang == 'fr' %}Démo locale · données fictives{% else %}Local demo · sample data{% endif %}</p>{% endif %}</div>{% if page != 'contact' %}{% include 'hub/partials/profiles.html' %}{% endif %}<p>{% if lang == 'fr' %}Projet de groupe en développement{% else %}Group project in development{% endif %}</p><a href="{% url 'contact' lang=lang %}">{{ labels.contact }} <span aria-hidden="true">↗</span></a></div></footer>
   <a class="back-to-top" href="#page-top" aria-label="{% if lang == 'fr' %}Retour en haut de la page{% else %}Back to top{% endif %}" title="{% if lang == 'fr' %}Retour en haut{% else %}Back to top{% endif %}" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 7-7 7 7M12 5v15"/></svg></a>
 </body>
 </html>

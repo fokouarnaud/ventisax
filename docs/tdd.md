@@ -72,3 +72,16 @@ Rendu exercé dans l'aperçu isolé (`scripts/preview_site.py`) avec Playwright 
 à 320, 360, 768 et 1 280 px en français et en anglais ; lecteur 9:16 de 246×437 px à 320 px, plafonné à 360×640 px.
 Non exercé : lecture effective de la vidéo (le navigateur sans interface ne charge pas le lecteur), saisie dans Unfold
 derrière le second facteur (la validation est portée par `Nouvelle.clean()`, appelée par le formulaire).
+
+## Acquisition honnête : « Me prévenir », Journal de formation, profils — 15 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Profils YouTube/Instagram/Facebook/TikTok de la configuration limités à leur domaine, vides acceptés ; `notify_url` encode le message (`wa.me?text=`) ou bascule sur `mailto:?subject=&body=` | `TypeError: ConfigurationGenerale() got unexpected keyword arguments: 'tiktok_url', 'facebook_url'` ; `notify_url` absent | 29 tests du modèle |
+| Bouton « Me prévenir à l'ouverture » / « Notify me at launch » deux fois sur l'accueil et sur Contact, repli e-mail sans WhatsApp ; « Journal de formation » / « Training log » en titre, `<title>` et navigation, URL inchangées ; profils en liens `noopener noreferrer` seulement s'ils sont renseignés | Libellés et bouton absents (5 tests) | **134 tests réussis**, hors 5 préexistants |
+
+Les 5 tests de `test_security.py`/`test_deployment.py` qui échouent le font aussi sur `HEAD` sans ces modifications :
+le `.env` local (`DJANGO_DEBUG`, `DJANGO_SECRET_KEY`) est chargé par les réglages et contredit les scénarios
+« sans opt-in ». Non corrigé dans cette passe. Rendu exercé dans l'aperçu isolé avec Playwright et Chrome : accueil
+et Contact en fr/en à 390 et 1 280 px sans débordement, message WhatsApp décodé conforme, bouton atteint au clavier
+(Tab). Non exercé : saisie des profils dans Unfold derrière le second facteur.

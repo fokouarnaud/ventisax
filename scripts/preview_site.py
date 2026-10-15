@@ -30,6 +30,7 @@ def seed():
         parcours_en="This preview uses demonstration text. Training, learning and next steps will tell the story of the project’s actual progress.",
         implantation_fr="Yaoundé et ses environs · Cameroun", implantation_en="Yaoundé and surrounding areas · Cameroon",
         email="demo@example.com", whatsapp="+237699000000",
+        tiktok_url="https://www.tiktok.com/@ventisax-demo", facebook_url="https://www.facebook.com/ventisax-demo",
     )
     cooling = Secteur.objects.create(nom_fr="Climatisation & froid", nom_en="Air conditioning & refrigeration",
         slug_fr="climatisation-froid", slug_en="air-conditioning-refrigeration",

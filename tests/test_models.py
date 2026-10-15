@@ -183,3 +183,28 @@ def test_liens_reseaux_limites_a_instagram_et_facebook():
         with pytest.raises(ValidationError) as error:
             nouvelle("refus", **{field: url})
         assert field in error.value.message_dict
+
+
+def test_profils_reseaux_de_la_configuration_limites_a_leur_domaine():
+    c = configuration(youtube_channel_url="https://www.youtube.com/@ventisax",
+                      instagram_url="https://www.instagram.com/ventisax/",
+                      facebook_url="https://www.facebook.com/ventisax",
+                      tiktok_url="https://www.tiktok.com/@ventisax")
+    assert c.tiktok_url
+    c.delete()
+    assert configuration().youtube_channel_url == ""
+    models.ConfigurationGenerale.objects.all().delete()
+    for field, url in (("youtube_channel_url", "https://www.tiktok.com/@ventisax"),
+                       ("tiktok_url", "https://tiktok.com.evil.example/@x"),
+                       ("instagram_url", "javascript:alert(1)")):
+        with pytest.raises(ValidationError) as error:
+            configuration(**{field: url})
+        assert field in error.value.message_dict
+
+
+def test_lien_me_prevenir_prerempli_whatsapp_puis_email():
+    c = configuration()
+    assert c.notify_url("Mon quartier : ?&", "Sujet") == "https://wa.me/237699123456?text=Mon%20quartier%20%3A%20%3F%26"
+    c.whatsapp = ""
+    assert c.notify_url("Bonjour & merci", "Me prévenir") == (
+        "mailto:contact@example.com?subject=Me%20pr%C3%A9venir&body=Bonjour%20%26%20merci")

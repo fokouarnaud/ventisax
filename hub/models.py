@@ -99,7 +99,17 @@ class Secteur(Publication):
 YOUTUBE_HOSTS = {"youtube.com", "www.youtube.com", "m.youtube.com"}
 YOUTUBE_ID = re.compile(r"[A-Za-z0-9_-]{11}")
 SOCIAL_HOSTS = {"instagram_url": {"instagram.com", "www.instagram.com"},
-                "facebook_url": {"facebook.com", "www.facebook.com", "m.facebook.com", "fb.watch"}}
+                "facebook_url": {"facebook.com", "www.facebook.com", "m.facebook.com", "fb.watch"},
+                "youtube_channel_url": YOUTUBE_HOSTS,
+                "tiktok_url": {"tiktok.com", "www.tiktok.com"}}
+SOCIAL_NAMES = {"instagram_url": "Instagram", "facebook_url": "Facebook",
+                "youtube_channel_url": "YouTube", "tiktok_url": "TikTok"}
+
+
+def social_host_errors(obj, fields):
+    """Erreurs pour les liens de réseaux renseignés hors du domaine attendu."""
+    return {field: f"Lien attendu vers {SOCIAL_NAMES[field]}." for field in fields
+            if getattr(obj, field) and urlsplit(getattr(obj, field)).hostname not in SOCIAL_HOSTS[field]}
 
 
 def youtube_video_id(url):
@@ -153,10 +163,7 @@ class Nouvelle(Publication):
         errors = {}
         if self.video_youtube and not self.youtube_id:
             errors["video_youtube"] = "Lien d'une vidéo YouTube unique attendu (watch, shorts, embed ou youtu.be)."
-        for field, hosts in SOCIAL_HOSTS.items():
-            value = getattr(self, field)
-            if value and urlsplit(value).hostname not in hosts:
-                errors[field] = "Lien attendu vers " + ("Instagram." if field == "instagram_url" else "Facebook.")
+        errors.update(social_host_errors(self, ("instagram_url", "facebook_url")))
         if errors:
             raise ValidationError(errors)
         if self.image and not self.image._committed:
@@ -252,6 +259,11 @@ class ConfigurationGenerale(ValidatedModel):
     implantation_en = models.CharField(max_length=250)
     email = models.EmailField()
     whatsapp = models.CharField(max_length=16, blank=True, default="", validators=[RegexValidator(r"^\+[1-9][0-9]{7,14}$", "Numéro international requis (+…).")])
+    youtube_channel_url = models.URLField("chaîne YouTube", blank=True, validators=[HTTP_URL])
+    instagram_url = models.URLField("profil Instagram", blank=True, validators=[HTTP_URL])
+    facebook_url = models.URLField("page Facebook", blank=True, validators=[HTTP_URL])
+    tiktok_url = models.URLField("profil TikTok", blank=True, validators=[HTTP_URL])
+    profile_fields = ("youtube_channel_url", "facebook_url", "tiktok_url", "instagram_url")
     modifie_le = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -263,6 +275,7 @@ class ConfigurationGenerale(ValidatedModel):
         super().clean()
         errors = missing_text(self, [f.name for f in self._meta.fields if f.name.endswith(("_fr", "_en"))],
                               "Texte obligatoire dans les deux langues.")
+        errors.update(social_host_errors(self, self.profile_fields))
         if self.pk != 1:
             errors["id"] = "Une seule configuration est autorisée."
         if self._state.adding and type(self).objects.exists():
@@ -277,6 +290,12 @@ class ConfigurationGenerale(ValidatedModel):
     @property
     def email_url(self):
         return "mailto:" + quote(self.email, safe="@.")
+
+    def notify_url(self, message, subject):
+        """Lien « Me prévenir » : WhatsApp pré-rempli, sinon e-mail pré-rempli."""
+        if self.whatsapp:
+            return f"{self.whatsapp_url}?text={quote(message, safe='')}"
+        return f"{self.email_url}?subject={quote(subject, safe='')}&body={quote(message, safe='')}"
 
 
 class DatabaseVersion(models.Model):
