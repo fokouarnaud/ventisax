@@ -46,7 +46,7 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 
 /* En-tête collant et translucide */
 .site-header { position: sticky; top: 0; z-index: 20; background: #f4f7f8ed; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid transparent; }
-.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 80px; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 72px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--navy); text-decoration: none; flex-shrink: 0; }
 .brand img { width: 42px; height: 42px; }
 .brand-symbol { width: 42px; height: 42px; flex-shrink: 0; background: url("ventisax-mark.svg") center / contain no-repeat; }
@@ -80,7 +80,10 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 .button-outline:hover { background: var(--teal-wash); border-color: #c6e3dd; }
 .button-light { background: var(--white); border-color: var(--line); color: var(--ink); }
 .button-light:hover { background: var(--teal-wash); }
-.arrow { font-size: 1.2em; line-height: 1; }
+.icon { width: 1.1em; height: 1.1em; flex-shrink: 0; }
+.language-link .icon { width: 1em; height: 1em; margin-inline: 2px; vertical-align: -.15em; }
+.icon-md { width: 22px; height: 22px; }
+.icon-lg { width: 26px; height: 26px; }
 
 /* Sections */
 .section { padding-block: 80px; }
@@ -94,9 +97,8 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 .sector-card { display: flex; flex-direction: column; gap: 18px; padding: 36px; border-radius: var(--radius); background: var(--teal-wash); }
 .sector-card:nth-child(even) { background: var(--mist); }
 .sector-card:nth-child(3n) { background: var(--white); border: 1px solid var(--line); }
-.sector-card:nth-child(3n) .sector-number, .sector-card:nth-child(3n) .status { background: var(--teal-wash); }
+.sector-card:nth-child(3n) .status { background: var(--teal-wash); }
 .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.sector-number { display: inline-grid; place-items: center; width: 48px; height: 48px; color: var(--teal-ink); background: var(--white); border-radius: 14px; font-size: .95rem; font-weight: 700; }
 .status { display: inline-flex; align-items: center; gap: 8px; font-size: .75rem; font-weight: 600; color: var(--teal-ink); background: var(--white); padding: 6px 12px; border-radius: 9999px; }
 .status::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .sector-card h3 { font-size: 1.45rem; }
@@ -229,6 +231,8 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   .main-nav a:last-child { margin-left: 0; }
   .language-link { grid-column: 2; grid-row: 1; }
   .menu-toggle { grid-column: 3; grid-row: 1; }
+  html:not(.menu-ready) .main-nav { display: none; }
+  html:not(.menu-ready) .menu-toggle[hidden] { display: inline-flex !important; }
   .hero-grid { grid-template-columns: 1.3fr 1fr; gap: 32px; padding-block: 48px 64px; }
   .story-grid { gap: 36px; }
 }

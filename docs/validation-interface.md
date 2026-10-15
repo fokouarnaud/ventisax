@@ -121,3 +121,36 @@ URL ni scripts (seules deux étiquettes d'accueil retirées).
 
 Non couvert : téléphone physique, lecteur d'écran, contraste mesuré par outil (couleurs de texte reprises de la palette
 validée ; boutons blanc sur `#0b2d46` et `#0d665e` sur fonds clairs).
+
+## Audit skill taste (`design-taste-frontend`) — 15 octobre 2026
+
+Lecture : refonte-préservation d'un hub local bilingue, ton sobre et technique, confiance d'abord ;
+esthétique inspirée de typinclub (Lexend, bleu profond `#0b2d46`, turquoise), CSS natif sans système de
+design officiel (règle d'honnêteté : aucun paquet imité). Réglages : DESIGN_VARIANCE 5, MOTION_INTENSITY 2,
+VISUAL_DENSITY 4 (préservation de l'existant). Mesures : Playwright + Chrome sur la base locale, pages
+publiques fr/en (24 rendus) à 1 280 et 390 px.
+
+| Point de la section 14 | Statut | Preuve ou justification |
+| --- | --- | --- |
+| Lecture, réglages, système, mode refonte | Conforme | Ci-dessus ; audit de l'existant dans les sections précédentes de ce document |
+| Zéro tiret cadratin visible | Conforme | 0 sur toutes les pages ; état vide sans `—` ; accroche recommandée sans tiret |
+| Thème unique | Conforme | Thème clair ; le bandeau sombre d'appel est un composant teinté, pas une section inversée |
+| Accent, formes, contraste des boutons | Conforme | Turquoise sombre seul accent ; pilules interactives, cartes 24 px, surfaces 20 px, champs 12 px ; tous les boutons ≥ 4,5:1 |
+| Libellés d'appel sur une ligne, pas de doublon d'intention | Conforme | « Me prévenir à l'ouverture » identique partout ; contact et WhatsApp sont des intentions distinctes |
+| Contraste des formulaires | Conforme | Filtre du journal hérité des audits précédents ; aucun formulaire ajouté |
+| Hero : titre ≤ 2 lignes, sous-texte ≤ 20 mots, ≤ 4 éléments, appel visible | Conforme | 2 lignes, 15-16 mots, 4 éléments, bouton à 491 px sur 800 |
+| Étiquettes en capitales | Conforme | 1 par page au plus (« Nos domaines » retirée) |
+| Numérotation décorative, points décoratifs | Conforme | « 01 / 02 » des cartes et point d'implantation retirés ; le point du statut « En préparation » porte un état réel |
+| Icônes d'une bibliothèque, pas de SVG fait main | Conforme | Tabler Icons v3 (MIT) via `partials/icon.html` ; flèches typographiques remplacées |
+| Illustration décorative faite main, grille décorative | Corrigé en partie | Grille et nœuds retirés ; reste le logo seul (marque géométrique simple, admise) |
+| Images réelles | **Non conforme, en attente du porteur** | Aucune photo authentique publiable ; images de banque ou générées exclues (« aucun contenu fictif »). Emplacement à pourvoir : visuel du hero, photo réelle de la formation sans formateur, manuel ni autres apprenants |
+| Navigation sur une ligne, ≤ 80 px | Conforme | 73 px ; une ligne à 1 280 px |
+| Core Web Vitals | Conforme en local | LCP ≤ 1,2 s, CLS ≤ 0,03 (menu mobile replié en CSS dès le premier rendu, rouvert par `<noscript>` sans JavaScript) |
+| Mouvement réduit, retour tactile | Conforme | `prefers-reduced-motion` coupe les transitions ; `:active` décale le bouton de 1 px |
+| États vide, erreur | Conforme | États vides du journal et des secteurs, page 404, page 503 sans configuration |
+| Mode sombre | Écart assumé | Instruction explicite du cadrage : thème clair (Q30, refonte du 14/10) |
+| React, Tailwind, Motion, `min-h-[100dvh]`, `useEffect` | Sans objet | Cadrage Q32 : templates Django, CSS natif, JavaScript minimal ; aucune animation à orchestrer |
+| Bento, logos, citations, marquee, sticky-stack, listes longues, tableaux | Sans objet | Absents du site |
+
+Limites : mesures sur serveur local, pas sur PythonAnywhere ; Lighthouse non exécuté ; pas d'essai sur téléphone
+physique. Si `site.js` ne se charge pas alors que JavaScript est actif, le menu mobile reste replié.
