@@ -65,11 +65,9 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 .hero { background: var(--paper); }
 .hero-grid { display: grid; grid-template-columns: 1.25fr 1fr; align-items: center; gap: 56px; padding-block: 64px 88px; }
 .hero .eyebrow { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 14px; border-radius: 9999px; background: var(--teal-wash); letter-spacing: .08em; }
-.hero h1 { max-width: 720px; margin-block: 22px 20px; font-size: clamp(2.4rem, 5.2vw, 4rem); line-height: 1.06; }
+.hero h1 { max-width: 720px; margin-block: 22px 20px; font-size: clamp(2.25rem, 4.2vw, 3.25rem); line-height: 1.1; }
 .hero .lead { max-width: 560px; font-size: 1.2rem; }
 .hero-art { width: 100%; max-width: 420px; justify-self: center; padding: 28px; background: var(--navy); border-radius: 40px; box-shadow: 0 30px 60px -20px #0b2d4666, inset 0 0 0 6px #173f58; }
-.hero-location { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .9rem; margin-top: 26px; }
-.location-dot { display: inline-block; width: 8px; height: 8px; background: var(--teal-ink); border-radius: 50%; flex-shrink: 0; }
 .eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-ink); }
 .lead { font-size: 1.1rem; line-height: 1.75; color: var(--muted); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
@@ -162,7 +160,6 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
 .pagination span { color: var(--muted); font-size: .85rem; }
 .empty-state { border: 1px dashed #b7cbd4; border-radius: var(--radius); padding: 44px 28px; text-align: center; background: var(--white); color: var(--muted); }
 .empty-state p { max-width: 42ch; margin-inline: auto; }
-.empty-symbol { display: inline-grid; place-items: center; width: 48px; height: 48px; color: var(--teal-ink); background: var(--teal-wash); border-radius: 50%; margin-bottom: 14px; font-size: 1.5rem; }
 
 .article-layout { max-width: 860px; margin-inline: auto; }
 .article-heading { padding-bottom: 30px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }

@@ -50,6 +50,8 @@ La demande explicite de l'utilisateur (« rendre le UI comme https://typinclub.p
 
 Vérifications : 132 tests réussis ; six pages publiques à 1 280 et 390 px sans débordement ; Lexend chargée ; menu mobile ouvert par Entrée, refermé par Échap avec retour du focus, navigation de nouveau visible au passage en format ordinateur.
 
+**Audit taste, 15 octobre 2026** (demande « vérifie que taste skill est respecté », mode refonte-préservation) : hero limité à quatre éléments (étiquette, titre de deux lignes au plus sur ordinateur, sous-texte de 20 mots au plus, boutons), titre du hero ramené à `clamp(2.25rem, 4.2vw, 3.25rem)` ; ligne d'implantation et point décoratif retirés du hero (l'implantation reste dans le pied de page et sur Contact) ; étiquette « Nos domaines » retirée (une seule étiquette en capitales par page) ; tiret cadratin décoratif de l'état vide retiré ; titre du panneau Contact distinct du libellé de son bouton. Accroche recommandée sans tiret cadratin : « Bientôt votre technicien clim et froid à Yaoundé » / « Soon your cooling technician in Yaoundé ». Écarts assumés au skill, imposés par le cadrage : pas de React/Tailwind/Motion (templates Django, JavaScript minimal), pas de mode sombre, flèches typographiques au lieu d'une bibliothèque d'icônes, illustration SVG d'accueil conservée.
+
 ## GOALS
 
 ### Évolution autorisée — versions de bases, 10 octobre 2026
