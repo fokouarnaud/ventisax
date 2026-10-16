@@ -135,16 +135,28 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 .prose p { line-height: 1.85; }
 
 /* Nouvelles en cartes */
-.news-list { display: grid; gap: 14px; }
-.news-item { display: grid; grid-template-columns: 88px minmax(0, 1fr) 44px; gap: 28px; align-items: center; padding: 24px 28px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); transition: border-color .18s, box-shadow .18s; }
+/* Journal : un groupe par jour (date une seule fois), en liste ou en grille. */
+.journal { display: grid; gap: 18px; }
+.day-group { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 20px; align-items: start; }
+.journal-liste .day-entries { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.journal-liste .news-item { border: 0; border-radius: 0; }
+.journal-liste .news-item + .news-item { border-top: 1px solid var(--line); }
+.journal-grille .day-group { grid-template-columns: 1fr; gap: 12px; }
+.journal-grille .news-date { justify-self: start; display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 16px; border-radius: 9999px; }
+.journal-grille .news-date .date-day { display: inline; font-size: 1.15rem; }
+.journal-grille .day-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.journal-grille .news-item { grid-template-columns: 1fr; align-content: space-between; gap: 18px; height: 100%; }
+.journal-grille .news-chevron { justify-self: end; }
+.news-excerpt { margin-top: 10px; color: var(--muted); font-size: .95rem; line-height: 1.65; }
+.view-switch { display: inline-flex; gap: 4px; padding: 4px; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 9999px; background: var(--white); }
+.view-option { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px; border-radius: 9999px; color: var(--nav-ink); font-size: .9rem; font-weight: 600; text-decoration: none; }
+.view-option:hover { color: var(--teal-ink); }
+.view-option[aria-current] { background: var(--teal-wash); color: var(--teal-ink); }
+.news-item { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 28px; align-items: center; padding: 24px 28px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); transition: border-color .18s, box-shadow .18s; }
 .news-item:hover { border-color: var(--hover-line); box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--shadow) 25%, transparent); }
 .news-date { color: var(--muted); font-size: .8rem; line-height: 1.4; text-align: center; padding: 10px 6px; border-radius: 16px; background: var(--paper); }
 .date-day { display: block; color: var(--heading); font-size: 1.8rem; font-weight: 700; line-height: 1.1; }
 .news-item h2, .news-item h3 { font-size: 1.2rem; }
-/* Même jour : la date n'est affichée qu'une fois ; elle reste lisible par les lecteurs d'écran. */
-.news-item-same-day { margin-top: -8px; }
-.news-date.news-date-repeat { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.news-item-same-day > div { grid-column: 2; }
 .report { margin-top: 32px; max-width: 72ch; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); }
 .report summary { min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 14px 22px; font-weight: 600; color: var(--heading); cursor: pointer; }
 .report summary { justify-content: space-between; list-style: none; }
@@ -293,7 +305,8 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   .sector-grid, .story-grid, .about-layout, .sector-details, .contact-layout { grid-template-columns: 1fr; gap: 18px; }
   .sector-card, .surface { padding: 26px; }
   .story-grid { gap: 22px; }
-  .news-item { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 18px; }
+  .news-item { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 18px; }
+  .day-group { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
   .report dl { grid-template-columns: 1fr; gap: 4px; }
   .report dd + dt { margin-top: 10px; }
   .news-chevron { display: none; }

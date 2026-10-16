@@ -15,7 +15,7 @@ Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 
 
 ## Flux d'une page publique
 
-`config/urls.py` → `hub/views.py::public()` (filtre `publie=True`, pagination par 10, filtre secteur, URL de la
+`config/urls.py` → `hub/views.py::public()` (filtre `publie=True`, pagination par 10, filtre secteur, affichage `?vue=liste|grille` du journal, URL de la
 langue opposée) → `localized(obj, lang)` aplatit les champs `*_fr` / `*_en` et ajoute secteurs publics, liens,
 image, `youtube_id`, réseaux → `hub/templates/hub/page.html` inclut `pages/<page>.html`
 (`partials/news_list.html`, `partials/breadcrumbs.html`, `partials/profiles.html`) dans `base.html`. Libellés d'interface : `LABELS` dans `views.py` (la rubrique `news` s'affiche « Journal de formation » / « Training log », bouton `notify` « Me prévenir à l'ouverture » et son message pré-rempli).
@@ -42,7 +42,7 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 
 - `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`.
 - `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
-- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 147 tests (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 148 tests (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
 - Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).
 - Documentation : `README.md` (installation, déploiement PythonAnywhere), `docs/` (exploitation, déploiement, sécurité, validation d'interface, versions de base, `acquisition.md` : capsules, réseaux, WhatsApp Business).
 

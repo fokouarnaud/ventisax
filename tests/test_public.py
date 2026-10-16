@@ -1,3 +1,4 @@
+import re
 import pytest
 from tests.factories import secteur, nouvelle, configuration
 
@@ -189,12 +190,30 @@ def test_compte_rendu_replie_en_fiche_et_paragraphes_separes(client, lang, summa
     assert html.count('<p>') >= 2 and "<br>" not in html.split('class="prose"')[1].split("</div>")[0]
 
 
-def test_journal_une_seule_pastille_de_date_par_jour(client):
+def test_journal_groupe_par_jour_en_liste_et_en_grille(client):
     from datetime import date
     configuration()
+    s = secteur(publie=True)
     for slug in ("a", "b"):
-        nouvelle(slug, publie=True, date_jalon=date(2026, 10, 13))
+        nouvelle(slug, publie=True, date_jalon=date(2026, 10, 13), corps_fr=" ".join(["mot"] * 40)).secteurs.add(s)
     nouvelle("c", publie=True, date_jalon=date(2026, 10, 14))
-    html = client.get("/fr/nouvelles/").content.decode()
-    assert html.count('class="news-date"') == 2
-    assert html.count('class="news-date news-date-repeat"') == 1
+    liste = client.get("/fr/nouvelles/").content.decode()
+    assert 'class="journal journal-liste"' in liste and liste.count('class="day-group"') == 2
+    assert liste.count('<time class="news-date"') == 2 and "news-excerpt" not in liste
+    assert 'href="?vue=grille" class="view-option">' in liste
+    assert re.search(r'class="view-option" aria-current="true">(?:(?!</a>).)*Liste</a>', liste, re.S)
+    grille = client.get("/fr/nouvelles/?vue=grille&secteur=froid").content.decode()
+    assert 'class="journal journal-grille"' in grille and grille.count('class="day-group"') == 1
+    assert grille.count('class="news-excerpt"') == 2 and grille.count("mot …</p>") == 2  # extraits tronqués
+    assert re.search(r'class="view-option" aria-current="true">(?:(?!</a>).)*Grille</a>', grille, re.S)
+    assert '<input type="hidden" name="vue" value="grille">' in grille
+    assert "vue=grille" in grille.split('class="language-link" href="')[1].split('"')[0]
+    assert client.get("/fr/nouvelles/?vue=inconnue").status_code == 200
+
+
+def test_pagination_conserve_la_vue_grille(client):
+    configuration()
+    for index in range(11):
+        nouvelle(f"jalon-{index}", publie=True)
+    html = client.get("/fr/nouvelles/?vue=grille").content.decode()
+    assert 'href="?page=2&amp;vue=grille"' in html

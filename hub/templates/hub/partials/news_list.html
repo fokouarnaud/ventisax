@@ -1,13 +1,21 @@
 {% if nouvelles %}
-<div class="news-list">
-  {% for item in nouvelles %}
-  <article class="news-item{% ifchanged item.date_jalon %}{% else %} news-item-same-day{% endifchanged %}">
-    {% ifchanged item.date_jalon %}<time class="news-date" datetime="{{ item.date_jalon|date:'Y-m-d' }}"><span class="date-day">{{ item.date_jalon|date:'d' }}</span>{{ item.date_jalon|date:'M Y' }}</time>{% else %}<time class="news-date news-date-repeat" datetime="{{ item.date_jalon|date:'Y-m-d' }}"><span class="date-day">{{ item.date_jalon|date:'d' }}</span>{{ item.date_jalon|date:'M Y' }}</time>{% endifchanged %}
-    <div>{% if page == 'news' %}<h2><a href="{{ item.url }}">{{ item.titre }}</a></h2>{% else %}<h3><a href="{{ item.url }}">{{ item.titre }}</a></h3>{% endif %}
-      <div class="tags">{% for sector in item.secteurs %}<a class="tag" href="{{ sector.url }}">{{ sector.nom }}</a>{% empty %}<span class="tag">{{ labels.group }}</span>{% endfor %}</div>
+{% regroup nouvelles by date_jalon as jours %}
+<div class="journal journal-{{ vue|default:'liste' }}">
+  {% for jour in jours %}
+  <section class="day-group" aria-label="{{ jour.grouper|date:'j F Y' }}">
+    <time class="news-date" datetime="{{ jour.grouper|date:'Y-m-d' }}"><span class="date-day">{{ jour.grouper|date:'d' }}</span>{{ jour.grouper|date:'M Y' }}</time>
+    <div class="day-entries">
+      {% for item in jour.list %}
+      <article class="news-item">
+        <div>{% if page == 'news' %}<h2><a href="{{ item.url }}">{{ item.titre }}</a></h2>{% else %}<h3><a href="{{ item.url }}">{{ item.titre }}</a></h3>{% endif %}
+          {% if vue == 'grille' %}<p class="news-excerpt">{{ item.corps|truncatewords:22 }}</p>{% endif %}
+          <div class="tags">{% for sector in item.secteurs %}<a class="tag" href="{{ sector.url }}">{{ sector.nom }}</a>{% empty %}<span class="tag">{{ labels.group }}</span>{% endfor %}</div>
+        </div>
+        <a class="news-chevron" href="{{ item.url }}" aria-label="{% if lang == 'fr' %}Lire{% else %}Read{% endif %} : {{ item.titre }}">{% include 'hub/partials/icon.html' with name='arrow-up-right' %}</a>
+      </article>
+      {% endfor %}
     </div>
-    <a class="news-chevron" href="{{ item.url }}" aria-label="{% if lang == 'fr' %}Lire{% else %}Read{% endif %} : {{ item.titre }}">{% include 'hub/partials/icon.html' with name='arrow-up-right' %}</a>
-  </article>
+  </section>
   {% endfor %}
 </div>
 {% else %}

@@ -108,3 +108,14 @@ Non exercé : envoi réel d'une image dans Unfold derrière le second facteur.
 Rendu vérifié sur la base locale : journal à 1 280 px (clair) et 390 px (sombre), 7 entrées et 4 pastilles visibles,
 fiche dépliée de 4 rubriques, sans débordement. Le marqueur natif du `<details>` disparaissant avec `display: flex`,
 un chevron Tabler signale l'ouverture.
+
+## Journal en liste ou en grille, groupé par jour — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Une section par jour (date une seule fois) ; sélecteur Liste/Grille avec `aria-current` ; grille avec extraits tronqués ; vue conservée par le filtre (champ caché), la pagination et le changement de langue ; valeur inconnue sans erreur | Classes `journal`, `day-group` et sélecteur absents (2 tests) | **143 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+Deux assertions de test écrites avant le code supposaient un balisage différent (libellé juste après `aria-current`,
+comptage des mots sur toute la page) ; elles ont été réécrites sur la structure réelle, sans réduire ce qu'elles vérifient.
+Rendu vérifié sur la base locale : liste et grille à 1 280 px (clair) et 390 px (sombre), accueil compris, sans
+débordement ; sélecteur sur une ligne ; passage à la grille au clavier (Tab puis Entrée).

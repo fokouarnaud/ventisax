@@ -16,7 +16,7 @@ LABELS = {
                filter="Filtrer", previous="Précédent", next="Suivant", learning="Apprentissages",
                step="Prochaine étape", preparation="En préparation", active="Actif", site="Site du secteur",
                email="Contacter par e-mail", whatsapp="Contacter par WhatsApp", skip="Aller au contenu",
-               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="", report="Compte rendu de manipulation",
+               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="", report="Compte rendu de manipulation", view="Affichage", view_list="Liste", view_grid="Grille",
                instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
                notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
                               "et de froid. Mon quartier : ",
@@ -25,13 +25,16 @@ LABELS = {
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
                active="Active", site="Sector website", email="Contact by email", whatsapp="Contact on WhatsApp",
-               skip="Skip to content", report="Practical work report", unavailable="The project is preparing its bilingual content.", video="Video",
+               skip="Skip to content", report="Practical work report", view="Display", view_list="List", view_grid="Grid", unavailable="The project is preparing its bilingual content.", video="Video",
                video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook",
                notify="Notify me at launch",
                notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
                               "services open. My neighbourhood: ",
                follow="Follow Ventisax"),
 }
+
+
+VIEWS = ("liste", "grille")  # Affichages du journal ; l'URL porte le choix (partageable, sans JavaScript).
 
 
 def report_rows(text):
@@ -75,6 +78,8 @@ def public(request, lang, page="home", slug=None):
                    secteurs=[localized(s, lang, "sector") for s in sectors])
     selected = None
     obj = None
+    vue = request.GET.get("vue") if page == "news" and request.GET.get("vue") in VIEWS else "liste"
+    context["vue"] = vue
     if page == "sector":
         obj = get_object_or_404(sectors, **{"slug_" + lang: slug})
         context["secteur"] = localized(obj, lang, "sector")
@@ -90,9 +95,17 @@ def public(request, lang, page="home", slug=None):
     if obj:
         kwargs["slug"] = getattr(obj, "slug_" + other)
     context["language_url"] = reverse(route, kwargs=kwargs)
+    language_query = {"secteur": getattr(selected, "slug_" + other)} if selected else {}
+    if vue != "liste":
+        language_query["vue"] = vue
+    if language_query:
+        context["language_url"] += "?" + urlencode(language_query)
     if selected:
-        context["language_url"] += "?" + urlencode({"secteur": getattr(selected, "slug_" + other)})
         context["selected_slug"] = getattr(selected, "slug_" + lang)
+    if page == "news":
+        base = {"secteur": getattr(selected, "slug_" + lang)} if selected else {}
+        context["view_urls"] = {option: "?" + urlencode({**base, **({"vue": option} if option != "liste" else {})})
+                                for option in VIEWS}
     if page in ("news", "sector"):
         try:
             page_obj = Paginator(news, 10).page(request.GET.get("page", "1"))
@@ -104,6 +117,8 @@ def public(request, lang, page="home", slug=None):
             query = {"page": number}
             if selected:
                 query["secteur"] = getattr(selected, "slug_" + lang)
+            if vue != "liste":
+                query["vue"] = vue
             context[direction + "_url"] = "?" + urlencode(query)
     elif page == "home":
         context["nouvelles"] = [localized(n, lang, "detail") for n in news[:3]]
