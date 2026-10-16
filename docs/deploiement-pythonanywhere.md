@@ -158,3 +158,11 @@ configuration générale 0, secteurs 0, nouvelles 0 et compte `fokou` absent.
 La commande envoyée pendant la précédente coupure n'avait donc pas préparé ces données.
 L'absence de configuration générale explique le 503 de préparation ; aucun paramètre Web manquant
 n'a été constaté lors de ce recontrôle.
+
+## Déploiement du 16 octobre 2026 (demande explicite du porteur)
+
+- Sauvegarde cohérente de la base de production avant toute opération (`~/deploy-backups/prod-avant-deploiement-2026-10-16.sqlite3`, droits 600) et copie téléchargée hors hébergement ; intégrité vérifiée (1 nouvelle, 1 compte).
+- Code mis à jour en `8f6741c`, puis, à la demande du porteur, dossier applicatif recréé par `git clone` de `main` ; `.env`, base et `backups/admin` repris de l'ancien dossier avant sa suppression. Migrations `0008` à `0011` appliquées, `check --deploy` sans problème, statiques collectés, application rechargée.
+- Base préparée en local importée par la même séquence que « Charger le fichier comme courante » (empreinte SHA-256 vérifiée, accès et second facteur de production conservés, ancienne courante placée en backup).
+- Contrôle en ligne (navigateur) : accueil, journal en liste et en grille (4 jours, 7 entrées), compte rendu replié, contact `fokouvirtualone@gmail.com` et lien « Me prévenir » ; `/db.sqlite3` et `/.env` répondent 404, `/admin/` redirige vers la connexion. Espace utilisé : 136 Mio.
+- Non exercé : connexion administrateur avec second facteur après l'import (sessions réinitialisées), envoi réel du message WhatsApp.
