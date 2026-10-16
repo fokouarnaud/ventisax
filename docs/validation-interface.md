@@ -152,5 +152,7 @@ publiques fr/en (24 rendus) à 1 280 et 390 px.
 | React, Tailwind, Motion, `min-h-[100dvh]`, `useEffect` | Sans objet | Cadrage Q32 : templates Django, CSS natif, JavaScript minimal ; aucune animation à orchestrer |
 | Bento, logos, citations, marquee, sticky-stack, listes longues, tableaux | Sans objet | Absents du site |
 
+Image d'accueil, 16/10 : une image générée montrant l'enseigne et les locaux d'un centre de formation a été écartée sur décision du porteur (contenu fictif, locaux d'un tiers sans accord). Le hero garde le logo ; seule une vraie photo publiable, sans enseigne du centre, fermera ce point.
+
 Limites : mesures sur serveur local, pas sur PythonAnywhere ; Lighthouse non exécuté ; pas d'essai sur téléphone
 physique. Si `site.js` ne se charge pas alors que JavaScript est actif, le menu mobile reste replié.
