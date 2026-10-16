@@ -85,3 +85,16 @@ le `.env` local (`DJANGO_DEBUG`, `DJANGO_SECRET_KEY`) est chargé par les régla
 « sans opt-in ». Non corrigé dans cette passe. Rendu exercé dans l'aperçu isolé avec Playwright et Chrome : accueil
 et Contact en fr/en à 390 et 1 280 px sans débordement, message WhatsApp décodé conforme, bouton atteint au clavier
 (Tab). Non exercé : saisie des profils dans Unfold derrière le second facteur.
+
+## Image d'accueil administrable — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Image d'accueil optimisée (JPEG, 1 600 px), alternatives fr/en exigées seulement avec image, fichier invalide refusé sur `image_accueil`, ancienne image supprimée après un remplacement validé puis au retrait | `AttributeError: 'ConfigurationGenerale' object has no attribute 'image_accueil'` | **143 tests réussis**, hors les 5 préexistants liés au `.env` |
+| Hero : `<img class="hero-photo">` avec alternative localisée et dimensions ; logo sans image ; champs présents dans Unfold | Même absence de champ | idem |
+
+La validation des bases chargées (`database_versions`) exigeait tout champ `_fr`/`_en` non vide : elle utilise désormais
+`ConfigurationGenerale.required_texts()` et vérifie l'image d'accueil (fichier présent, alternatives) comme celles des
+nouvelles. Le test d'administration n'envoie plus le champ fichier vide, comme un navigateur. Rendu vérifié dans un aperçu
+isolé avec une image neutre : 1 280 px en clair et 390 px en sombre, CLS ≤ 0,03, sans débordement.
+Non exercé : envoi réel d'une image dans Unfold derrière le second facteur.

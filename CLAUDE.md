@@ -28,7 +28,7 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 - `Secteur` : textes fr/en, `etat` (préparation/actif, distinct de la visibilité), `ordre`, `site_url`.
 - `Nouvelle` : titre/corps fr/en, `date_jalon`, image optimisée (`hub/images.py::optimize`) + alt fr/en, secteurs (M2M via `NouvelleSecteur`, suppression de secteur protégée), `video_youtube` (`youtube_video_id()`, propriété `youtube_id`), `instagram_url`, `facebook_url`. Nettoyage des images remplacées après commit.
 - `LienNouvelle` : liens externes ordonnés, libellés fr/en exigés à la publication.
-- `ConfigurationGenerale` : singleton (identité, présentation, parcours, implantation, e-mail, WhatsApp facultatif, profils facultatifs YouTube/Facebook/TikTok/Instagram validés par `SOCIAL_HOSTS` et `social_host_errors`) ; `notify_url(message, sujet)` construit le lien « Me prévenir » (`wa.me?text=` ou `mailto:` en repli).
+- `ConfigurationGenerale` : singleton (identité, présentation, parcours, implantation, e-mail, WhatsApp facultatif, profils facultatifs YouTube/Facebook/TikTok/Instagram validés par `SOCIAL_HOSTS` et `social_host_errors`) ; `notify_url(message, sujet)` construit le lien « Me prévenir » (`wa.me?text=` ou `mailto:` en repli) ; `image_accueil` + `alt_accueil_fr/en` (image du hero, logo sinon), `required_texts()`. Sauvegarde d'image partagée : `save_with_image()` (optimisation, nettoyage différé de l'ancienne image).
 - `DatabaseVersion` : métadonnées des versions de base (voir ci-dessous).
 
 ## Administration et sécurité
@@ -42,7 +42,7 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 
 - `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`.
 - `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
-- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 139 tests (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 143 tests (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
 - Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).
 - Documentation : `README.md` (installation, déploiement PythonAnywhere), `docs/` (exploitation, déploiement, sécurité, validation d'interface, versions de base, `acquisition.md` : capsules, réseaux, WhatsApp Business).
 
@@ -57,4 +57,4 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 
 - La lecture effective du lecteur YouTube et la saisie Unfold derrière le second facteur n'ont pas été exercées dans un navigateur réel pour les champs vidéo/réseaux.
 - La politique de sécurité du contenu (CSP) n'existe pas : l'iframe YouTube fonctionne sans elle ; en ajouter une imposera d'autoriser `youtube-nocookie.com`.
-- Déploiement des migrations `0008` et `0009` sur PythonAnywhere : non fait, soumis à accord explicite.
+- Déploiement des migrations `0008` à `0010` sur PythonAnywhere : non fait, soumis à accord explicite.

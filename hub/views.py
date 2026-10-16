@@ -104,6 +104,7 @@ def public(request, lang, page="home", slug=None):
         labels = LABELS[lang]
         context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url,
                        notify_url=config.notify_url(labels["notify_message"], labels["notify"]),
+                       hero_image=config.image_accueil or None,
                        profils=[(SOCIAL_NAMES[f], getattr(config, f)) for f in config.profile_fields if getattr(config, f)])
         return render(request, "hub/page.html", context)
 

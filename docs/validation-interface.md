@@ -143,7 +143,7 @@ publiques fr/en (24 rendus) à 1 280 et 390 px.
 | Numérotation décorative, points décoratifs | Conforme | « 01 / 02 » des cartes et point d'implantation retirés ; le point du statut « En préparation » porte un état réel |
 | Icônes d'une bibliothèque, pas de SVG fait main | Conforme | Tabler Icons v3 (MIT) via `partials/icon.html` ; flèches typographiques remplacées |
 | Illustration décorative faite main, grille décorative | Corrigé en partie | Grille et nœuds retirés ; reste le logo seul (marque géométrique simple, admise) |
-| Images réelles | Conforme par la voie de dernier recours (4.8) | Aucune photo authentique publiable ; images de banque ou générées exclues (« aucun contenu fictif »). Emplacement balisé dans `pages/home.html` (`TODO visuel du hero`, environ 1200×1000) et besoin signalé au porteur : photo réelle de la formation, sans formateur, manuel ni autres apprenants |
+| Images réelles | **Ouvert : photo à charger par le porteur** | Champ « Image d'accueil » dans Unfold (Configuration générale) : image optimisée, alternatives fr/en obligatoires, ancienne image supprimée au remplacement ; le hero l'affiche (4:3, sans décalage) et revient au logo sans image. Deux images écartées le 16/10 : l'une générée, l'autre issue d'un document imprimé montrant des personnes dont l'accord n'est pas confirmé |
 | Navigation sur une ligne, ≤ 80 px | Conforme | 73 px ; une ligne à 1 280 px |
 | Core Web Vitals | Conforme en local | LCP ≤ 1,2 s, CLS ≤ 0,03 (menu mobile replié en CSS dès le premier rendu, rouvert par `<noscript>` sans JavaScript) |
 | Mouvement réduit, retour tactile | Conforme | `prefers-reduced-motion` coupe les transitions ; `:active` décale le bouton de 1 px |

@@ -152,7 +152,8 @@ def test_creation_et_modification_reelles_dans_unfold(verified_client):
 
 def test_configuration_modifiee_dans_unfold_invalidite_preserve(verified_client):
     c = configuration()
-    payload = {field.name: getattr(c, field.name) for field in c._meta.fields if field.editable}
+    payload = {field.name: getattr(c, field.name) for field in c._meta.fields
+               if field.editable and not hasattr(getattr(c, field.name), "storage")}  # fichier vide non envoyé
     payload.update(email="nouveau@example.com", presentation_en=" ", _save="Enregistrer")
     response = verified_client.post("/admin/hub/configurationgenerale/1/change/", payload)
     assert response.status_code == 200
@@ -178,3 +179,9 @@ def test_codes_recuperation_inaccessibles_sans_second_facteur(client, admin_user
     response = client.get("/account/two_factor/backup/tokens/")
     assert response.status_code == 302
     assert client.get("/admin/login/").url.startswith("/account/login/")
+
+
+def test_image_d_accueil_modifiable_dans_unfold(verified_client):
+    configuration()
+    html = verified_client.get("/admin/hub/configurationgenerale/1/change/").content.decode()
+    assert 'name="image_accueil"' in html and 'name="alt_accueil_fr"' in html and 'name="alt_accueil_en"' in html

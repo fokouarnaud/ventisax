@@ -96,6 +96,8 @@ class ConfigurationAdmin(ModelAdmin):
         ("Textes", {"fields": ("identite_fr", "identite_en", "resume_fr", "resume_en", "presentation_fr",
                                "presentation_en", "parcours_fr", "parcours_en", "implantation_fr", "implantation_en")}),
         ("Coordonnées", {"fields": ("email", "whatsapp")}),
+        ("Image d'accueil", {"fields": ("image_accueil", "alt_accueil_fr", "alt_accueil_en"),
+                             "description": "Photo réelle et publiable : personnes d'accord, droits d'auteur acquis, sans enseigne d'un tiers."}),
         ("Réseaux", {"fields": ("youtube_channel_url", "facebook_url", "tiktok_url", "instagram_url"),
                      "description": "Liens facultatifs vers les profils publics, affichés en liens simples."}),
         ("Suivi", {"fields": ("uuid", "modifie_le")}),

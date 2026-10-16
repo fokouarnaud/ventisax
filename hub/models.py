@@ -27,6 +27,25 @@ class ValidatedModel(models.Model):
         return super().save(*args, **kwargs)
 
 
+def save_with_image(instance, field, save, *args, **kwargs):
+    """Optimise une image nouvellement envoyée, puis planifie le nettoyage de celle qu'elle remplace."""
+    old = type(instance).objects.filter(pk=instance.pk).values_list(field, flat=True).first() if instance.pk else None
+    image = getattr(instance, field)
+    uploaded = bool(image and not image._committed)
+    if uploaded:
+        setattr(instance, field, optimize(image.file))
+        image = getattr(instance, field)
+    try:
+        result = save(*args, **kwargs)
+    except Exception:
+        if uploaded and image._committed:
+            image.storage.delete(image.name)
+        raise
+    if old and old != image.name:
+        schedule_image_cleanup(old, image.storage)
+    return result
+
+
 class Publication(ValidatedModel):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     publie = models.BooleanField(default=False)
@@ -184,19 +203,7 @@ class Nouvelle(Publication):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        old = type(self).objects.filter(pk=self.pk).values_list("image", flat=True).first() if self.pk else None
-        uploaded = bool(self.image and not self.image._committed)
-        if uploaded:
-            self.image = optimize(self.image.file)
-        try:
-            result = super().save(*args, **kwargs)
-        except Exception:
-            if uploaded and self.image._committed:
-                self.image.storage.delete(self.image.name)
-            raise
-        if old and old != self.image.name:
-            schedule_image_cleanup(old, self.image.storage)
-        return result
+        return save_with_image(self, "image", super().save, *args, **kwargs)
 
 
 class NouvelleSecteur(models.Model):
@@ -210,7 +217,9 @@ class NouvelleSecteur(models.Model):
 def schedule_image_cleanup(name, storage):
     def cleanup():
         from .database_versions import backup_image_referenced
-        if not Nouvelle.objects.filter(image=name).exists() and not backup_image_referenced(name):
+        in_use = (Nouvelle.objects.filter(image=name).exists()
+                  or ConfigurationGenerale.objects.filter(image_accueil=name).exists())
+        if not in_use and not backup_image_referenced(name):
             storage.delete(name)
     transaction.on_commit(cleanup)
 
@@ -264,6 +273,11 @@ class ConfigurationGenerale(ValidatedModel):
     facebook_url = models.URLField("page Facebook", blank=True, validators=[HTTP_URL])
     tiktok_url = models.URLField("profil TikTok", blank=True, validators=[HTTP_URL])
     profile_fields = ("youtube_channel_url", "facebook_url", "tiktok_url", "instagram_url")
+    image_accueil = models.ImageField("image d'accueil", upload_to="accueil/", blank=True,
+                                      help_text="Photo réelle et publiable (2 Mio max). La remplacer supprime la précédente ; "
+                                                "sans image, le logo s'affiche.")
+    alt_accueil_fr = models.CharField("alternative (fr)", max_length=250, blank=True)
+    alt_accueil_en = models.CharField("alternative (en)", max_length=250, blank=True)
     modifie_le = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -273,15 +287,30 @@ class ConfigurationGenerale(ValidatedModel):
 
     def clean(self):
         super().clean()
-        errors = missing_text(self, [f.name for f in self._meta.fields if f.name.endswith(("_fr", "_en"))],
-                              "Texte obligatoire dans les deux langues.")
+        errors = missing_text(self, self.required_texts(), "Texte obligatoire dans les deux langues.")
         errors.update(social_host_errors(self, self.profile_fields))
+        if self.image_accueil:
+            errors.update(missing_text(self, ("alt_accueil_fr", "alt_accueil_en"), "Alternative traduite obligatoire."))
+            if not self.image_accueil._committed:
+                try:
+                    optimize(self.image_accueil.file)
+                except ValidationError as exc:
+                    errors["image_accueil"] = exc.message_dict["image"]
         if self.pk != 1:
             errors["id"] = "Une seule configuration est autorisée."
         if self._state.adding and type(self).objects.exists():
             errors["__all__"] = "La configuration existe déjà."
         if errors:
             raise ValidationError(errors)
+
+    @classmethod
+    def required_texts(cls):
+        """Textes bilingues toujours obligatoires ; les alternatives de l'image ne le sont qu'avec une image."""
+        return [f.name for f in cls._meta.fields if f.name.endswith(("_fr", "_en")) and not f.name.startswith("alt_accueil")]
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return save_with_image(self, "image_accueil", super().save, *args, **kwargs)
 
     @property
     def whatsapp_url(self):

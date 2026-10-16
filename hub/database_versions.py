@@ -147,9 +147,13 @@ def validate(db):
             # not against the currently active content via Django's validators.
             obj.clean_fields(exclude=[field.name for field in fields if field.is_relation])
             if model == ConfigurationGenerale:
-                for field in fields:
-                    if field.name.endswith(('_fr', '_en')) and not getattr(obj, field.name).strip():
-                        raise ValidationError('Présentation générale bilingue incomplète.')
+                if any(not getattr(obj, name).strip() for name in model.required_texts()):
+                    raise ValidationError('Présentation générale bilingue incomplète.')
+                if obj.image_accueil:
+                    path = (Path(settings.MEDIA_ROOT).resolve() / obj.image_accueil.name).resolve()
+                    if (Path(settings.MEDIA_ROOT).resolve() not in path.parents or not path.is_file()
+                            or not obj.alt_accueil_fr.strip() or not obj.alt_accueil_en.strip()):
+                        raise ValidationError("Image d'accueil manquante ou invalide. Restaurer les médias séparément avant de charger la base.")
             if model in (Nouvelle, Secteur) and obj.publie and not obj.premiere_publication:
                 raise ValidationError('Horodatage de première publication manquant.')
             if model == Nouvelle and obj.publie and not obj.date_jalon:
@@ -262,6 +266,12 @@ def backup_image_referenced(name):
         return False
     try:
         with closing(open_readonly(path)) as db:
-            return db.execute('SELECT 1 FROM hub_nouvelle WHERE image=? LIMIT 1', (name,)).fetchone() is not None
+            if db.execute('SELECT 1 FROM hub_nouvelle WHERE image=? LIMIT 1', (name,)).fetchone():
+                return True
+            try:
+                return db.execute('SELECT 1 FROM hub_configurationgenerale WHERE image_accueil=? LIMIT 1',
+                                  (name,)).fetchone() is not None
+            except sqlite3.OperationalError:
+                return False  # Backup antérieur à l'image d'accueil.
     except sqlite3.DatabaseError:
         return True
