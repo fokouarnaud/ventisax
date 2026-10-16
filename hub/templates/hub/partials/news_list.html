@@ -1,8 +1,8 @@
 {% if nouvelles %}
 <div class="news-list">
   {% for item in nouvelles %}
-  <article class="news-item">
-    <time class="news-date" datetime="{{ item.date_jalon|date:'Y-m-d' }}"><span class="date-day">{{ item.date_jalon|date:'d' }}</span>{{ item.date_jalon|date:'M Y' }}</time>
+  <article class="news-item{% ifchanged item.date_jalon %}{% else %} news-item-same-day{% endifchanged %}">
+    {% ifchanged item.date_jalon %}<time class="news-date" datetime="{{ item.date_jalon|date:'Y-m-d' }}"><span class="date-day">{{ item.date_jalon|date:'d' }}</span>{{ item.date_jalon|date:'M Y' }}</time>{% else %}<time class="news-date news-date-repeat" datetime="{{ item.date_jalon|date:'Y-m-d' }}"><span class="date-day">{{ item.date_jalon|date:'d' }}</span>{{ item.date_jalon|date:'M Y' }}</time>{% endifchanged %}
     <div>{% if page == 'news' %}<h2><a href="{{ item.url }}">{{ item.titre }}</a></h2>{% else %}<h3><a href="{{ item.url }}">{{ item.titre }}</a></h3>{% endif %}
       <div class="tags">{% for sector in item.secteurs %}<a class="tag" href="{{ sector.url }}">{{ sector.nom }}</a>{% empty %}<span class="tag">{{ labels.group }}</span>{% endfor %}</div>
     </div>

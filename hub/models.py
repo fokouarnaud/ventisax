@@ -154,6 +154,10 @@ class Nouvelle(Publication):
     titre_en = models.CharField(max_length=200, blank=True)
     corps_fr = models.TextField(blank=True)
     corps_en = models.TextField(blank=True)
+    compte_rendu_fr = models.TextField("compte rendu de manipulation (fr)", blank=True,
+                                       help_text="Une ligne par rubrique, « Rubrique : valeur » (Objet, Matériel, Déroulement, Durée).")
+    compte_rendu_en = models.TextField("compte rendu de manipulation (en)", blank=True,
+                                       help_text="One line per item, “Item: value” (Purpose, Equipment, Procedure, Duration).")
     date_jalon = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to="nouvelles/", blank=True)
     alt_fr = models.CharField(max_length=250, blank=True)
@@ -190,6 +194,10 @@ class Nouvelle(Publication):
         if self.publie:
             if not self.date_jalon:
                 raise ValidationError({"date_jalon": "Date du jalon obligatoire."})
+            if self.compte_rendu_fr.strip() or self.compte_rendu_en.strip():
+                errors = missing_text(self, ("compte_rendu_fr", "compte_rendu_en"), "Compte rendu traduit obligatoire.")
+                if errors:
+                    raise ValidationError(errors)
             if self.pk:
                 for link in self.liens.all():
                     try:

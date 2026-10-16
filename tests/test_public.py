@@ -172,3 +172,29 @@ def test_profils_reseaux_affiches_seulement_si_renseignes(client):
         assert 'href="https://www.tiktok.com/@ventisax" target="_blank" rel="noopener noreferrer"' in html
         assert 'href="https://www.facebook.com/ventisax" target="_blank" rel="noopener noreferrer"' in html
         assert "instagram" not in html and "youtube.com/@" not in html
+
+
+@pytest.mark.parametrize("lang,summary,label,value", [
+    ("fr", "Compte rendu de manipulation", "Objet", "port du harnais"),
+    ("en", "Practical work report", "Purpose", "wearing a harness")])
+def test_compte_rendu_replie_en_fiche_et_paragraphes_separes(client, lang, summary, label, value):
+    configuration()
+    nouvelle(publie=True, corps_fr="Premier paragraphe.\n\nSecond paragraphe.", corps_en="First paragraph.\n\nSecond paragraph.",
+             compte_rendu_fr="Objet : port du harnais\nDurée : 4 heures",
+             compte_rendu_en="Purpose: wearing a harness\nDuration: 4 hours")
+    slug = "formation" if lang == "fr" else "formation-en"
+    html = client.get(f"/{lang}/nouvelles/{slug}/").content.decode()
+    assert f'<details class="report"><summary>{summary}<span class="report-chevron">' in html
+    assert f"<dt>{label}</dt><dd>{value}</dd>" in html
+    assert html.count('<p>') >= 2 and "<br>" not in html.split('class="prose"')[1].split("</div>")[0]
+
+
+def test_journal_une_seule_pastille_de_date_par_jour(client):
+    from datetime import date
+    configuration()
+    for slug in ("a", "b"):
+        nouvelle(slug, publie=True, date_jalon=date(2026, 10, 13))
+    nouvelle("c", publie=True, date_jalon=date(2026, 10, 14))
+    html = client.get("/fr/nouvelles/").content.decode()
+    assert html.count('class="news-date"') == 2
+    assert html.count('class="news-date news-date-repeat"') == 1

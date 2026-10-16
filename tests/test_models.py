@@ -208,3 +208,14 @@ def test_lien_me_prevenir_prerempli_whatsapp_puis_email():
     c.whatsapp = ""
     assert c.notify_url("Bonjour & merci", "Me prévenir") == (
         "mailto:contact@example.com?subject=Me%20pr%C3%A9venir&body=Bonjour%20%26%20merci")
+
+
+def test_compte_rendu_bilingue_exige_a_la_publication_s_il_est_renseigne():
+    n = nouvelle(compte_rendu_fr="Objet : essai")
+    with pytest.raises(ValidationError) as error:
+        n.publish()
+    assert "compte_rendu_en" in error.value.message_dict
+    n.refresh_from_db()
+    n.compte_rendu_en = "Purpose: test"
+    n.publish()
+    assert nouvelle("sans-cr", publie=True).compte_rendu_fr == ""

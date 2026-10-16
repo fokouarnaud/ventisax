@@ -98,3 +98,13 @@ La validation des bases chargées (`database_versions`) exigeait tout champ `_fr
 nouvelles. Le test d'administration n'envoie plus le champ fichier vide, comme un navigateur. Rendu vérifié dans un aperçu
 isolé avec une image neutre : 1 280 px en clair et 390 px en sombre, CLS ≤ 0,03, sans débordement.
 Non exercé : envoi réel d'une image dans Unfold derrière le second facteur.
+
+## Compte rendu replié et journal groupé par jour — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Compte rendu bilingue exigé à la publication s'il est renseigné ; rendu en `<details class="report">` avec `<dt>`/`<dd>` à partir de lignes « Rubrique : valeur » ; corps en paragraphes séparés ; une seule pastille de date par jour dans le journal | `TypeError: Nouvelle() got unexpected keyword arguments: 'compte_rendu_fr'` et pastilles répétées (4 tests) | **142 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+Rendu vérifié sur la base locale : journal à 1 280 px (clair) et 390 px (sombre), 7 entrées et 4 pastilles visibles,
+fiche dépliée de 4 rubriques, sans débordement. Le marqueur natif du `<details>` disparaissant avec `display: flex`,
+un chevron Tabler signale l'ouverture.

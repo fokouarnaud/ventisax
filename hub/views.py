@@ -16,7 +16,7 @@ LABELS = {
                filter="Filtrer", previous="Précédent", next="Suivant", learning="Apprentissages",
                step="Prochaine étape", preparation="En préparation", active="Actif", site="Site du secteur",
                email="Contacter par e-mail", whatsapp="Contacter par WhatsApp", skip="Aller au contenu",
-               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="",
+               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="", report="Compte rendu de manipulation",
                instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
                notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
                               "et de froid. Mon quartier : ",
@@ -25,13 +25,22 @@ LABELS = {
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
                active="Active", site="Sector website", email="Contact by email", whatsapp="Contact on WhatsApp",
-               skip="Skip to content", unavailable="The project is preparing its bilingual content.", video="Video",
+               skip="Skip to content", report="Practical work report", unavailable="The project is preparing its bilingual content.", video="Video",
                video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook",
                notify="Notify me at launch",
                notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
                               "services open. My neighbourhood: ",
                follow="Follow Ventisax"),
 }
+
+
+def report_rows(text):
+    """Lignes « Rubrique : valeur » d'un compte rendu, en paires (rubrique, valeur) ; sinon rubrique vide."""
+    rows = []
+    for line in filter(None, (line.strip() for line in text.splitlines())):
+        label, found, value = line.partition(":")
+        rows.append((label.strip(), value.strip()) if found and len(label.strip()) <= 40 else ("", line))
+    return rows
 
 
 def localized(obj, lang, kind=None):
@@ -44,7 +53,8 @@ def localized(obj, lang, kind=None):
         data.update(date_jalon=obj.date_jalon, premiere_publication=obj.premiere_publication,
                     secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],
                     liens=[{**localized(link, lang), "url": link.url} for link in obj.liens.all()],
-                    youtube_id=obj.youtube_id, instagram_url=obj.instagram_url, facebook_url=obj.facebook_url)
+                    youtube_id=obj.youtube_id, instagram_url=obj.instagram_url, facebook_url=obj.facebook_url,
+                    rapport=report_rows(getattr(obj, "compte_rendu_" + lang)))
         if hasattr(obj, "image") and obj.image:
             data.update(image_url=obj.image.url, image_width=obj.image.width, image_height=obj.image.height)
     return data
