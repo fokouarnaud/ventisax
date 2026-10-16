@@ -76,10 +76,10 @@ Ces vérifications ne constituent pas un audit exhaustif d’accessibilité ni u
 .venv/Scripts/python scripts/preview_site.py
 ```
 
-Ouvrir `http://127.0.0.1:8000/fr/`. Le serveur utilise une base et des médias temporaires, avec un bandeau
+Ouvrir `http://127.0.0.1:8001/fr/`. Le serveur utilise une base et des médias temporaires, avec un bandeau
 explicite de démonstration. Ses textes, coordonnées et jalons sont fictifs ; ils ne sont jamais ajoutés à la base du projet.
 Un troisième secteur de démonstration sert uniquement à vérifier l’état sans nouvelle. Arrêter avec Ctrl+C.
-Pour vérifier la page sans configuration, lancer `scripts/preview_site.py --empty --port 8001`.
+Pour vérifier la page sans configuration, lancer `scripts/preview_site.py --empty --port 8002`.
 
 Le CSS, l’icône, le décor de l’accueil et un petit script d’interactions résident dans `hub/static/hub/`.
 Le script replie le menu mobile, ferme le bandeau de démonstration et propose le retour en haut.

@@ -84,3 +84,43 @@ def test_suppression_nouvelle_nettoie_image():
     path = Path(n.image.path)
     n.delete()
     assert not path.exists()
+
+
+def test_image_accueil_optimisee_alternatives_requises_et_remplacement_nettoye():
+    from hub.models import ConfigurationGenerale
+    from tests.factories import configuration
+    assert configuration().image_accueil == ""  # sans image, aucune alternative exigée
+    ConfigurationGenerale.objects.all().delete()
+    with pytest.raises(ValidationError) as error:
+        configuration(image_accueil=image_file())
+    assert {"alt_accueil_fr", "alt_accueil_en"} <= set(error.value.message_dict)
+    with pytest.raises(ValidationError) as error:
+        configuration(image_accueil=SimpleUploadedFile("faux.png", b"pas une image"), alt_accueil_fr="A", alt_accueil_en="A")
+    assert "image_accueil" in error.value.message_dict
+    c = configuration(image_accueil=image_file(), alt_accueil_fr="Photo", alt_accueil_en="Photo")
+    old = Path(c.image_accueil.path)
+    with Image.open(old) as img:
+        assert img.format == "JPEG" and max(img.size) == 1600
+    c.image_accueil = image_file((30, 20))
+    with transaction.atomic():
+        c.save()
+        assert old.exists()
+    assert not old.exists()
+    current = Path(c.image_accueil.path)
+    c.image_accueil = ""
+    c.save()
+    assert not current.exists()
+
+
+@pytest.mark.parametrize("lang,alt", [("fr", "Atelier de formation"), ("en", "Training workshop")])
+def test_accueil_affiche_l_image_d_accueil_sinon_le_logo(client, lang, alt):
+    from tests.factories import configuration
+    c = configuration()
+    html = client.get(f"/{lang}/").content.decode()
+    assert "blueprint.svg" in html and "hero-photo" not in html
+    c.image_accueil = image_file()
+    c.alt_accueil_fr, c.alt_accueil_en = "Atelier de formation", "Training workshop"
+    c.save()
+    html = client.get(f"/{lang}/").content.decode()
+    assert f'class="hero-photo" src="{c.image_accueil.url}" alt="{alt}" width="1600" height="800"' in html
+    assert "blueprint.svg" not in html

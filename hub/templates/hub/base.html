@@ -4,9 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>{% block title %}Ventisax{% endblock %}</title>
   <link rel="icon" type="image/svg+xml" href="{% static 'hub/ventisax-mark.svg' %}">
   <link rel="stylesheet" href="{% static 'hub/site.css' %}">
+  <noscript><style>@media (max-width: 960px) { .main-nav { display: flex !important; } .menu-toggle { display: none !important; } }</style></noscript>
   <script src="{% static 'hub/site.js' %}" defer></script>
 </head>
 <body>
@@ -15,8 +17,8 @@
   <header class="site-header" id="page-top" tabindex="-1">
     <div class="container header-inner">
       <a class="brand" href="{% url 'home' lang=lang %}"><span class="brand-symbol" aria-hidden="true"></span><span><span class="brand-name">Ventisax</span><span class="brand-note">{% if lang == 'fr' %}Un projet en développement{% else %}A project in development{% endif %}</span></span></a>
-      <a class="language-link" href="{{ language_url }}" lang="{% if lang == 'fr' %}en{% else %}fr{% endif %}" title="{% if lang == 'fr' %}Changer de langue : English{% else %}Change language: Français{% endif %}" aria-label="{% if lang == 'fr' %}Read this page in English{% else %}Lire cette page en français{% endif %}"><span class="language-long">{% if lang == 'fr' %}Français → English{% else %}English → Français{% endif %}</span><span class="language-short" aria-hidden="true">{% if lang == 'fr' %}FR → EN{% else %}EN → FR{% endif %}</span></a>
-      <button class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="false" aria-label="{% if lang == 'fr' %}Ouvrir ou fermer le menu{% else %}Open or close the menu{% endif %}" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg><span>Menu</span></button>
+      <a class="language-link" href="{{ language_url }}" lang="{% if lang == 'fr' %}en{% else %}fr{% endif %}" title="{% if lang == 'fr' %}Changer de langue : English{% else %}Change language: Français{% endif %}" aria-label="{% if lang == 'fr' %}Read this page in English{% else %}Lire cette page en français{% endif %}"><span class="language-long">{% if lang == 'fr' %}Français {% include 'hub/partials/icon.html' with name='arrow-right' %} English{% else %}English {% include 'hub/partials/icon.html' with name='arrow-right' %} Français{% endif %}</span><span class="language-short" aria-hidden="true">{% if lang == 'fr' %}FR {% include 'hub/partials/icon.html' with name='arrow-right' %} EN{% else %}EN {% include 'hub/partials/icon.html' with name='arrow-right' %} FR{% endif %}</span></a>
+      <button class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="false" aria-label="{% if lang == 'fr' %}Ouvrir ou fermer le menu{% else %}Open or close the menu{% endif %}" hidden>{% include 'hub/partials/icon.html' with name='menu-2' size='md' %}<span>Menu</span></button>
       <nav id="main-navigation" class="main-nav" aria-label="{% if lang == 'fr' %}Navigation principale{% else %}Main navigation{% endif %}">
         <a href="{% url 'home' lang=lang %}" {% if page == 'home' %}aria-current="page"{% endif %}>{{ labels.home }}</a>
         <a href="{% url 'about' lang=lang %}" {% if page == 'about' %}aria-current="page"{% endif %}>{{ labels.about }}</a>
@@ -26,7 +28,7 @@
     </div>
   </header>
   <main id="content" tabindex="-1">{% block content %}{% endblock %}</main>
-  <footer class="site-footer"><div class="container footer-inner"><div><p class="footer-brand">Ventisax</p><p>{{ config.implantation }}</p>{% if preview %}<p class="preview-note">{% if lang == 'fr' %}Démo locale · données fictives{% else %}Local demo · sample data{% endif %}</p>{% endif %}</div><p>{% if lang == 'fr' %}Projet de groupe en développement{% else %}Group project in development{% endif %}</p><a href="{% url 'contact' lang=lang %}">{{ labels.contact }} <span aria-hidden="true">↗</span></a></div></footer>
-  <a class="back-to-top" href="#page-top" aria-label="{% if lang == 'fr' %}Retour en haut de la page{% else %}Back to top{% endif %}" title="{% if lang == 'fr' %}Retour en haut{% else %}Back to top{% endif %}" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 7-7 7 7M12 5v15"/></svg></a>
+  <footer class="site-footer"><div class="container footer-inner"><div><p class="footer-brand">Ventisax</p><p>{{ config.implantation }}</p>{% if preview %}<p class="preview-note">{% if lang == 'fr' %}Démo locale · données fictives{% else %}Local demo · sample data{% endif %}</p>{% endif %}</div>{% if page != 'contact' %}{% include 'hub/partials/profiles.html' %}{% endif %}<p>{% if lang == 'fr' %}Projet de groupe en développement{% else %}Group project in development{% endif %}</p><a href="{% url 'contact' lang=lang %}">{{ labels.contact }} {% include 'hub/partials/icon.html' with name='arrow-up-right' %}</a></div></footer>
+  <a class="back-to-top" href="#page-top" aria-label="{% if lang == 'fr' %}Retour en haut de la page{% else %}Back to top{% endif %}" title="{% if lang == 'fr' %}Retour en haut{% else %}Back to top{% endif %}" hidden>{% include 'hub/partials/icon.html' with name='arrow-up' size='md' %}</a>
 </body>
 </html>

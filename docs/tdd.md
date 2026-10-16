@@ -59,3 +59,63 @@ La matrice publique compte 36 combinaisons : six types de pages, deux langues et
 Aucun débordement horizontal, image non chargée, langue de document incorrecte ou titre principal manquant
 n’a été observé. Le filtre, sa pagination et sa conservation lors d’un changement de langue ont été exercés,
 ainsi que le lien d’évitement et la soumission au clavier. Les détails figurent dans `validation-interface.md`.
+
+## Nouvelles-leçons : vidéo YouTube et liens réseaux — 14 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Formats YouTube acceptés et ID extrait ; domaines, playlists, ID invalides et `javascript:` refusés ; Instagram/Facebook limités à leurs domaines | `TypeError: Nouvelle() got unexpected keyword arguments: 'video_youtube'` (13 tests, champs absents) | 27 tests du modèle |
+| Détail : iframe `youtube-nocookie` construit depuis l'ID seul (paramètres de l'URL d'origine non réinjectés), titre localisé, `loading="lazy"`, `referrerpolicy` ; liens réseaux en nouvel onglet ; mention « Video in French » | Même absence de champs | **132 tests réussis** |
+
+Le test « détail sans vidéo ni réseaux » passait dès son ajout (comportement déjà vrai) ; il protège contre une régression.
+Rendu exercé dans l'aperçu isolé (`scripts/preview_site.py`) avec Playwright et Chrome : aucun débordement horizontal
+à 320, 360, 768 et 1 280 px en français et en anglais ; lecteur 9:16 de 246×437 px à 320 px, plafonné à 360×640 px.
+Non exercé : lecture effective de la vidéo (le navigateur sans interface ne charge pas le lecteur), saisie dans Unfold
+derrière le second facteur (la validation est portée par `Nouvelle.clean()`, appelée par le formulaire).
+
+## Acquisition honnête : « Me prévenir », Journal de formation, profils — 15 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Profils YouTube/Instagram/Facebook/TikTok de la configuration limités à leur domaine, vides acceptés ; `notify_url` encode le message (`wa.me?text=`) ou bascule sur `mailto:?subject=&body=` | `TypeError: ConfigurationGenerale() got unexpected keyword arguments: 'tiktok_url', 'facebook_url'` ; `notify_url` absent | 29 tests du modèle |
+| Bouton « Me prévenir à l'ouverture » / « Notify me at launch » deux fois sur l'accueil et sur Contact, repli e-mail sans WhatsApp ; « Journal de formation » / « Training log » en titre, `<title>` et navigation, URL inchangées ; profils en liens `noopener noreferrer` seulement s'ils sont renseignés | Libellés et bouton absents (5 tests) | **134 tests réussis**, hors 5 préexistants |
+
+Les 5 tests de `test_security.py`/`test_deployment.py` qui échouent le font aussi sur `HEAD` sans ces modifications :
+le `.env` local (`DJANGO_DEBUG`, `DJANGO_SECRET_KEY`) est chargé par les réglages et contredit les scénarios
+« sans opt-in ». Non corrigé dans cette passe. Rendu exercé dans l'aperçu isolé avec Playwright et Chrome : accueil
+et Contact en fr/en à 390 et 1 280 px sans débordement, message WhatsApp décodé conforme, bouton atteint au clavier
+(Tab). Non exercé : saisie des profils dans Unfold derrière le second facteur.
+
+## Image d'accueil administrable — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Image d'accueil optimisée (JPEG, 1 600 px), alternatives fr/en exigées seulement avec image, fichier invalide refusé sur `image_accueil`, ancienne image supprimée après un remplacement validé puis au retrait | `AttributeError: 'ConfigurationGenerale' object has no attribute 'image_accueil'` | **143 tests réussis**, hors les 5 préexistants liés au `.env` |
+| Hero : `<img class="hero-photo">` avec alternative localisée et dimensions ; logo sans image ; champs présents dans Unfold | Même absence de champ | idem |
+
+La validation des bases chargées (`database_versions`) exigeait tout champ `_fr`/`_en` non vide : elle utilise désormais
+`ConfigurationGenerale.required_texts()` et vérifie l'image d'accueil (fichier présent, alternatives) comme celles des
+nouvelles. Le test d'administration n'envoie plus le champ fichier vide, comme un navigateur. Rendu vérifié dans un aperçu
+isolé avec une image neutre : 1 280 px en clair et 390 px en sombre, CLS ≤ 0,03, sans débordement.
+Non exercé : envoi réel d'une image dans Unfold derrière le second facteur.
+
+## Compte rendu replié et journal groupé par jour — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Compte rendu bilingue exigé à la publication s'il est renseigné ; rendu en `<details class="report">` avec `<dt>`/`<dd>` à partir de lignes « Rubrique : valeur » ; corps en paragraphes séparés ; une seule pastille de date par jour dans le journal | `TypeError: Nouvelle() got unexpected keyword arguments: 'compte_rendu_fr'` et pastilles répétées (4 tests) | **142 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+Rendu vérifié sur la base locale : journal à 1 280 px (clair) et 390 px (sombre), 7 entrées et 4 pastilles visibles,
+fiche dépliée de 4 rubriques, sans débordement. Le marqueur natif du `<details>` disparaissant avec `display: flex`,
+un chevron Tabler signale l'ouverture.
+
+## Journal en liste ou en grille, groupé par jour — 16 octobre 2026
+
+| Contrat | Échec observé avant correction | Suite verte après correction |
+| --- | --- | --- |
+| Une section par jour (date une seule fois) ; sélecteur Liste/Grille avec `aria-current` ; grille avec extraits tronqués ; vue conservée par le filtre (champ caché), la pagination et le changement de langue ; valeur inconnue sans erreur | Classes `journal`, `day-group` et sélecteur absents (2 tests) | **143 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+Deux assertions de test écrites avant le code supposaient un balisage différent (libellé juste après `aria-current`,
+comptage des mots sur toute la page) ; elles ont été réécrites sur la structure réelle, sans réduire ce qu'elles vérifient.
+Rendu vérifié sur la base locale : liste et grille à 1 280 px (clair) et 390 px (sombre), accueil compris, sans
+débordement ; sélecteur sur une ligne ; passage à la grille au clavier (Tab puis Entrée).

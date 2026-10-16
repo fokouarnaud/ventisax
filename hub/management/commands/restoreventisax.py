@@ -1,4 +1,3 @@
-import hashlib
 import json
 import shutil
 import sqlite3
@@ -6,6 +5,8 @@ from contextlib import closing
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
+
+from hub.database_versions import open_readonly, sha256_tree
 
 
 class Command(BaseCommand):
@@ -28,11 +29,10 @@ class Command(BaseCommand):
                 raise ValueError("Version inconnue")
             if any(p.is_symlink() for p in source.rglob("*")):
                 raise ValueError("Lien symbolique")
-            actual = {p.relative_to(source).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                      for p in source.rglob("*") if p.is_file() and p.name != "manifest.json"}
+            actual = sha256_tree(source, exclude=("manifest.json",))
             if actual != manifest["sha256"] or "db.sqlite3" not in actual:
                 raise ValueError("Fichiers modifiés ou manquants")
-            with closing(sqlite3.connect((source / "db.sqlite3").as_uri() + "?mode=ro", uri=True)) as db:
+            with closing(open_readonly(source / "db.sqlite3")) as db:
                 if db.execute("PRAGMA integrity_check").fetchone() != ("ok",):
                     raise ValueError("SQLite invalide")
                 if db.execute("PRAGMA foreign_key_check").fetchall():

@@ -36,6 +36,15 @@ class DatabaseForm(forms.Form):
         return data
 
 
+def utc_stamp():
+    return timezone.now().astimezone(utc_timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+
+
+def warn_unclean(request, obsolete, prefix):
+    if not versions.cleanup_images(obsolete):
+        messages.warning(request, f'{prefix} ; certains anciens médias demandent un nettoyage manuel.')
+
+
 def database_view(request):
     from .admin import site
     if not request.user.is_superuser:
@@ -49,8 +58,8 @@ def database_view(request):
             if slot not in ('current', 'backup'):
                 raise ValidationError('Emplacement inconnu.')
             with closing(versions.snapshot() if slot == 'current' else versions.read_backup()) as db:
-                ident, created = db.execute('SELECT uuid, created_at FROM hub_databaseversion WHERE id=1').fetchone()
-                stamp = timezone.now().astimezone(utc_timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+                ident, created = versions.version_row(db)
+                stamp = utc_stamp()
                 response = HttpResponse(db.serialize(), content_type='application/vnd.sqlite3')
                 response['Content-Disposition'] = f'attachment; filename="ventisax-{slot}-{stamp}-UTC-{UUID(ident)}.sqlite3"'
                 return response
@@ -61,23 +70,18 @@ def database_view(request):
             action = form.cleaned_data['action']
             with closing(versions.snapshot()) as current:
                 if action == 'save':
-                    obsolete = versions.store_backup(current, new_version=True)
-                    if not versions.cleanup_images(obsolete):
-                        messages.warning(request, 'Backup enregistré ; certains anciens médias demandent un nettoyage manuel.')
+                    warn_unclean(request, versions.store_backup(current, new_version=True), 'Backup enregistré')
                 elif action in ('swap', 'upload_current', 'upload_backup'):
                     incoming = versions.read_backup() if action == 'swap' else versions.read_upload(form.cleaned_data['database'])
                     with closing(incoming):
                         if action == 'upload_backup':
-                            obsolete = versions.store_backup(incoming)
-                            if not versions.cleanup_images(obsolete):
-                                messages.warning(request, 'Backup enregistré ; certains anciens médias demandent un nettoyage manuel.')
+                            warn_unclean(request, versions.store_backup(incoming), 'Backup enregistré')
                         else:
                             versions.prepare_activation(incoming, current)
                             obsolete = versions.store_backup(current)
                             versions.activate(incoming)
                             logout(request)
-                            if not versions.cleanup_images(obsolete):
-                                messages.warning(request, 'Base activée ; certains anciens médias demandent un nettoyage manuel.')
+                            warn_unclean(request, obsolete, 'Base activée')
                             messages.success(request, 'Base activée ; ancienne courante conservée en backup. Reconnectez-vous avec vos accès actuels.')
                             return redirect(settings.LOGIN_URL)
                 elif action == 'email':
@@ -86,7 +90,7 @@ def database_view(request):
                     payload = current.serialize()
                     if len(payload) > settings.DATABASE_EMAIL_MAX_BYTES:
                         raise ValidationError('Base trop volumineuse pour l’e-mail (10 Mio maximum). Utiliser la sauvegarde manuelle.')
-                    stamp = timezone.now().astimezone(utc_timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+                    stamp = utc_stamp()
                     ident = versions.version().uuid
                     message = EmailMessage(f'Ventisax — base courante — {stamp} UTC',
                         f'Base courante {ident}, exportée le {stamp} UTC.\nCette pièce jointe contient des données privées. Conserver en lieu sûr.\nLes médias doivent être sauvegardés séparément.',
@@ -103,8 +107,8 @@ def database_view(request):
     path = versions.backup_path()
     if path.exists():
         try:
-            with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as db:
-                ident, created = db.execute('SELECT uuid, created_at FROM hub_databaseversion WHERE id=1').fetchone()
+            with closing(versions.open_readonly(path)) as db:
+                ident, created = versions.version_row(db)
                 backup = {'uuid': UUID(ident), 'created_at': datetime.fromisoformat(created).replace(tzinfo=utc_timezone.utc), 'size': path.stat().st_size}
         except (sqlite3.Error, ValueError, TypeError):
             form.add_error(None, 'Backup illisible : charger une base compatible pour le remplacer.')

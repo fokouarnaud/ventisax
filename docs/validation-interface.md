@@ -104,3 +104,55 @@ Le navigateur intégré utilise l'aperçu isolé sur `http://127.0.0.1:8003/` po
 Sans JavaScript, la navigation est laissée visible par le HTML/CSS. Le stockage indisponible et
 la réduction des mouvements sont traités dans le script. Ces trois configurations, les lecteurs
 d'écran et un téléphone physique n'ont pas été exercés ; elles ne sont pas déclarées validées ici.
+
+## Refonte visuelle (typinclub) — 14 octobre 2026
+
+Référence relevée avec Playwright sur `https://typinclub.pythonanywhere.com/` (Lexend, fond `#f6f8f7`, accent vert,
+pilules, cartes arrondies, bandeau sombre). Transposition sur la palette Ventisax, sans changer gabarits structurels,
+URL ni scripts (seules deux étiquettes d'accueil retirées).
+
+| Contrôle | Résultat |
+| --- | --- |
+| Six pages publiques (accueil, nouvelles, détail, présentation, contact, secteur) à 1 280 et 390 px | Aucun débordement horizontal |
+| Police | Lexend locale chargée (`document.fonts`), aucun CSS distant (test de présentation) |
+| Menu mobile au clavier | Entrée ouvre (`aria-expanded=true`), Échap ferme et rend le focus au bouton |
+| Passage en format ordinateur | Navigation visible, bouton de menu masqué |
+| Suite automatisée | 132 tests réussis |
+
+Non couvert : téléphone physique, lecteur d'écran, contraste mesuré par outil (couleurs de texte reprises de la palette
+validée ; boutons blanc sur `#0b2d46` et `#0d665e` sur fonds clairs).
+
+## Audit skill taste (`design-taste-frontend`) — 15 octobre 2026
+
+Lecture : refonte-préservation d'un hub local bilingue, ton sobre et technique, confiance d'abord ;
+esthétique inspirée de typinclub (Lexend, bleu profond `#0b2d46`, turquoise), CSS natif sans système de
+design officiel (règle d'honnêteté : aucun paquet imité). Réglages : DESIGN_VARIANCE 5, MOTION_INTENSITY 2,
+VISUAL_DENSITY 4 (préservation de l'existant). Mesures : Playwright + Chrome sur la base locale, pages
+publiques fr/en (24 rendus) à 1 280 et 390 px.
+
+| Point de la section 14 | Statut | Preuve ou justification |
+| --- | --- | --- |
+| Lecture, réglages, système, mode refonte | Conforme | Ci-dessus ; audit de l'existant dans les sections précédentes de ce document |
+| Zéro tiret cadratin visible | Conforme | 0 sur toutes les pages ; état vide sans `—` ; accroche recommandée sans tiret |
+| Thème unique | Conforme | Thème clair ; le bandeau sombre d'appel est un composant teinté, pas une section inversée |
+| Accent, formes, contraste des boutons | Conforme | Turquoise seul accent (sombre en clair, vif en sombre) ; aucun blanc ni noir purs ; pilules interactives, cartes 24 px, surfaces 20 px, champs 12 px ; tous les boutons ≥ 4,5:1 |
+| Libellés d'appel sur une ligne, pas de doublon d'intention | Conforme | « Me prévenir à l'ouverture » identique partout ; contact et WhatsApp sont des intentions distinctes |
+| Contraste des formulaires | Conforme | Bordures de champ portées à 3,47:1 (clair) et 3,46:1 (sombre), contre 2,01 et 2,64 auparavant (WCAG 1.4.11) ; textes et libellés AA |
+| Hero : titre ≤ 2 lignes, sous-texte ≤ 20 mots, ≤ 4 éléments, appel visible | Conforme | 2 lignes, 15-16 mots, 4 éléments, bouton à 491 px sur 800 |
+| Étiquettes en capitales | Conforme | 1 par page au plus (« Nos domaines » retirée) |
+| Numérotation décorative, points décoratifs | Conforme | « 01 / 02 » des cartes et point d'implantation retirés ; le point du statut « En préparation » porte un état réel |
+| Icônes d'une bibliothèque, pas de SVG fait main | Conforme | Tabler Icons v3 (MIT) via `partials/icon.html` ; flèches typographiques remplacées |
+| Illustration décorative faite main, grille décorative | Corrigé en partie | Grille et nœuds retirés ; reste le logo seul (marque géométrique simple, admise) |
+| Images réelles | **Ouvert : photo à charger par le porteur** | Champ « Image d'accueil » dans Unfold (Configuration générale) : image optimisée, alternatives fr/en obligatoires, ancienne image supprimée au remplacement ; le hero l'affiche (4:3, sans décalage) et revient au logo sans image. Deux images écartées le 16/10 : l'une générée, l'autre issue d'un document imprimé montrant des personnes dont l'accord n'est pas confirmé |
+| Navigation sur une ligne, ≤ 80 px | Conforme | 73 px ; une ligne à 1 280 px |
+| Core Web Vitals | Conforme en local | LCP ≤ 1,2 s, CLS ≤ 0,03 (menu mobile replié en CSS dès le premier rendu, rouvert par `<noscript>` sans JavaScript) |
+| Mouvement réduit, retour tactile | Conforme | `prefers-reduced-motion` coupe les transitions ; `:active` décale le bouton de 1 px |
+| États vide, erreur | Conforme | États vides du journal et des secteurs, page 404, page 503 sans configuration |
+| Mode sombre | Conforme | Ajouté sur décision du porteur (16/10) : `prefers-color-scheme`, jetons sémantiques dans `:root`, `<meta name="color-scheme">` ; 24 rendus sans infraction et aucun texte sous AA dans les deux modes, connexion et 404 comprises |
+| React, Tailwind, Motion, `min-h-[100dvh]`, `useEffect` | Sans objet | Cadrage Q32 : templates Django, CSS natif, JavaScript minimal ; aucune animation à orchestrer |
+| Bento, logos, citations, marquee, sticky-stack, listes longues, tableaux | Sans objet | Absents du site |
+
+Image d'accueil, 16/10 : une image générée montrant l'enseigne et les locaux d'un centre de formation a été écartée sur décision du porteur (contenu fictif, locaux d'un tiers sans accord). Le hero garde le logo ; seule une vraie photo publiable, sans enseigne du centre, fermera ce point.
+
+Limites : mesures sur serveur local, pas sur PythonAnywhere ; Lighthouse non exécuté ; pas d'essai sur téléphone
+physique. Si `site.js` ne se charge pas alors que JavaScript est actif, le menu mobile reste replié.

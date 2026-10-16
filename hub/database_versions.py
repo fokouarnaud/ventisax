@@ -3,6 +3,7 @@
 Stop CLI writers during admin operations. Staging is bounded and memory-only,
 except the transient file used to atomically replace the backup.
 """
+import hashlib
 import os
 import sqlite3
 import threading
@@ -70,6 +71,41 @@ class DatabaseAccessMiddleware:
             return self.get_response(request)
 
 
+def open_readonly(path):
+    return sqlite3.connect(Path(path).as_uri() + '?mode=ro', uri=True)
+
+
+def sha256_tree(root, exclude=()):
+    """Empreinte SHA-256 de chaque fichier sous root, clé = chemin relatif POSIX."""
+    root = Path(root)
+    return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in root.rglob("*") if p.is_file() and p.name not in exclude}
+
+
+def page_bytes(db):
+    return db.execute('PRAGMA page_count').fetchone()[0] * db.execute('PRAGMA page_size').fetchone()[0]
+
+
+def utc_now_text():
+    """Horodatage UTC naïf, au format des colonnes DateTime de SQLite."""
+    return timezone.now().astimezone(utc_timezone.utc).replace(tzinfo=None).isoformat(' ')
+
+
+def version_row(db):
+    return db.execute('SELECT uuid, created_at FROM hub_databaseversion WHERE id=1').fetchone()
+
+
+def in_memory(fill):
+    """Base SQLite en mémoire remplie par fill(db) ; fermée si le remplissage échoue."""
+    db = sqlite3.connect(':memory:')
+    try:
+        fill(db)
+        return db
+    except Exception:
+        db.close()
+        raise
+
+
 def backup_path():
     return Path(settings.DATABASE_BACKUP_DIR) / 'backup.sqlite3'
 
@@ -83,16 +119,9 @@ def snapshot():
         raise ValidationError('Opération indisponible dans une transaction ouverte.')
     version()
     connection.ensure_connection()
-    size = connection.connection.execute('PRAGMA page_count').fetchone()[0] * connection.connection.execute('PRAGMA page_size').fetchone()[0]
-    if size > settings.DATABASE_MAX_BYTES:
+    if page_bytes(connection.connection) > settings.DATABASE_MAX_BYTES:
         raise ValidationError('Base trop volumineuse pour la gestion en ligne ; utiliser la sauvegarde manuelle.')
-    db = sqlite3.connect(':memory:')
-    try:
-        connection.connection.backup(db)
-        return db
-    except Exception:
-        db.close()
-        raise
+    return in_memory(connection.connection.backup)
 
 
 def schema(db):
@@ -103,7 +132,7 @@ def validate(db):
     db.execute('PRAGMA trusted_schema=OFF')
     if schema(db) != schema(connection.connection):
         raise ValidationError('Base incompatible : schéma différent. Migrer hors ligne avec cette version du code.')
-    if db.execute('PRAGMA page_count').fetchone()[0] * db.execute('PRAGMA page_size').fetchone()[0] > settings.DATABASE_MAX_BYTES:
+    if page_bytes(db) > settings.DATABASE_MAX_BYTES:
         raise ValidationError('Base trop volumineuse.')
     if db.execute('PRAGMA integrity_check').fetchall() != [('ok',)] or db.execute('PRAGMA foreign_key_check').fetchall():
         raise ValidationError('Intégrité SQLite ou associations invalides.')
@@ -118,9 +147,13 @@ def validate(db):
             # not against the currently active content via Django's validators.
             obj.clean_fields(exclude=[field.name for field in fields if field.is_relation])
             if model == ConfigurationGenerale:
-                for field in fields:
-                    if field.name.endswith(('_fr', '_en')) and not getattr(obj, field.name).strip():
-                        raise ValidationError('Présentation générale bilingue incomplète.')
+                if any(not getattr(obj, name).strip() for name in model.required_texts()):
+                    raise ValidationError('Présentation générale bilingue incomplète.')
+                if obj.image_accueil:
+                    path = (Path(settings.MEDIA_ROOT).resolve() / obj.image_accueil.name).resolve()
+                    if (Path(settings.MEDIA_ROOT).resolve() not in path.parents or not path.is_file()
+                            or not obj.alt_accueil_fr.strip() or not obj.alt_accueil_en.strip()):
+                        raise ValidationError("Image d'accueil manquante ou invalide. Restaurer les médias séparément avant de charger la base.")
             if model in (Nouvelle, Secteur) and obj.publie and not obj.premiere_publication:
                 raise ValidationError('Horodatage de première publication manquant.')
             if model == Nouvelle and obj.publie and not obj.date_jalon:
@@ -138,7 +171,7 @@ def validate(db):
         path = (root / name).resolve()
         if root not in path.parents or not path.is_file() or (published and (not fr.strip() or not en.strip())):
             raise ValidationError('Illustration manquante ou invalide. Restaurer les médias séparément avant de charger la base.')
-    row = db.execute('SELECT uuid, created_at FROM hub_databaseversion WHERE id=1').fetchone()
+    row = version_row(db)
     if row:
         UUID(row[0])
         datetime.fromisoformat(row[1])
@@ -147,19 +180,14 @@ def validate(db):
 def read_upload(upload):
     if not upload or upload.size > settings.DATABASE_MAX_BYTES:
         raise ValidationError('Choisir une base SQLite de 20 Mio maximum.')
-    db = sqlite3.connect(':memory:')
-    try:
+    def fill(db):
         db.deserialize(upload.read())
         db.execute('PRAGMA trusted_schema=OFF')
         validate(db)
         db.execute('DELETE FROM hub_databaseversion')
-        db.execute('INSERT INTO hub_databaseversion (id, uuid, created_at) VALUES (1, ?, ?)',
-                   (uuid4().hex, timezone.now().astimezone(utc_timezone.utc).replace(tzinfo=None).isoformat(' ')))
+        db.execute('INSERT INTO hub_databaseversion (id, uuid, created_at) VALUES (1, ?, ?)', (uuid4().hex, utc_now_text()))
         db.commit()
-        return db
-    except Exception:
-        db.close()
-        raise
+    return in_memory(fill)
 
 
 def read_backup():
@@ -168,15 +196,11 @@ def read_backup():
         raise ValidationError('Aucune base backup disponible.')
     if path.stat().st_size > settings.DATABASE_MAX_BYTES:
         raise ValidationError('Backup trop volumineux.')
-    db = sqlite3.connect(':memory:')
-    try:
-        with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as source:
+    def fill(db):
+        with closing(open_readonly(path)) as source:
             source.backup(db)
         validate(db)
-        return db
-    except Exception:
-        db.close()
-        raise
+    return in_memory(fill)
 
 
 def store_backup(db, new_version=False):
@@ -184,7 +208,7 @@ def store_backup(db, new_version=False):
     previous_images = set()
     if path.exists():
         try:
-            with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as old:
+            with closing(open_readonly(path)) as old:
                 previous_images = {row[0] for row in old.execute("SELECT image FROM hub_nouvelle WHERE image != ''")}
         except sqlite3.DatabaseError:
             pass  # Do not guess which images a corrupt backup used.
@@ -194,8 +218,7 @@ def store_backup(db, new_version=False):
         with closing(sqlite3.connect(temporary)) as target:
             db.backup(target)
             if new_version:
-                target.execute('UPDATE hub_databaseversion SET uuid=?, created_at=? WHERE id=1',
-                    (uuid4().hex, timezone.now().astimezone(utc_timezone.utc).replace(tzinfo=None).isoformat(' ')))
+                target.execute('UPDATE hub_databaseversion SET uuid=?, created_at=? WHERE id=1', (uuid4().hex, utc_now_text()))
                 target.commit()
         os.chmod(temporary, 0o600)
         os.replace(temporary, path)
@@ -242,7 +265,13 @@ def backup_image_referenced(name):
     if not path.exists():
         return False
     try:
-        with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as db:
-            return db.execute('SELECT 1 FROM hub_nouvelle WHERE image=? LIMIT 1', (name,)).fetchone() is not None
+        with closing(open_readonly(path)) as db:
+            if db.execute('SELECT 1 FROM hub_nouvelle WHERE image=? LIMIT 1', (name,)).fetchone():
+                return True
+            try:
+                return db.execute('SELECT 1 FROM hub_configurationgenerale WHERE image_accueil=? LIMIT 1',
+                                  (name,)).fetchone() is not None
+            except sqlite3.OperationalError:
+                return False  # Backup antérieur à l'image d'accueil.
     except sqlite3.DatabaseError:
         return True

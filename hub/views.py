@@ -7,22 +7,43 @@ from django.urls import reverse
 from django.utils import translation
 from django.conf import settings
 
-from .models import ConfigurationGenerale, Nouvelle, Secteur
+from .models import SOCIAL_NAMES, ConfigurationGenerale, Nouvelle, Secteur
 
 
 LABELS = {
-    "fr": dict(home="Accueil", about="Présentation", news="Nouvelles", contact="Contact", sectors="Secteurs",
+    "fr": dict(home="Accueil", about="Présentation", news="Journal de formation", contact="Contact", sectors="Secteurs",
                empty="Aucune nouvelle publiée pour le moment.", group="Groupe", all="Tous les secteurs",
                filter="Filtrer", previous="Précédent", next="Suivant", learning="Apprentissages",
                step="Prochaine étape", preparation="En préparation", active="Actif", site="Site du secteur",
                email="Contacter par e-mail", whatsapp="Contacter par WhatsApp", skip="Aller au contenu",
-               unavailable="Le projet prépare ses contenus bilingues."),
-    "en": dict(home="Home", about="About", news="News", contact="Contact", sectors="Sectors",
+               unavailable="Le projet prépare ses contenus bilingues.", video="Vidéo", video_language="", report="Compte rendu de manipulation", view="Affichage", view_list="Liste", view_grid="Grille",
+               instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
+               notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
+                              "et de froid. Mon quartier : ",
+               follow="Suivre Ventisax"),
+    "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
                active="Active", site="Sector website", email="Contact by email", whatsapp="Contact on WhatsApp",
-               skip="Skip to content", unavailable="The project is preparing its bilingual content."),
+               skip="Skip to content", report="Practical work report", view="Display", view_list="List", view_grid="Grid", unavailable="The project is preparing its bilingual content.", video="Video",
+               video_language="Video in French", instagram="View on Instagram", facebook="View on Facebook",
+               notify="Notify me at launch",
+               notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
+                              "services open. My neighbourhood: ",
+               follow="Follow Ventisax"),
 }
+
+
+VIEWS = ("liste", "grille")  # Affichages du journal ; l'URL porte le choix (partageable, sans JavaScript).
+
+
+def report_rows(text):
+    """Lignes « Rubrique : valeur » d'un compte rendu, en paires (rubrique, valeur) ; sinon rubrique vide."""
+    rows = []
+    for line in filter(None, (line.strip() for line in text.splitlines())):
+        label, found, value = line.partition(":")
+        rows.append((label.strip(), value.strip()) if found and len(label.strip()) <= 40 else ("", line))
+    return rows
 
 
 def localized(obj, lang, kind=None):
@@ -34,7 +55,9 @@ def localized(obj, lang, kind=None):
     if isinstance(obj, Nouvelle):
         data.update(date_jalon=obj.date_jalon, premiere_publication=obj.premiere_publication,
                     secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],
-                    liens=[{**localized(link, lang), "url": link.url} for link in obj.liens.all()])
+                    liens=[{**localized(link, lang), "url": link.url} for link in obj.liens.all()],
+                    youtube_id=obj.youtube_id, instagram_url=obj.instagram_url, facebook_url=obj.facebook_url,
+                    rapport=report_rows(getattr(obj, "compte_rendu_" + lang)))
         if hasattr(obj, "image") and obj.image:
             data.update(image_url=obj.image.url, image_width=obj.image.width, image_height=obj.image.height)
     return data
@@ -55,6 +78,8 @@ def public(request, lang, page="home", slug=None):
                    secteurs=[localized(s, lang, "sector") for s in sectors])
     selected = None
     obj = None
+    vue = request.GET.get("vue") if page == "news" and request.GET.get("vue") in VIEWS else "liste"
+    context["vue"] = vue
     if page == "sector":
         obj = get_object_or_404(sectors, **{"slug_" + lang: slug})
         context["secteur"] = localized(obj, lang, "sector")
@@ -70,9 +95,17 @@ def public(request, lang, page="home", slug=None):
     if obj:
         kwargs["slug"] = getattr(obj, "slug_" + other)
     context["language_url"] = reverse(route, kwargs=kwargs)
+    language_query = {"secteur": getattr(selected, "slug_" + other)} if selected else {}
+    if vue != "liste":
+        language_query["vue"] = vue
+    if language_query:
+        context["language_url"] += "?" + urlencode(language_query)
     if selected:
-        context["language_url"] += "?" + urlencode({"secteur": getattr(selected, "slug_" + other)})
         context["selected_slug"] = getattr(selected, "slug_" + lang)
+    if page == "news":
+        base = {"secteur": getattr(selected, "slug_" + lang)} if selected else {}
+        context["view_urls"] = {option: "?" + urlencode({**base, **({"vue": option} if option != "liste" else {})})
+                                for option in VIEWS}
     if page in ("news", "sector"):
         try:
             page_obj = Paginator(news, 10).page(request.GET.get("page", "1"))
@@ -84,6 +117,8 @@ def public(request, lang, page="home", slug=None):
             query = {"page": number}
             if selected:
                 query["secteur"] = getattr(selected, "slug_" + lang)
+            if vue != "liste":
+                query["vue"] = vue
             context[direction + "_url"] = "?" + urlencode(query)
     elif page == "home":
         context["nouvelles"] = [localized(n, lang, "detail") for n in news[:3]]
@@ -91,7 +126,11 @@ def public(request, lang, page="home", slug=None):
     with translation.override(lang):
         if not config:
             return render(request, "hub/unavailable.html", context, status=503)
-        context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url)
+        labels = LABELS[lang]
+        context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url,
+                       notify_url=config.notify_url(labels["notify_message"], labels["notify"]),
+                       hero_image=config.image_accueil or None,
+                       profils=[(SOCIAL_NAMES[f], getattr(config, f)) for f in config.profile_fields if getattr(config, f)])
         return render(request, "hub/page.html", context)
 
 

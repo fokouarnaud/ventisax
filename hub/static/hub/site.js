@@ -18,6 +18,8 @@
   };
   if (menu && toggle) {
     resetMenu();
+    // Le CSS replie le menu dès le premier rendu (sans décalage) ; <noscript> le rouvre sans JavaScript.
+    document.documentElement.classList.add('menu-ready');
     mobile.addEventListener('change', resetMenu);
     toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
     document.addEventListener('keydown', (event) => {

@@ -10,6 +10,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings"
 os.environ["DJANGO_DEBUG"] = "1"
+# Les variables du processus priment sur .env : un .env de production (hôte PythonAnywhere)
+# ne doit pas faire refuser 127.0.0.1 par l'aperçu local.
+os.environ["DJANGO_ALLOWED_HOSTS"] = "localhost,127.0.0.1"
 
 
 def seed():
@@ -27,6 +30,7 @@ def seed():
         parcours_en="This preview uses demonstration text. Training, learning and next steps will tell the story of the project’s actual progress.",
         implantation_fr="Yaoundé et ses environs · Cameroun", implantation_en="Yaoundé and surrounding areas · Cameroon",
         email="demo@example.com", whatsapp="+237699000000",
+        tiktok_url="https://www.tiktok.com/@ventisax-demo", facebook_url="https://www.facebook.com/ventisax-demo",
     )
     cooling = Secteur.objects.create(nom_fr="Climatisation & froid", nom_en="Air conditioning & refrigeration",
         slug_fr="climatisation-froid", slug_en="air-conditioning-refrigeration",
@@ -73,6 +77,9 @@ def seed():
             n.image = SimpleUploadedFile("demo.png", data.getvalue())
             n.alt_fr = "Illustration de démonstration : un V sur une grille."
             n.alt_en = "Sample illustration: a V on a grid."
+            n.video_youtube = "https://www.youtube.com/watch?v=M7lc1UVf-VE"  # vidéo publique de démonstration de Google
+            n.instagram_url = "https://www.instagram.com/"
+            n.facebook_url = "https://www.facebook.com/"
             n.save()
             LienNouvelle.objects.create(nouvelle=n, url="https://example.com", libelle_fr="Lien de démonstration", libelle_en="Sample link")
         n.publish()
@@ -84,7 +91,7 @@ def seed():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--port", type=int, default=8001, help="8000 est souvent pris par OpenShorts.")
     parser.add_argument("--empty", action="store_true", help="Prévisualiser le site sans configuration (503).")
     args = parser.parse_args()
     from django.conf import settings
