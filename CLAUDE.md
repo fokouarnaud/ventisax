@@ -10,7 +10,7 @@ Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 
 | Entrée | Rôle |
 | --- | --- |
 | `manage.py` | Commandes Django (`config.settings`). En local : `DJANGO_DEBUG=1` obligatoire, sinon `DJANGO_SECRET_KEY` est exigée. |
-| `config/wsgi.py` | `application` WSGI ; en production PythonAnywhere, réglages `config.production` (proxy HTTPS, debug refusé). |
+| `config/wsgi.py` | `application` WSGI ; en production PythonAnywhere, réglages `config.production` (proxy HTTPS, debug refusé, statiques avec empreinte `ManifestStaticFilesStorage` : `collectstatic` obligatoire à chaque déploiement). |
 | `config/urls.py` | **Routeur principal.** `/` → `hub.views.root` (redirige vers `/fr/`) ; `/<fr\|en>/…` → `hub.views.public(page=…)` pour `home`, `about` (`presentation/`), `contact`, `news` (`nouvelles/`), `sector` (`secteurs/<slug>/`), `detail` (`nouvelles/<slug>/`) ; `/admin/` → `hub.admin.site` ; routes `two_factor`. 404 : `hub.views.not_found`. |
 
 ## Flux d'une page publique

@@ -78,3 +78,29 @@ print('EMAIL_FLOW_OK')
     result = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     assert "EMAIL_FLOW_OK" in result.stdout
+
+
+def test_production_ajoute_une_empreinte_aux_fichiers_statiques(tmp_path):
+    env_file = tmp_path / ".env"
+    env_file.write_text("DJANGO_SECRET_KEY=private-test-key\nDJANGO_ALLOWED_HOSTS=ventisax.pythonanywhere.com\nDJANGO_DEBUG=0\n", encoding="utf-8")
+    env = {k: v for k, v in os.environ.items() if k not in ("DJANGO_DEBUG", "DJANGO_SECRET_KEY", "DJANGO_ALLOWED_HOSTS", "DJANGO_SETTINGS_MODULE")}
+    env["DJANGO_ENV_FILE"] = str(env_file)
+    result = subprocess.run([sys.executable, "-c", "from config import production as s; print(s.STORAGES['staticfiles']['BACKEND'])"],
+                            env=env, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+
+
+def test_collectstatic_produit_des_noms_avec_empreinte_et_references_a_jour(tmp_path, settings):
+    import re
+    from django.core.management import call_command
+    from django.templatetags.static import static
+    settings.STATIC_ROOT = tmp_path
+    settings.STORAGES = {**settings.STORAGES, "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"}}
+    call_command("collectstatic", interactive=False, verbosity=0)
+    css = static("hub/site.css")
+    assert re.fullmatch(r"/static/hub/site\.[0-9a-f]{12}\.css", css), css
+    content = (tmp_path / css.removeprefix("/static/")).read_text(encoding="utf-8")
+    assert re.search(r'url\("fonts/lexend-latin-wght\.[0-9a-f]{12}\.woff2"\)', content)
+    assert re.search(r'url\("ventisax-mark\.[0-9a-f]{12}\.svg"\)', content)
+    assert re.fullmatch(r"/static/hub/site\.[0-9a-f]{12}\.js", static("hub/site.js"))
