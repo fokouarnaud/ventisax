@@ -89,8 +89,9 @@ h3 { font-size: 1.3rem; letter-spacing: -.01em; }
 .main-nav > a:last-of-type { margin-left: 8px; padding-inline: 22px; background: var(--btn-bg); color: var(--btn-fg); font-weight: 600; }
 .main-nav > a:last-of-type:hover, .main-nav > a:last-of-type[aria-current] { background: var(--btn-bg-hover); color: var(--btn-fg); }
 /* Choix du thème : même contrôle segmenté que Liste / Grille ; icônes seules, libellés accessibles. */
-.theme-switch { display: inline-flex; gap: 2px; padding: 3px; margin-left: 8px; border: 1px solid var(--line); border-radius: 9999px; background: var(--white); }
-.main-nav .theme-switch a { min-width: 44px; min-height: 44px; padding: 0; color: var(--nav-ink); }
+/* Réglage secondaire : sans cadre ni fond en en-tête (seul « Contact » est plein) ; seule l'option active est teintée. */
+.theme-switch { display: inline-flex; gap: 0; margin-left: 4px; }
+.main-nav .theme-switch a { min-width: 40px; min-height: 44px; padding: 0; color: var(--muted); }
 .main-nav .theme-switch a:hover { color: var(--teal-ink); }
 .main-nav .theme-switch a[aria-current] { background: var(--teal-wash); color: var(--teal-ink); }
 @media (prefers-reduced-motion: no-preference) {
@@ -326,7 +327,7 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   .main-nav { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; margin: 0; gap: 8px; }
   .main-nav a { padding: 8px; font-size: .85rem; }
   /* Menu mobile : sélecteur aligné sur la grille des liens, trois segments égaux. */
-  .theme-switch { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .theme-switch { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; margin: 0; border: 1px solid var(--line); border-radius: 9999px; background: var(--white); }
   .language-link { grid-column: 2; grid-row: 1; font-size: .8rem; padding-inline: 12px; }
   .language-long { display: none; }
   .language-short { display: inline; }

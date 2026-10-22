@@ -235,3 +235,15 @@ liens pleine largeur (§9.C). Corrections : une colonne jusqu'à 380 px ; sélec
 débordement, segments de 87 à 211 px de large. Conformes sans changement : en-tête de 73 px sur une ligne, langue
 « FR → EN » / « Français → English » en pilule avec flèche Tabler et libellé accessible, cibles de 44 px, rayons en
 pilule, contrastes AA (mesurés plus haut), mode sombre.
+
+### Poids visuel du sélecteur de thème et place du changement de langue — 22 octobre 2026
+
+Mesure en ligne avant correction (1 280 px) : le sélecteur était le seul élément encadré (bordure 1 px, fond blanc) et
+le plus haut de l'en-tête (52 px contre 44 px), juste après « Contact », seul bouton plein (taste §4.4, §4.5 :
+hiérarchie par le poids, une action principale). Correction : sans cadre ni fond sur ordinateur, cibles de 40 × 44 px,
+icônes inactives en `--muted`, option active teintée ; version segmentée encadrée conservée dans le menu mobile.
+Après : 120 × 44 px, en-tête de 73 px de 961 à 1 280 px, contraste 6:1 à 6,37:1 (clair) et 7,66:1 à 8,65:1 (sombre),
+aucun débordement. Changement de langue : aucune règle du skill n'impose de le regrouper avec les actions de droite ;
+la place actuelle respecte la navigation sur une ligne, l'absence d'élément flottant et la préservation de
+l'architecture (§11.C, §11.F) ; le déplacer décalerait l'ordre de tabulation de l'ordre visuel ou retirerait la langue
+de la première ligne mobile. Conservé.
