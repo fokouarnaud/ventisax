@@ -18,6 +18,11 @@ secondes : pages fr/en, journal (liste, grille) et contact en 200 ; sélecteur d
 302 vers la page d'origine avec cookie `Secure; SameSite=Lax` ; `data-theme="dark"` rendu avec le cookie ;
 feuille `site.<empreinte>.css` contenant les nouveaux jetons ; choix inconnu 404.
 
+Second passage le même jour avec le skill `ventisax-deploy` : `2dc37a2` (hauteur `100dvh`, audit taste) tiré
+par avance rapide, aucune migration, 1 fichier statique copié, `check --deploy` sans problème, rechargement. Vérifié
+avec Playwright sur le site en ligne : feuille `site.3dad71cb297f.css` contenant `100dvh`, hauteur minimale égale à la
+fenêtre à 390 et 1 280 px, aucun débordement, en-tête de 73 px, grille du journal conforme à l'aperçu validé.
+
 Non exercé : `scripts/check_deployment.py`, interrompu deux fois côté poste local (délai TLS, WinError 10053)
 puis par une reconnexion de la console. Procédure consignée dans le skill `.claude/skills/ventisax-deploy/`.
 
