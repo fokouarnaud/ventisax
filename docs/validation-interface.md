@@ -313,8 +313,13 @@ pages (aucune nouvelle section marketing, aucun hero modifié).
 | Mode sombre | Contrôlé dans les deux thèmes (captures et mesures) |
 | Icônes | Tabler, `aria-hidden` |
 | États vides | Sans adresse d'Académie, aucun bloc ; sans compte rendu, aucun repli ; sans WhatsApp, seul l'e-mail |
+| Répétition des familles de mise en page | Contact : le panneau « Ouverture prochaine » et le bloc Académie formaient deux fois la famille « carte texte + action » ; le bloc Académie y devient une section ouverte sous un filet (comme dans les entrées). Familles de Contact : carte d'annonce, grille de deux cartes, section ouverte, liens de profils, carte d'implantation. Journal : bloc Académie (carte), formulaire de filtre, liste ou grille |
 | Hero, logos, bento, images, citations, marquee, scroll | S. o. |
 | Points CWV | Aucune image ni script ajouté ; pas de décalage de mise en page attendu |
 
-Lecteur YouTube (décision du 14 octobre, hors périmètre du 22) : balisage vérifié dans le rendu (`youtube-nocookie`,
-titre traduit, `loading="lazy"`) ; la lecture effective reste non exercée. Téléphone physique non exercé.
+Après la correction de Contact : 12 combinaisons (fr/en × 320/390/1 280 px × clair/sombre) sans débordement, cibles
+≥ 44 px, contraste minimal 6,33:1 ; suite à 203 tests réussis.
+
+Lecteur YouTube (décision du 14 octobre) : balisage vérifié (`youtube-nocookie`, titre traduit, `loading="lazy"`) et
+**lecture effective exercée** dans l'aperçu avec Playwright : iframe chargée (réponses 200), clic sur le lecteur,
+vidéo en lecture (`paused: false`, 3 s écoulées, `readyState` 4). Téléphone physique non exercé.
