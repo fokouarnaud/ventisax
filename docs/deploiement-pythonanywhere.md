@@ -2,6 +2,25 @@
 
 Compte autorisé : `ventisax`. L'accès réel par OTP a été confirmé lors du déploiement initial ; les codes de récupération restent à finaliser.
 
+## Journal partie 2, choix du thème — 22 octobre 2026
+
+Quatre entrées du Journal de formation (modules 1 à 4 de la partie 2) publiées dans Unfold le 22/10/2026 à 01:36,
+créées dans l'ordre 4, 3, 2, 1 ; `journal comparer` : 8 pages fr/en conformes à leurs fichiers sources. Sauvegarde
+de la base courante envoyée par e-mail depuis `/admin/database/` (réception à confirmer par le porteur).
+
+Mot de passe du compte administrateur changé par le porteur dans la console (`changepassword`, saisie privée ;
+une première proposition trop proche de l'identifiant a été refusée par le validateur).
+
+Commits `df221b9` et `88d92af` sur develop, main en avance rapide, poussés. Serveur : arbre propre, `git pull
+--ff-only` de `428b13b` à `88d92af`, `migrate` sans migration à appliquer, `collectstatic` (2 fichiers copiés,
+161 inchangés), `check --deploy` sans problème, rechargement par `touch` du fichier WSGI. Vérifié après quelques
+secondes : pages fr/en, journal (liste, grille) et contact en 200 ; sélecteur de thème présent ; `/theme/dark/`
+302 vers la page d'origine avec cookie `Secure; SameSite=Lax` ; `data-theme="dark"` rendu avec le cookie ;
+feuille `site.<empreinte>.css` contenant les nouveaux jetons ; choix inconnu 404.
+
+Non exercé : `scripts/check_deployment.py`, interrompu deux fois côté poste local (délai TLS, WinError 10053)
+puis par une reconnexion de la console. Procédure consignée dans le skill `.claude/skills/ventisax-deploy/`.
+
 ## Gestion des versions de base déployée
 
 Le commit `1bf988b` a été fusionné par avance rapide de develop vers main et les deux branches
