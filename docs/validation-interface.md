@@ -187,3 +187,31 @@ Parcours exercés : système sombre sans cookie ; « Clair » au clavier (focus 
 focus conservé) ; persistance au rechargement ; « Sombre » à la souris sur un système clair ; conservation sur une
 autre page et en anglais ; retour à « Système » (cookie supprimé) ; parcours **sans JavaScript** (redirection vers la
 page d'origine, thème appliqué). Non exercés : lecteur d'écran, téléphone physique.
+
+## Audit taste (pré-vol) des gabarits du journal et du choix du thème — 22 octobre 2026
+
+Design Read : refonte-préservation d'un journal de formation éditorial pour de futurs clients de Yaoundé,
+langage sobre et technique (Lexend, bleu, turquoise), réglages repris de l'existant (variance 5, mouvement 3,
+densité 4). Gabarits audités : `base.html`, `pages/news.html` (liste et grille), `pages/detail.html`,
+`partials/theme_switch.html`, `partials/icon.html` ; textes des quatre entrées de la partie 2.
+
+| Point du pré-vol | Constat | Preuve |
+| --- | --- | --- |
+| Zéro tiret cadratin ou demi-cadratin | Conforme | recherche dans gabarits, `LABELS` et entrées : aucun |
+| Une étiquette en capitales par page | Conforme | une `eyebrow` par page publique |
+| Points médians rationnés | Conforme | un par ligne, bandeau et note de démonstration seulement (aperçu local) |
+| Icônes d'une seule bibliothèque | Conforme | Tabler via `partials/icon.html` (ajout de `sun`, `moon`, `device-desktop`) ; aucun SVG fait main |
+| Thème verrouillé par page, sombre testé | Conforme | `data-theme` ou `prefers-color-scheme` sur `:root` ; rendus clair et sombre contrôlés |
+| Contraste des boutons et du texte (AA) | Conforme | en ligne : texte de 5,87:1 à 16,19:1 dans les deux modes ; flèche et Contact 8,68:1 ou plus |
+| Contraste des champs (3:1) | Conforme | bordure du sélecteur de filtre 3,46:1 (clair) et 3,46:1 (sombre) |
+| Focus visible | Conforme | contour plein de 3 px sur les liens de thème |
+| Rayons cohérents | Conforme | sélecteur de thème en pilule, comme Liste/Grille, langue et boutons |
+| Navigation sur une ligne, hauteur 80 px au plus | Conforme après correction | 73 px de 961 à 1 440 px (en-tête compact jusqu'à 1 260 px) |
+| Pas de `100vh` seul | **Corrigé** | `min-height: 100dvh` ajouté après `100vh` (repli) pour `body` et `.auth-body` |
+| Pas de noir ni de blanc purs | Conforme | aucune couleur `#000`/`#fff` (seule mention : un commentaire) |
+| Mouvement motivé, réduction respectée | Conforme | transitions de couleur de 0,18 s seulement ; retour en haut instantané sous `prefers-reduced-motion` |
+| Relecture des textes | Conforme | phrases complètes, aucun nom propre interdit, aucune promesse de prestation |
+
+Points sans objet sur ces gabarits (non modifiés ou absents) : hero, bento, mur de logos, citations, marquee,
+animations GSAP, images. Aucun nouveau gabarit de page : les vues validées réutilisent `page.html` ; le seul
+gabarit ajouté est `partials/theme_switch.html`, et les seuls fichiers statiques modifiés sont `site.css` et `site.js`.
