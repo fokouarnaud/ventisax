@@ -323,3 +323,19 @@ Après la correction de Contact : 12 combinaisons (fr/en × 320/390/1 280 px × 
 Lecteur YouTube (décision du 14 octobre) : balisage vérifié (`youtube-nocookie`, titre traduit, `loading="lazy"`) et
 **lecture effective exercée** dans l'aperçu avec Playwright : iframe chargée (réponses 200), clic sur le lecteur,
 vidéo en lecture (`paused: false`, 3 s écoulées, `readyState` 4). Téléphone physique non exercé.
+
+## Inspection visuelle complète et ajustements chirurgicaux — 22 octobre 2026
+
+Aperçu fictif, Playwright, neuf pages (accueil, présentation, journal, détail, secteur, Contact en fr ; accueil,
+journal, Contact en en) × 320, 360, 390, 768, 960, 961, 1 280 px × clair/sombre = 126 combinaisons.
+
+- Conformes avant correction : aucun débordement ; en-tête de 72 px à toutes les largeurs ; bouton de menu visible
+  jusqu'à 960 px seulement ; marges latérales de 16 px et cartes de 20 px jusqu'à 380 px ; titres du fil à 18 px et
+  1,4 sur mobile ; descriptions secteur à 16 px ; Lexend partout ; une étiquette en capitales par page au plus.
+- Corrigés : marque et liens « Pour aller plus loin » à 44 px ; interligne des titres du fil à 1,3 hors mobile ;
+  pied de page aligné sur la ligne de base jusqu'à 700 px ; coupure équilibrée des boutons du bloc Académie.
+- Après correction : 126 combinaisons sans débordement, sans élément hors cadre, cibles contrôlées ≥ 44 px ;
+  suite à 204 tests réussis.
+- Aperçu : plus de vidéo, de liens Instagram/Facebook ni d'image de démonstration sur les nouvelles fictives.
+
+Captures locales non versionnées : `.playwright-mcp/v23-*.png`, `v23b-*.png`. Téléphone physique non exercé.

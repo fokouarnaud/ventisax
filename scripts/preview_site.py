@@ -4,7 +4,6 @@ import os
 import sys
 import tempfile
 from datetime import date, timedelta
-from io import BytesIO
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -16,8 +15,6 @@ os.environ["DJANGO_ALLOWED_HOSTS"] = "localhost,127.0.0.1"
 
 
 def seed():
-    from django.core.files.uploadedfile import SimpleUploadedFile
-    from PIL import Image, ImageDraw
     from hub.models import ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle
 
     ConfigurationGenerale.objects.create(
@@ -68,23 +65,6 @@ def seed():
                                  "Déroulement : vérifier l'affichage en liste de définitions\nDurée : 1 h")
             n.compte_rendu_en = ("Purpose: folded report demonstration\nEquipment: none, sample data\n"
                                  "Procedure: check the definition list rendering\nDuration: 1 h")
-            canvas = Image.new("RGB", (900, 450), "#e6f1f1")
-            draw = ImageDraw.Draw(canvas)
-            for x in range(0, 900, 50):
-                draw.line((x, 0, x, 450), fill="#ccdddd")
-            for y in range(0, 450, 50):
-                draw.line((0, y, 900, y), fill="#ccdddd")
-            draw.rounded_rectangle((310, 90, 590, 360), radius=30, fill="#0b2d46")
-            draw.line([(370, 170), (450, 300), (530, 170)], fill="#68ddce", width=15)
-            draw.text((24, 24), "DEMONSTRATION / SAMPLE IMAGE", fill="#0b2d46")
-            data = BytesIO()
-            canvas.save(data, "PNG")
-            n.image = SimpleUploadedFile("demo.png", data.getvalue())
-            n.alt_fr = "Illustration de démonstration : un V sur une grille."
-            n.alt_en = "Sample illustration: a V on a grid."
-            n.video_youtube = "https://www.youtube.com/watch?v=M7lc1UVf-VE"  # vidéo publique de démonstration de Google
-            n.instagram_url = "https://www.instagram.com/"
-            n.facebook_url = "https://www.facebook.com/"
             n.save()
             LienNouvelle.objects.create(nouvelle=n, url="https://example.com", libelle_fr="Lien de démonstration", libelle_en="Sample link")
         n.publish()

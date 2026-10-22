@@ -28,3 +28,11 @@ def test_apercu_fictif_cree_secteurs_publies_et_renvoi_academie(preview, client)
     assert ConfigurationGenerale.objects.get().academie_url
     assert client.get("/fr/").status_code == 200
     assert b"data-academy" in client.get("/fr/nouvelles/").content
+
+
+def test_apercu_fictif_sans_video_reseaux_ni_image_sur_les_nouvelles(preview):
+    preview.seed()
+    assert not Nouvelle.objects.exclude(video_youtube="").exists()
+    assert not Nouvelle.objects.exclude(instagram_url="").exists()
+    assert not Nouvelle.objects.exclude(facebook_url="").exists()
+    assert not Nouvelle.objects.exclude(image="").exists()
