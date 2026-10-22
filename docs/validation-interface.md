@@ -224,3 +224,14 @@ framework (contrainte du cadrage). Réglages (§1, refonte-préservation) : vari
 couleur seulement), densité 4. Revue : icônes Tabler (§3.C), pilule cohérente (§4.4), contraste 6:1 à 9,96:1 (§4.5),
 navigation sur une ligne de 73 px (§4.7), mode sombre testé (§6.C) : conformes. Écart corrigé : retour tactile
 `:active` absent (§4.5), ajouté en `scale(.94)` sous `prefers-reduced-motion: no-preference` (§6.B).
+
+### Audit taste de l'en-tête, du changement de langue, du thème et du mobile — 22 octobre 2026
+
+Mesures Playwright sur le site en ligne (320, 390, 768 px ; fr, en ; clair, sombre ; menu fermé et ouvert), puis
+correction validée dans l'aperçu isolé. Écarts trouvés : « Journal de formation » coupé sur deux lignes (case de
+60 px) de 320 à 380 px en français (§4.5, §4.7) ; sélecteur de thème flottant à gauche (144 px) sous une grille de
+liens pleine largeur (§9.C). Corrections : une colonne jusqu'à 380 px ; sélecteur pleine largeur en trois segments
+égaux dans le menu mobile. Après correction : toutes les cases à 44 px de 320 à 414 px dans les deux langues, aucun
+débordement, segments de 87 à 211 px de large. Conformes sans changement : en-tête de 73 px sur une ligne, langue
+« FR → EN » / « Français → English » en pilule avec flèche Tabler et libellé accessible, cibles de 44 px, rayons en
+pilule, contrastes AA (mesurés plus haut), mode sombre.
