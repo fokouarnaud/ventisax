@@ -215,3 +215,8 @@ Procédure du skill `ventisax-deploy`.
   validation complète ; valeur précédente vide). Vérifié en ligne : bloc et lien (nouvel onglet,
   `rel="noopener noreferrer"`) présents sur le journal, une entrée et Contact en fr et en, absents de l'accueil et de
   la présentation ; demande d'accès WhatsApp pré-remplie sur le numéro public.
+- Complément (demande du porteur) : coordonnées publiques de production mises à jour depuis la console
+  (`ConfigurationGenerale.save()`, validation complète) : e-mail `fokouarnaud@gmail.com` (auparavant
+  `fokouvirtualone@gmail.com`), WhatsApp `+237652317898` (inchangé, format international). Vérifié en ligne :
+  liens e-mail et WhatsApp de Contact, de « Me prévenir » et de la demande d'accès à l'Académie sur les nouvelles
+  coordonnées, en fr et en ; ancienne adresse absente.
