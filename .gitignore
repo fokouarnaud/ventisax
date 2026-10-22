@@ -64,3 +64,6 @@ programme_shorts_pedago/
 
 # Supports de cours bruts (photos du manuel), hors dépôt
 videos/
+
+# Captures et journaux du serveur Playwright MCP (validation visuelle locale)
+.playwright-mcp/

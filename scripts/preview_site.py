@@ -33,7 +33,7 @@ def seed():
         tiktok_url="https://www.tiktok.com/@ventisax-demo", facebook_url="https://www.facebook.com/ventisax-demo",
     )
     cooling = Secteur.objects.create(nom_fr="Climatisation & froid", nom_en="Air conditioning & refrigeration",
-        slug_fr="climatisation-froid", slug_en="air-conditioning-refrigeration",
+        slug_fr=slugify(name), slug_en=f"{slugify(name)}-en",
         description_fr="Découvrir les systèmes de climatisation et de réfrigération, puis construire progressivement les connaissances du métier.",
         description_en="Explore air conditioning and refrigeration systems, then gradually build technical knowledge.",
         apprentissages_fr="Texte de démonstration : principes du froid, fonctionnement des équipements et sécurité.",
@@ -89,10 +89,32 @@ def seed():
         prochaine_etape_fr="Texte d’essai.", prochaine_etape_en="Sample text.", publie=True, ordre=2)
 
 
+def seed_journal(directory):
+    """Configuration et secteur réels minimaux, puis les fichiers sources du journal publiés tels quels."""
+    from django.utils.text import slugify
+    from hub import journal
+    from hub.models import ConfigurationGenerale, Secteur
+    ConfigurationGenerale.objects.create(
+        identite_fr="Ventisax", identite_en="Ventisax",
+        resume_fr="Aperçu local du Journal de formation.", resume_en="Local preview of the training log.",
+        presentation_fr="Aperçu local.", presentation_en="Local preview.", parcours_fr="Aperçu local.",
+        parcours_en="Local preview.", implantation_fr="Yaoundé et ses environs, Cameroun",
+        implantation_en="Yaoundé and surrounding areas, Cameroon", email="demo@example.com")
+    sources = [journal.parse_source(path.read_text(encoding="utf-8")) for path in sorted(Path(directory).rglob("*.md"))]
+    for name in sorted({name for source in sources for name in source.secteurs}):
+        Secteur.objects.create(nom_fr=name, nom_en=name, slug_fr=slugify(name), slug_en=f"{slugify(name)}-en",
+                               description_fr="Aperçu.", description_en="Preview.", apprentissages_fr="Aperçu.",
+                               apprentissages_en="Preview.", prochaine_etape_fr="Aperçu.", prochaine_etape_en="Preview.",
+                               publie=True)
+    for source in sources:
+        journal.publier(source)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8001, help="8000 est souvent pris par OpenShorts.")
     parser.add_argument("--empty", action="store_true", help="Prévisualiser le site sans configuration (503).")
+    parser.add_argument("--journal", help="Dossier de fichiers sources du journal à prévisualiser, sans données fictives.")
     args = parser.parse_args()
     from django.conf import settings
     from django.core.management import call_command
@@ -105,7 +127,9 @@ def main():
         settings.DEBUG = False
         django.setup()
         call_command("migrate", verbosity=0)
-        if not args.empty:
+        if args.journal:
+            seed_journal(args.journal)
+        elif not args.empty:
             seed()
         from django.urls import re_path
         from django.views.static import serve
