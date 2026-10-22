@@ -291,3 +291,30 @@ Contact), compte rendu replié des entrées de la partie 2, sélecteur de thème
 
 Captures locales non versionnées : `.playwright-mcp/v22b-detail-*.png`, `v22-journal-1280-light.png`,
 `v22-menu-320-light.png`, `v22-contact-1280-dark.png`. Le lecteur YouTube de l'aperçu reste vide hors ligne (non lié).
+
+### Pre-Flight Check taste (section 14) sur les surfaces du 22 octobre
+
+Pages contrôlées : journal (liste et grille), détail d'une entrée, Contact, en fr et en. « S. o. » : sans objet pour ces
+pages (aucune nouvelle section marketing, aucun hero modifié).
+
+| Point | Résultat |
+| --- | --- |
+| Lecture du brief, réglages, système | Refonte préservée ; 4 / 3 / 4 ; CSS natif existant, pas de bibliothèque ajoutée |
+| Tirets longs | 0 sur les six pages rendues (texte visible, hors scripts) |
+| Thème unique, accent unique | Thème auto ou choisi pour toute la page ; turquoise seul accent, bleu profond pour l'action principale |
+| Formes | Règle existante tenue : boutons en pilule, cartes 24 px, compte rendu à rayon réduit ; plus de carte dans la carte |
+| Contraste des boutons et du texte | Minimum 6,74:1 sur le bloc (36 combinaisons) |
+| Boutons sur une ligne au bureau | Hauteur 52 px à 1 280 px (une ligne) ; deux lignes sous 390 px, coupées entre les mots |
+| Étiquettes en capitales | 1 par page au plus (journal, Contact), 0 sur le détail |
+| En-tête divisé | Bloc Académie : texte à gauche, boutons à droite au bureau ; la colonne droite porte des actions, motif admis |
+| Intentions de bouton | Une formulation par intention : prévenir, contacter, demander un accès |
+| Listes longues | Compte rendu : 4 rubriques en liste de définitions, sans filet par ligne |
+| Mouvement | Rotation du chevron (0,18 s), coupée sous `prefers-reduced-motion` |
+| Mode sombre | Contrôlé dans les deux thèmes (captures et mesures) |
+| Icônes | Tabler, `aria-hidden` |
+| États vides | Sans adresse d'Académie, aucun bloc ; sans compte rendu, aucun repli ; sans WhatsApp, seul l'e-mail |
+| Hero, logos, bento, images, citations, marquee, scroll | S. o. |
+| Points CWV | Aucune image ni script ajouté ; pas de décalage de mise en page attendu |
+
+Lecteur YouTube (décision du 14 octobre, hors périmètre du 22) : balisage vérifié dans le rendu (`youtube-nocookie`,
+titre traduit, `loading="lazy"`) ; la lecture effective reste non exercée. Téléphone physique non exercé.
