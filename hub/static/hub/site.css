@@ -345,7 +345,7 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   .menu-toggle span { display: none; }
   .hero-grid { grid-template-columns: 1fr; padding-block: 36px 48px; gap: 0; }
   .hero-art { display: none; }
-  .hero h1 { font-size: clamp(2.1rem, 9vw, 3rem); }
+  .hero h1 { font-size: clamp(2.25rem, 9vw, 3rem); }
   .hero .lead { font-size: 1.05rem; }
   .actions .button { flex: 1 1 auto; }
   .section { padding-block: 52px; }

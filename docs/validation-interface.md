@@ -338,4 +338,8 @@ journal, Contact en en) × 320, 360, 390, 768, 960, 961, 1 280 px × clair/sombr
   suite à 204 tests réussis.
 - Aperçu : plus de vidéo, de liens Instagram/Facebook ni d'image de démonstration sur les nouvelles fictives.
 
-Captures locales non versionnées : `.playwright-mcp/v23-*.png`, `v23b-*.png`. Téléphone physique non exercé.
+Titre du hero sur mobile relevé à 2,25 rem minimum (36 px de 320 à 390 px) : fr sur trois lignes, en sur deux, sans
+débordement, boutons visibles sans défilement (bas à 628 px pour 800 px à 320 px).
+
+Captures locales non versionnées : `.playwright-mcp/v23-*.png`, `v23b-*.png`, `v24-hero-320.png`. Téléphone physique
+non exercé.
