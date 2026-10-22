@@ -190,3 +190,23 @@ n'a été constaté lors de ce recontrôle.
 - Base préparée en local importée par la même séquence que « Charger le fichier comme courante » (empreinte SHA-256 vérifiée, accès et second facteur de production conservés, ancienne courante placée en backup).
 - Contrôle en ligne (navigateur) : accueil, journal en liste et en grille (4 jours, 7 entrées), compte rendu replié, contact `fokouvirtualone@gmail.com` et lien « Me prévenir » ; `/db.sqlite3` et `/.env` répondent 404, `/admin/` redirige vers la connexion. Espace utilisé : 136 Mio.
 - Non exercé : connexion administrateur avec second facteur après l'import (sessions réinitialisées), envoi réel du message WhatsApp.
+
+## Déploiement du 22 octobre 2026, `0ca1593` (demande explicite du porteur : « déploie en production »)
+
+Procédure du skill `ventisax-deploy`.
+
+- Contrôles locaux : suite à 204 tests réussis, `check` et `makemigrations --check` sans constat, arbre propre,
+  aucun secret dans les changements ; `main` avancé en avance rapide de `92a009c` à `0ca1593` et poussé.
+- Sauvegarde avant mise à jour : base courante envoyée par e-mail au superadministrateur depuis la console
+  PythonAnywhere, par le même code que le bouton d'Unfold (`snapshot()` puis `EmailMessage`), la session Unfold
+  n'étant pas ouverte ; envoi accepté par le serveur SMTP (1 message, 405 504 octets, `20261022T055915Z`).
+- Serveur : arbre propre à `92a009c` ; `git pull --ff-only` jusqu'à `0ca1593` ; migration `0012`
+  (`academie_url`) appliquée ; `collectstatic` (1 fichier copié, 120 post-traités) ; `check --deploy` sans
+  problème ; WSGI rechargé.
+- Vérifications : `/fr/`, `/en/`, journal en liste et en grille, Contact fr/en en 200 ; CSS servi avec empreinte
+  (`site.b9e261d92218.css`) contenant les règles du jour ; bloc Académie absent tant que l'adresse n'est pas saisie
+  (attendu) ; `journal comparer` sans écart sur les quatre entrées de la partie 2 (huit pages) ;
+  `check_deployment.py` lancé depuis la console (le poste local subissait `WinError 10054`) : pages 200, `.env`,
+  `db.sqlite3` et `media/.env` en 404, `/admin/` en 302, connexion 200, HTTP vers HTTPS vérifié.
+- Non exercé : réception effective de l'e-mail de sauvegarde ; bloc Académie en ligne (adresse à saisir par le
+  porteur dans Unfold, section « Académie ») ; téléphone physique.

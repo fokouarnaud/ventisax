@@ -63,5 +63,5 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 
 - La lecture du lecteur YouTube a été exercée dans l'aperçu (Playwright, 22 octobre 2026) ; la saisie Unfold derrière le second facteur des champs vidéo/réseaux ne l'a pas été.
 - La politique de sécurité du contenu (CSP) n'existe pas : l'iframe YouTube fonctionne sans elle ; en ajouter une imposera d'autoriser `youtube-nocookie.com`.
-- Déploiement des migrations `0008` à `0012` sur PythonAnywhere : non fait, soumis à accord explicite.
+- Migrations `0008` à `0012` déployées sur PythonAnywhere (22 octobre 2026, `0ca1593`) ; adresse de l'Académie encore à saisir dans Unfold de production.
 - Académie : `ConfigurationGenerale.academie_url` (migration `0012`, section « Académie » d'Unfold), `whatsapp_text_url()` / `email_text_url()` (réutilisées par `notify_url`), `views.academy_links()` limité à `ACADEMY_PAGES` (journal, détail, Contact), `partials/academy.html` ; vérifié dans l'aperçu Playwright (largeurs, thèmes, clavier), non déployé ; aperçu fictif avec `academie_url` ; l'e-mail et le WhatsApp de contact sont déjà administrables (section « Coordonnées » de `hub/admin.py`). L'Académie se présente encore comme « centre de formation » : correction à la charge du porteur, hors dépôt.
