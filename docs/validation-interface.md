@@ -267,3 +267,27 @@ saisie dans Unfold local.
 
 L'aperçu fictif ne démarrait plus (`NameError: slugify`, introduit par `df221b9`) : test
 `tests/test_preview.py` d'abord en échec pour cette raison, puis slug fixe ; suite complète à 203 tests réussis.
+
+## Passe taste sur les gabarits du 22 octobre — 22 octobre 2026
+
+Lecture : refonte qui préserve l'existant, hub de progression pour des clients de Yaoundé, langage sobre (Lexend,
+bleu profond, turquoise, thèmes clair et sombre) ; réglages 4 / 3 / 4. Surfaces : bloc Académie (journal, détail,
+Contact), compte rendu replié des entrées de la partie 2, sélecteur de thème.
+
+- Audit statique : aucun tiret long dans les gabarits ni dans `LABELS` ; une étiquette en capitales au plus par page ;
+  classes du bloc présentes dans `site.css`.
+- Fichiers statiques : `collectstatic` avec `ManifestStaticFilesStorage` (comme en production) ; CSS, JS, polices
+  Lexend et SVG servis avec empreinte, `url()` du CSS réécrites ; journal, détail et Contact fr/en rendus avec
+  `DEBUG` désactivé.
+- Écarts corrigés après rendu Playwright :
+  - à 320 px, dans un détail, les boutons du bloc se coupaient sur trois lignes et « e-mail » en « e- / mail » :
+    jusqu'à 700 px, boutons pleine largeur, espacement et marge horizontale réduits ;
+  - dans un détail, le bloc formait une carte dans la carte de l'article et dépassait la largeur du compte rendu :
+    à toutes les largeurs, il se sépare par un filet, sans fond ni cadre, à 72ch comme le compte rendu.
+- L'aperçu fictif porte désormais un compte rendu de démonstration sur sa première entrée, pour contrôler le rendu.
+- Contrôle après correction : 36 combinaisons (journal, détail, Contact × fr/en × 320/390/1 280 px × clair/sombre)
+  sans débordement, cibles ≥ 44 px, contraste minimal 6,74:1 ; menu mobile et sélecteur de thème inchangés ;
+  suite complète à 203 tests réussis.
+
+Captures locales non versionnées : `.playwright-mcp/v22b-detail-*.png`, `v22-journal-1280-light.png`,
+`v22-menu-320-light.png`, `v22-contact-1280-dark.png`. Le lecteur YouTube de l'aperçu reste vide hors ligne (non lié).

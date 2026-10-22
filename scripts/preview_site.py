@@ -64,6 +64,10 @@ def seed():
         if index % 2:
             n.secteurs.add(electronics)
         if index == 0:
+            n.compte_rendu_fr = ("Objet : démonstration du compte rendu replié\nMatériel : aucun, donnée fictive\n"
+                                 "Déroulement : vérifier l'affichage en liste de définitions\nDurée : 1 h")
+            n.compte_rendu_en = ("Purpose: folded report demonstration\nEquipment: none, sample data\n"
+                                 "Procedure: check the definition list rendering\nDuration: 1 h")
             canvas = Image.new("RGB", (900, 450), "#e6f1f1")
             draw = ImageDraw.Draw(canvas)
             for x in range(0, 900, 50):
