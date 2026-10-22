@@ -7,7 +7,8 @@ from two_factor.urls import urlpatterns as two_factor_patterns
 
 handler404 = "hub.views.not_found"
 
-urlpatterns = [path("", views.root), path("admin/", site.urls), path("", include(two_factor_patterns))]
+urlpatterns = [path("", views.root), path("admin/", site.urls), path("", include(two_factor_patterns)),
+               re_path(r"^theme/(?P<choice>system|light|dark)/$", views.theme, name="theme")]
 for suffix, name, page in [("", "home", "home"), ("presentation/", "about", "about"),
                            ("contact/", "contact", "contact"), ("nouvelles/", "news", "news"),
                            ("secteurs/(?P<slug>[-a-zA-Z0-9_]+)/", "sector", "sector"),

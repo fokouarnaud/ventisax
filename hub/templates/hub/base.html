@@ -1,10 +1,10 @@
 {% load static %}
 <!doctype html>
-<html lang="{{ lang }}">
+<html lang="{{ lang }}"{% if theme != 'system' %} data-theme="{{ theme }}"{% endif %}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="{% if theme == 'system' %}light dark{% else %}{{ theme }}{% endif %}">
   <title>{% block title %}Ventisax{% endblock %}</title>
   <link rel="icon" type="image/svg+xml" href="{% static 'hub/ventisax-mark.svg' %}">
   <link rel="stylesheet" href="{% static 'hub/site.css' %}">
@@ -24,6 +24,7 @@
         <a href="{% url 'about' lang=lang %}" {% if page == 'about' %}aria-current="page"{% endif %}>{{ labels.about }}</a>
         <a href="{% url 'news' lang=lang %}" {% if page == 'news' or page == 'detail' %}aria-current="page"{% endif %}>{{ labels.news }}</a>
         <a href="{% url 'contact' lang=lang %}" {% if page == 'contact' %}aria-current="page"{% endif %}>{{ labels.contact }}</a>
+        {% include 'hub/partials/theme_switch.html' %}
       </nav>
     </div>
   </header>

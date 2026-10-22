@@ -50,7 +50,7 @@ La demande explicite de l'utilisateur (« rendre le UI comme https://typinclub.p
 
 Vérifications : 132 tests réussis ; six pages publiques à 1 280 et 390 px sans débordement ; Lexend chargée ; menu mobile ouvert par Entrée, refermé par Échap avec retour du focus, navigation de nouveau visible au passage en format ordinateur.
 
-**Audit taste, 15 octobre 2026** (demande « vérifie que taste skill est respecté », mode refonte-préservation) : hero limité à quatre éléments (étiquette, titre de deux lignes au plus sur ordinateur, sous-texte de 20 mots au plus, boutons), titre du hero ramené à `clamp(2.25rem, 4.2vw, 3.25rem)` ; ligne d'implantation et point décoratif retirés du hero (l'implantation reste dans le pied de page et sur Contact) ; étiquette « Nos domaines » retirée (une seule étiquette en capitales par page) ; tiret cadratin décoratif de l'état vide retiré ; titre du panneau Contact distinct du libellé de son bouton. Accroche recommandée sans tiret cadratin : « Bientôt votre technicien clim et froid à Yaoundé » / « Soon your cooling technician in Yaoundé ». Passe complète de la check-list ensuite : icônes Tabler Icons (MIT) via `hub/templates/hub/partials/icon.html` à la place des flèches typographiques et des SVG faits main ; numérotation des cartes secteur retirée ; illustration d'accueil réduite au logo (grille décorative retirée) ; en-tête ramené à 72 px ; menu mobile replié en CSS dès le premier rendu (CLS) et rouvert par `<noscript>` sans JavaScript, sans script en ligne. **Mode sombre ajouté sur décision explicite du porteur (16 octobre 2026)**, qui remplace « pas de mode sombre » ci-dessus : il suit le réglage de l'appareil (`prefers-color-scheme`), avec les mêmes bleu et turquoise, des fonds bleu nuit et des jetons sémantiques (`--heading`, `--btn-*`, `--deep`, `--on-deep`). Blanc pur retiré ; bordures de champ portées à 3:1 dans les deux modes. Écart assumé, imposé par le cadrage : pas de React/Tailwind/Motion. **Image d'accueil administrable (16 octobre 2026, demande du porteur)** : champ `image_accueil` et alternatives `alt_accueil_fr/en` dans `ConfigurationGenerale` (migration `0010`), mêmes règles que l'image d'une nouvelle (2 Mio, 1 600 px, JPEG, alternatives obligatoires avec image), ancienne image supprimée après un remplacement réussi sauf si la base de backup la référence ; sans image, le hero affiche le logo. Une photo n'est chargée que si elle est réelle, si les personnes visibles ont donné leur accord et si ses droits sont acquis ; deux images ont été écartées pour ces raisons. **Reste au porteur** : charger une telle photo dans Unfold.
+**Audit taste, 15 octobre 2026** (demande « vérifie que taste skill est respecté », mode refonte-préservation) : hero limité à quatre éléments (étiquette, titre de deux lignes au plus sur ordinateur, sous-texte de 20 mots au plus, boutons), titre du hero ramené à `clamp(2.25rem, 4.2vw, 3.25rem)` ; ligne d'implantation et point décoratif retirés du hero (l'implantation reste dans le pied de page et sur Contact) ; étiquette « Nos domaines » retirée (une seule étiquette en capitales par page) ; tiret cadratin décoratif de l'état vide retiré ; titre du panneau Contact distinct du libellé de son bouton. Accroche recommandée sans tiret cadratin : « Bientôt votre technicien clim et froid à Yaoundé » / « Soon your cooling technician in Yaoundé ». Passe complète de la check-list ensuite : icônes Tabler Icons (MIT) via `hub/templates/hub/partials/icon.html` à la place des flèches typographiques et des SVG faits main ; numérotation des cartes secteur retirée ; illustration d'accueil réduite au logo (grille décorative retirée) ; en-tête ramené à 72 px ; menu mobile replié en CSS dès le premier rendu (CLS) et rouvert par `<noscript>` sans JavaScript, sans script en ligne. **Mode sombre ajouté sur décision explicite du porteur (16 octobre 2026)**, qui remplace « pas de mode sombre » ci-dessus : il suit le réglage de l'appareil (`prefers-color-scheme`), avec les mêmes bleu et turquoise, des fonds bleu nuit et des jetons sémantiques (`--heading`, `--btn-*`, `--deep`, `--on-deep`). Blanc pur retiré ; bordures de champ portées à 3:1 dans les deux modes. **Choix du thème par le visiteur (22 octobre 2026, demande du porteur)**, qui complète la décision précédente : trois liens « Système », « Clair », « Sombre » (icônes Tabler, libellés accessibles bilingues, `aria-current`) en fin de navigation, donc dans le menu sur mobile. Le choix est un cookie de préférence `theme` (un an, `SameSite=Lax`, `Secure` en HTTPS, sans suivi ni donnée personnelle) lu par Django (`hub/context_processors.py`), qui pose `data-theme` sur `<html>` dès le rendu : aucun flash, aucun script en ligne. Sans JavaScript, chaque lien passe par la vue `theme` (`/theme/<choix>/?next=`, retour limité au site) ; `site.js` applique le choix sans rechargement. « Système » supprime le cookie et suit `prefers-color-scheme`. Entre 961 et 1 260 px, l'en-tête se compacte (langue abrégée, marque sans sous-titre) pour garder la navigation sur une ligne. Écart assumé, imposé par le cadrage : pas de React/Tailwind/Motion. **Image d'accueil administrable (16 octobre 2026, demande du porteur)** : champ `image_accueil` et alternatives `alt_accueil_fr/en` dans `ConfigurationGenerale` (migration `0010`), mêmes règles que l'image d'une nouvelle (2 Mio, 1 600 px, JPEG, alternatives obligatoires avec image), ancienne image supprimée après un remplacement réussi sauf si la base de backup la référence ; sans image, le hero affiche le logo. Une photo n'est chargée que si elle est réelle, si les personnes visibles ont donné leur accord et si ses droits sont acquis ; deux images ont été écartées pour ces raisons. **Reste au porteur** : charger une telle photo dans Unfold.
 
 **Journal de formation, partie 1 (16 octobre 2026, grill avec le porteur)** : une entrée courte par module (modules 1 à 6 de « Habilitation et sécurité professionnelle », 12 au 16 octobre), résumé de trois paragraphes au plus rédigé avec nos mots, ni centre, ni formateur, ni client nommés, aucune photo du manuel publiée. Le compte rendu de manipulation a son propre champ bilingue `compte_rendu_fr/en` (migration `0011`), une ligne « Rubrique : valeur » par rubrique, exigé dans les deux langues dès qu'il est renseigné ; il s'affiche replié en fiche (`<details>`, liste de définitions). Le journal regroupe les entrées par jour (`{% regroup %}`, une section par date, date affichée une seule fois) et propose deux affichages (demande du porteur, skill taste) : **liste**, un bloc par jour dont les entrées sont séparées par un filet, et **grille**, des cartes avec un extrait d'une vingtaine de mots, autant de cellules que d'entrées (`auto-fit`). Le choix est porté par l'URL (`?vue=grille`), sans JavaScript, et conservé par le filtre, la pagination et le changement de langue ; une valeur inconnue revient à la liste. Le corps est rendu en vrais paragraphes (`linebreaks`). Textes et images du cours rangés par module dans `programme_shorts_pedago/nouvelles/01_partie1/` (non versionné). Détail dans `docs/validation-interface.md`.
 
@@ -86,6 +86,271 @@ L'utilisateur a soumis une stratégie marketing externe : offre d'installation e
 - **Condition de bascule (Q16) :** devis, « Demander une intervention », proposition de valeur affirmative et démarchage B2B ne seront envisagés qu'après une nouvelle décision explicite du porteur, prise quand l'intervention est réellement possible ; le cadrage (hors-scope « formulaire de contact ») sera alors révisé.
 
 Livraison : TDD sur `develop` et commit ; fusion `main` et déploiement de la migration `0009` seulement après accord explicite.
+
+### Évolution autorisée — journal de formation, partie 2 et skill `journal-formation`, 22 octobre 2026
+
+Un grill (skill `grilling`, Q1–Q11) avec l'utilisateur a fixé ces décisions. Elles font évoluer le
+cadrage des nouvelles-leçons du 14 octobre ; le reste de l'historique est conservé.
+
+#### 1. Objectifs fonctionnels prioritaires
+
+- **Publier les leçons réellement suivies de la partie 2**, « Les bases de l'électricité domestique »
+  / « Domestic electrical basics » : une entrée du Journal de formation par module, datée du cours.
+  Module 1 (bases de l'électricité, appareillages et outils) le 19/10/2026 ; module 2 (projet
+  d'installation électrique d'une maison neuve) le 20/10 ; modules 3 (simple allumage) et 4 (double
+  allumage) le 21/10, deux entrées regroupées sous la même date.
+- **Rattachement** : chaque entrée relève du secteur Climatisation / froid, ces modules faisant partie
+  de la formation froid et climatisation.
+- **Contenu** : titre, slugs fr/en, corps de trois paragraphes au plus et compte rendu de
+  manipulation bilingue (`Objet`, `Matériel`, `Déroulement`, `Durée`), selon ce que le porteur a
+  confirmé avoir pratiqué : 8 h pour le module 1, 8 h pour le module 2, 4 h + 4 h pour les modules 3
+  et 4.
+- **Publication directe par Claude** : Claude rédige et publie les entrées sans brouillon soumis
+  à relecture préalable ; le porteur relit sur le site après coup et peut dépublier. Cette règle
+  remplace, pour le Journal de formation, « Claude propose, le porteur relit, saisit dans Unfold
+  et publie » (14 octobre).
+- **Skill de projet `journal-formation`** (`.claude/skills/journal-formation/SKILL.md`) pour répéter
+  et corriger ces mises à jour : inventaire des modules de `reference/cours/` sans entrée, questions
+  au porteur sur les faits (date, pratique, durée), lecture des références, rédaction, publication,
+  vérification et sauvegarde. Il sert aussi à corriger une entrée existante.
+- **Suite** : les modules 5 à 8 sont traités dans la semaine suivant leur enseignement en présentiel,
+  jamais avant.
+
+#### 2. Contraintes techniques
+
+- **Canal** : Unfold de production (`ventisax.pythonanywhere.com/admin/`) piloté par Playwright ;
+  le porteur saisit lui-même mot de passe et code e-mail, que Claude ne voit ni ne conserve. La
+  validation existante (`full_clean`, `publish()`) s'applique ; aucun code applicatif, script
+  d'import, migration ni déploiement.
+- **Trace** : un fichier source par module dans `programme_shorts_pedago/nouvelles/02_partie2/`
+  (non versionné), au format de la partie 1, avec l'URL publique et la date. Toute correction
+  ultérieure y est répercutée ; les slugs publiés ne changent pas.
+- **Vérification** : journal et détails en `/fr/` et `/en/` (date, compte rendu replié, changement
+  de langue) après publication, puis sauvegarde datée par le bouton « Envoyer la courante par e-mail ».
+- **Faits** : dates, pratiques et durées viennent du porteur ; les TAF du manuel ne prouvent pas
+  qu'une manipulation a eu lieu.
+- **Livraison** : skill et documentation commités sur `develop` ; ni fusion sur `main` ni déploiement,
+  le code de l'application ne changeant pas.
+
+#### 3. Périmètre strictement Hors-Scope
+
+- Entrées pour des modules non encore suivis (modules 5 à 8 au 22 octobre) ou pour des cours à venir.
+- Nom de formateur, de centre ou de client ; extrait ou photo du manuel ; photo du tableau de la
+  classe ; reproduction de la norme NF C 15-100, citée par son nom seulement.
+- Image d'illustration sur ces entrées.
+- Promesse de prestation ou d'intervention électrique.
+- Capsule vidéo, lien YouTube ou réseaux dans le skill (relèvent de `clip-local` et `voix-off-locale`).
+- Script d'import, chargement automatique de la base ou accès à la console PythonAnywhere.
+- Rattachement au secteur Matériel électronique.
+
+### PRD — Journal de formation, partie 2 et skill `journal-formation` (22 octobre 2026)
+
+**Statut : rédigé à partir des GOALS validés ci-dessus, en attente de validation par l'utilisateur.**
+Il précise les comportements attendus. Le PRD V1 ci-dessous reste la référence pour tout ce qu'il ne
+modifie pas (publication bilingue, slugs verrouillés, retrait, sécurité).
+
+#### 1. Contexte, problème et résultat attendu
+
+La partie 2 de la formation froid et climatisation, « Les bases de l'électricité domestique », a
+commencé le 19 octobre 2026. Ses modules 1 à 4 ont été suivis, mais le Journal de formation ne les
+montre pas encore. Les références de cours (pages du manuel, photo du tableau, norme NF C 15-100)
+sont privées : elles servent à rédiger, jamais à publier. La partie 1 a été rédigée au cas par cas ;
+il faut désormais une procédure répétable, puisque les modules 5 à 8 et les parties suivantes
+viendront chaque semaine.
+
+**Résultat attendu :** quatre entrées publiques bilingues, exactes et datées, visibles sur le site
+de production, et un skill de projet qui permet de refaire et de corriger ces mises à jour sans
+réinventer la procédure ni deviner les faits.
+
+| Rôle | Besoin | Accès |
+| --- | --- | --- |
+| Visiteur, futur client | Constater la progression réelle de la formation | Pages publiques fr/en |
+| Porteur du projet | Fournir les faits (dates, pratique, durées), ouvrir la session d'administration, relire après publication | Unfold, second facteur par e-mail |
+| Claude | Rédiger, publier, vérifier, sauvegarder, consigner la source | Navigateur Playwright ouvert sur la session du porteur ; aucun secret conservé |
+
+#### 2. Périmètre
+
+| Élément | Comportement requis |
+| --- | --- |
+| Entrées de la partie 2 | Module 1 (19/10/2026), module 2 (20/10), modules 3 et 4 (21/10), une entrée chacun, secteur Climatisation / froid, publiées en production |
+| Fichiers sources | `programme_shorts_pedago/nouvelles/02_partie2/0N_moduleN/moduleN_<sujet>.md`, un par entrée, au format de la partie 1 |
+| Skill | `.claude/skills/journal-formation/SKILL.md`, versionné ; création, correction et inventaire des entrées |
+| Documentation | Cette section, `CLAUDE.md` ; commit sur `develop` |
+
+Hors périmètre : voir « Périmètre strictement Hors-Scope » de la sous-section GOALS ci-dessus.
+
+#### 3. User Stories et critères d'acceptation
+
+##### US-16 — Lire les leçons de la partie 2
+
+En tant que futur client, je veux lire ce que Ventisax a appris en électricité domestique afin de
+juger une progression réelle.
+
+- Le Journal de formation, en `/fr/nouvelles/` et `/en/nouvelles/`, affiche quatre nouvelles
+  entrées sous trois dates : 19, 20 et 21 octobre 2026, avec deux entrées le 21.
+- Chaque détail montre le titre, la date du cours, un corps de trois paragraphes au plus, le
+  secteur Climatisation / froid et un compte rendu replié dans la langue de la page.
+- Le changement de langue mène à la traduction de la même entrée ; aucun texte français n'apparaît
+  sur la version anglaise.
+- Aucune entrée ne promet une prestation ni une intervention électrique.
+
+##### US-17 — Respecter les faits et les droits
+
+En tant que porteur, je veux que chaque entrée corresponde à ce qui a réellement eu lieu et ne
+reproduise aucune source protégée.
+
+- Les dates, les manipulations et les durées sont celles confirmées par le porteur. Un TAF du manuel
+  ne suffit pas à affirmer une manipulation.
+- Aucun nom de formateur, de centre ni de client. Aucun extrait recopié ni photo du manuel ou du
+  tableau. La NF C 15-100 n'est citée que par son nom, sans valeur tirée de ses tableaux.
+- Aucune image n'est attachée à ces entrées.
+
+##### US-18 — Publier directement en production
+
+En tant que porteur, je veux que Claude publie les entrées sans que j'aie à les saisir, tout en
+gardant la maîtrise de l'accès.
+
+- Le porteur se connecte lui-même (mot de passe et code e-mail) dans le navigateur piloté. Claude ne
+  lit, ne note ni ne réutilise aucun secret.
+- Chaque entrée est créée dans Unfold avec ses champs bilingues et son secteur, puis publiée par
+  l'action « Publier ». Une erreur de validation est corrigée dans le contenu, jamais contournée.
+- Une entrée déjà publiée n'est pas dupliquée : avant toute création, Claude cherche un slug
+  identique dans Unfold.
+- Si la session expire ou si la connexion échoue, Claude s'arrête et signale les entrées publiées et
+  restantes.
+
+##### US-19 — Vérifier et sauvegarder après publication
+
+En tant que porteur, je veux une preuve que la publication est visible et une sauvegarde de la base
+qui la contient.
+
+- Chaque entrée répond 200 en `/fr/` et en `/en/` sur `ventisax.pythonanywhere.com`, avec son compte
+  rendu ; le journal la regroupe sous la bonne date.
+- Une sauvegarde datée de la base courante est envoyée par le bouton « Envoyer la courante par
+  e-mail » de `/admin/database/`.
+- Le compte rendu de session liste les URL publiées, ce qui a été vérifié et ce qui ne l'a pas été.
+
+##### US-20 — Conserver la source de chaque entrée
+
+En tant que porteur, je veux retrouver le texte publié hors de la base afin de le corriger ou de le
+réutiliser (capsule, réseaux).
+
+- Chaque entrée a un fichier source qui contient le tableau des champs Unfold, les corps fr/en et
+  les comptes rendus fr/en, l'URL publique et la date.
+- Le texte du fichier source est identique au texte publié. Toute correction en production y est
+  répercutée dans la même session.
+
+##### US-21 — Mettre à jour le journal avec le skill
+
+En tant que porteur, je veux lancer une seule procédure pour publier les modules de la semaine.
+
+- Le skill commence par l'inventaire : il liste les modules de `reference/cours/<partie>/` qui n'ont
+  pas de fichier source dans `nouvelles/<partie>/`.
+- Avant de rédiger, il demande au porteur la date réelle de chaque module, ce qui a été pratiqué,
+  la durée et, pour une nouvelle partie, son intitulé. Il ne rédige rien pour un module dont la date
+  n'est pas confirmée.
+- Il lit les références (images, pages de PDF), rédige, publie, vérifie, sauvegarde et consigne,
+  selon US-16 à US-20.
+
+##### US-22 — Corriger une entrée publiée
+
+En tant que porteur, je veux corriger une entrée publiée sans casser son adresse.
+
+- Le skill modifie l'entrée dans Unfold : titre, corps ou compte rendu, dans les deux langues
+  ensemble. Les slugs publiés restent inchangés.
+- La correction est vérifiée sur le site, puis reportée dans le fichier source.
+
+#### 4. Règles métier
+
+| ID | Règle |
+| --- | --- |
+| RJ-01 | Une entrée = un module réellement suivi ; sa date est celle du cours, jamais celle de la rédaction. |
+| RJ-02 | Les faits (date, manipulation, durée, intitulé de partie) viennent du porteur ; la référence de cours fournit le vocabulaire, pas la preuve. |
+| RJ-03 | Le titre suit le modèle « Formation : … » / « Training: … » ; les slugs suivent `formation-…` / `training-…`, sont uniques et ne changent plus après publication (RM-07). |
+| RJ-04 | Le corps compte trois paragraphes au plus par langue, rédigés avec nos mots ; le compte rendu compte une ligne « Rubrique : valeur » par rubrique, dans les deux langues (règle `compte_rendu` existante). |
+| RJ-05 | Le secteur des modules de la formation froid et climatisation est Climatisation / froid, modules transversaux compris. |
+| RJ-06 | Publication directe par Claude, relecture du porteur après coup ; la dépublication reste son action de retrait (US-11). |
+| RJ-07 | Les sources de cours ne sont ni publiées, ni versionnées, ni envoyées à un service externe. |
+
+#### 5. Modélisation logique des données
+
+**Aucune entité persistante, aucun champ et aucune migration ne sont ajoutés.** Les entités du PRD V1 suffisent :
+
+| Entité | Usage dans cette évolution |
+| --- | --- |
+| Nouvelle | Une instance par module : `titre_fr/en`, `slug_fr/en`, `date_jalon`, `corps_fr/en`, `compte_rendu_fr/en`, `publie`, `premiere_publication` (automatique) ; `image`, `video_youtube`, `instagram_url` et `facebook_url` restent vides |
+| NouvelleSecteur | Une association par entrée vers le Secteur « Climatisation / froid » |
+| Secteur | Existant, publié ; non modifié |
+| LienNouvelle | Non utilisé (aucun lien externe) |
+| DatabaseVersion | Inchangé ; l'envoi daté par e-mail de la base courante sert de sauvegarde |
+
+Entités logiques hors base, sur le disque local, non versionnées :
+
+| Entité | Attributs | Contraintes |
+| --- | --- | --- |
+| ModuleDeCours (référence) | partie, numéro, dossier `reference/cours/<partie>/<module>/`, pages (images, PDF) | Lecture seule ; jamais publiée |
+| FichierSource | chemin `nouvelles/<partie>/<NN_moduleN>/moduleN_<sujet>.md`, champs Unfold, corps fr/en, compte rendu fr/en, URL publique, date | Un par Nouvelle ; texte identique au texte publié |
+
+```mermaid
+erDiagram
+    ModuleDeCours ||--o| FichierSource : "est résumé par"
+    FichierSource ||--|| Nouvelle : "reflète"
+    Nouvelle ||--o{ NouvelleSecteur : concerne
+    Secteur ||--o{ NouvelleSecteur : est_associe
+```
+
+**Décision modifiée (22 octobre 2026, demande explicite d'appliquer le TDD au PRD) :** le skill s'appuie sur
+un outillage testé, sans table ni migration : `hub/journal.py` (lecture d'un FichierSource, règles RJ-03/RJ-04,
+inventaire, comparaison d'une page publique, `publier` pour l'aperçu et la validation locale) et
+`manage.py journal inventaire <partie> | verifier <fichier> [--interdit Nom] | comparer <fichier> [--site URL]`.
+La production reste alimentée par Unfold (RJ-06) ; la commande n'écrit jamais dans la base. Ce point remplace,
+dans la Definition of Done, « aucun code applicatif n'est modifié ». Journal TDD : `docs/tdd.md`.
+
+#### 6. Definition of Done — critères stricts de validation
+
+Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de ce PRD.
+
+**Outillage testé**
+
+- [x] `tests/test_journal.py` : 14 tests écrits avant le code, échec observé pour la raison attendue, puis verts ;
+  suite complète à 159 tests réussis hors les 5 préexistants liés au `.env` ; `check` et
+  `makemigrations --check` sans constat.
+- [x] Inventaire réel : `02_partie2` signale les modules 1 à 8, `01_partie1` aucun.
+- [x] `journal comparer` exercé contre `https://ventisax.pythonanywhere.com` après publication : 8 pages vérifiées, aucun écart.
+
+**Entrées de la partie 2 (US-16 à US-20)**
+
+- [x] Quatre fichiers sources présents dans `nouvelles/02_partie2/`, complets en fr et en en, relus
+  contre RJ-01 à RJ-05 et US-17 : aucun nom propre interdit, aucun extrait recopié, trois paragraphes
+  au plus.
+- [x] Les quatre entrées sont publiées en production (22/10/2026 01:36, créées dans l'ordre module 4, 3, 2, 1 ; secteur réel « Climatisation et froid »), avec les dates 19/10, 20/10, 21/10 et 21/10 et
+  le secteur Climatisation / froid, sans doublon ni image.
+- [x] Huit détails (quatre entrées × deux langues) répondent 200, avec un compte rendu affiché et un
+  changement de langue vers la même entrée ; le journal fr/en regroupe les entrées sous trois dates.
+  Une capture Playwright est conservée hors des données privées.
+- [x] Le texte publié est identique à celui du fichier source ; l'URL publique y est inscrite.
+- [x] La sauvegarde datée par e-mail est envoyée, et son envoi est confirmé par Unfold.
+- [ ] Aucun secret n'apparaît dans les fichiers, les captures, les commits ou le compte rendu.
+
+**Skill (US-21, US-22)**
+
+- [x] `.claude/skills/journal-formation/SKILL.md` existe, avec un frontmatter valide (`name`,
+  `description` en français et ses déclencheurs). Il décrit l'inventaire, les questions de faits, la
+  lecture, la rédaction (modèle de fichier source inclus), la publication, la correction, la
+  vérification, la sauvegarde et le compte rendu.
+- [x] Le skill renvoie aux règles RJ-01 à RJ-07 et au hors-scope, sans les contredire.
+- [x] Inventaire exercé : sur l'état réel, il signale les modules 5 à 8 de la partie 2 comme sans
+  entrée, sans rien rédiger avant confirmation de leurs dates.
+
+**Livraison**
+
+- [ ] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` et le skill sont commités sur `develop` ; `git status` ne montre aucun
+  fichier de `programme_shorts_pedago/` ni de donnée locale.
+- [ ] `hub/journal.py`, la commande `journal` et leurs tests sont commités avec le skill ; la suite
+  (`.venv/Scripts/python -m pytest`) et `manage.py check` restent verts hors écarts préexistants signalés.
+- [ ] Ni fusion sur `main`, ni déploiement.
+- [ ] Le compte rendu final distingue ce qui a été vérifié de ce qui ne l'a pas été (par exemple la
+  réception réelle de l'e-mail de sauvegarde).
 
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 

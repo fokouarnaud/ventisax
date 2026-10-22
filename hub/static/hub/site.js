@@ -45,6 +45,25 @@
     });
   }
 
+  // Choix du thème : les liens fonctionnent sans JavaScript (vue theme) ; ici, même cookie, sans rechargement.
+  const themeLinks = document.querySelectorAll('[data-theme-choice]');
+  const colorScheme = document.querySelector('meta[name="color-scheme"]');
+  themeLinks.forEach((link) => link.addEventListener('click', (event) => {
+    event.preventDefault();
+    const choice = link.dataset.themeChoice;
+    const secure = location.protocol === 'https:' ? '; secure' : '';
+    document.cookie = choice === 'system'
+      ? `theme=; path=/; max-age=0; samesite=lax${secure}`
+      : `theme=${choice}; path=/; max-age=31536000; samesite=lax${secure}`;
+    if (choice === 'system') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.dataset.theme = choice;
+    if (colorScheme) colorScheme.content = choice === 'system' ? 'light dark' : choice;
+    themeLinks.forEach((other) => {
+      if (other.dataset.themeChoice === choice) other.setAttribute('aria-current', 'true');
+      else other.removeAttribute('aria-current');
+    });
+  }));
+
   const topLink = document.querySelector('.back-to-top');
   const top = document.getElementById('page-top');
   if (topLink && top) {

@@ -156,3 +156,34 @@ Image d'accueil, 16/10 : une image générée montrant l'enseigne et les locaux 
 
 Limites : mesures sur serveur local, pas sur PythonAnywhere ; Lighthouse non exécuté ; pas d'essai sur téléphone
 physique. Si `site.js` ne se charge pas alors que JavaScript est actif, le menu mobile reste replié.
+
+## Journal de formation, partie 2 : rendu des entrées réelles — 22 octobre 2026
+
+Aperçu isolé `scripts/preview_site.py --journal programme_shorts_pedago/nouvelles/02_partie2` (base temporaire,
+les quatre fichiers sources publiés par `hub.journal.publier`, aucune donnée fictive). Contrôle Playwright du journal
+(liste, grille) et des huit détails fr/en à 1 280, 768, 390 et 320 px, en clair et en sombre (skill taste,
+refonte-préservation, sans nouvelle dépendance).
+
+| Écart observé | Correction CSS | Mesure après correction |
+| --- | --- | --- |
+| Titre de détail de 70 caractères sur 3 lignes à 60 px (ordinateur) | `.article-heading h1` : `clamp(2rem, 3.2vw, 2.5rem)`, interligne 1,15 | 40 px, 2 lignes au plus |
+| Même titre sur 5 lignes à 32 px (390 px) | mobile : 1,625 rem, interligne 1,2 | 26 px, 2 à 4 lignes ; texte visible dès le premier écran |
+| Carte de grille seule sur sa journée : flèche isolée sur une ligne, bande vide | flèche à droite du contenu (`minmax(0, 1fr) auto`), contenu en haut | carte de 224 à 162 px |
+| Mobile : colonne et espacement de la flèche masquée conservés | une seule colonne en grille mobile | contenu sur toute la largeur de la carte |
+
+Aucun débordement horizontal mesuré. Deux entrées du même jour s'affichent par identifiant décroissant (RM-05,
+conservé) : publier le module 4 avant le module 3 pour lire le 3 en premier (consigné dans le skill).
+Captures locales non versionnées (`.playwright-mcp/`). Non exercés : téléphone physique, lecteur d'écran.
+
+## Choix du thème — 22 octobre 2026
+
+Aperçu isolé, Playwright. En-tête sur une ligne (73 px) de 961 à 1 440 px en fr et en, sans débordement ; un premier
+essai repliait la navigation sur 2 ou 3 lignes entre 961 et 1 180 px (en-tête de 101 px), corrigé par un en-tête
+compact jusqu'à 1 260 px (langue « FR → EN », marque sans sous-titre, espacements réduits ; cibles de 44 px gardées).
+Sur mobile, le sélecteur est dans le menu, sous les quatre liens. Le sélecteur `.main-nav a:last-child` du bouton
+Contact est devenu `.main-nav > a:last-of-type` pour ne pas styliser l'icône de lune.
+
+Parcours exercés : système sombre sans cookie ; « Clair » au clavier (focus visible, Entrée, sans rechargement,
+focus conservé) ; persistance au rechargement ; « Sombre » à la souris sur un système clair ; conservation sur une
+autre page et en anglais ; retour à « Système » (cookie supprimé) ; parcours **sans JavaScript** (redirection vers la
+page d'origine, thème appliqué). Non exercés : lecteur d'écran, téléphone physique.

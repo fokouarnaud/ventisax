@@ -119,3 +119,38 @@ Deux assertions de test écrites avant le code supposaient un balisage différen
 comptage des mots sur toute la page) ; elles ont été réécrites sur la structure réelle, sans réduire ce qu'elles vérifient.
 Rendu vérifié sur la base locale : liste et grille à 1 280 px (clair) et 390 px (sombre), accueil compris, sans
 débordement ; sélecteur sur une ligne ; passage à la grille au clavier (Tab puis Entrée).
+
+## Journal de formation : fichiers sources et commande `journal` — 22 octobre 2026
+
+Demande explicite : appliquer le TDD au PRD « journal de formation, partie 2 ». Le PRD n'ajoute aucune table ;
+les cycles portent sur ses entités hors base (`FichierSource`, `ModuleDeCours`) et leur passage vers `Nouvelle`.
+Fichiers : `hub/journal.py`, `hub/management/commands/journal.py`, `tests/test_journal.py`.
+
+| Contrat (story) | Échec observé avant code | Suite verte après code |
+| --- | --- | --- |
+| Lecture d'un fichier source en champs de `Nouvelle` (US-20) | `ImportError: cannot import name 'journal'` | 1 test |
+| Source → nouvelle publiée avec son secteur ; compte rendu anglais manquant refusé par le modèle, rien de publié (US-18) | `AttributeError: publier` (2 tests) | 3 tests |
+| Règles RJ-03/RJ-04 : préfixes de titres et slugs, trois paragraphes au plus, quatre rubriques par langue, noms interdits (US-17) | `AttributeError: source_errors` (2 tests) | 5 tests |
+| Republication = correction sans doublon ni changement d'horodatage ; slug publié modifié refusé ; secteur inconnu refusé (US-18, US-22) | Contrainte d'unicité violée ; secteur ignoré sans erreur (2 tests) | 8 tests |
+| Inventaire des modules de référence sans fichier source, tri numérique (US-21) | `AttributeError: modules_sans_entree` | 9 tests |
+| Page publique fr/en comparée au fichier source (US-19, US-20) | `AttributeError: ecarts_page` (2 tests) | 11 tests |
+| `manage.py journal inventaire|verifier|comparer` (US-19, US-21) | `Unknown command: 'journal'` (3 tests) | 14 tests ; suite complète **159 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+Ajustements de tests, sans réduire ce qu'ils vérifient : le test du compte rendu manquant ne créait pas le secteur et
+ne passait que parce qu'un secteur inconnu était ignoré ; le test de page a reçu la configuration générale requise
+par les vues (503 sinon). Le test du slug modifié passait d'abord par la contrainte d'unicité, ensuite par le
+verrou des slugs publiés. `check` sans erreur, `makemigrations --check` sans migration. Inventaire réel :
+`02_partie2` → modules 1 à 8 sans entrée ; `01_partie1` → aucun. Non exercé : `comparer` contre la production.
+
+Cycle complémentaire : `journal verifier` sur le modèle vierge du skill levait `ValueError` (date `JJ/MM/AAAA`).
+Test d'abord en échec pour cette raison, puis message `date_jalon : « JJ/MM/AAAA » attendue au format JJ/MM/AAAA.` ;
+15 tests dans `test_journal.py`, suite complète à **160 tests réussis**, hors les 5 préexistants liés au `.env`.
+
+## Choix du thème clair, sombre ou système — 22 octobre 2026
+
+| Contrat | Échec observé avant code | Suite verte après code |
+| --- | --- | --- |
+| Sans préférence : pas de `data-theme`, `color-scheme` « light dark », « système » courant ; libellés fr/en ; lien de retour vers la page courante ; préférence `light`/`dark` rendue dès le HTML sur pages, journal et 404 ; valeur inconnue ignorée ; vue `theme` : cookie (Lax, chemin `/`, un an, lisible par le script), suppression pour « système », retour hors du site refusé, choix inconnu 404 | Contrôle et route absents (11 tests sur 12 ; le 404 passait faute de route) | `tests/test_theme.py` : 12 tests ; suite complète **172 tests réussis**, hors les 5 préexistants liés au `.env` |
+
+`check` sans erreur, `makemigrations --check` sans migration. Comportement réel et rendu vérifiés dans
+`docs/validation-interface.md`.

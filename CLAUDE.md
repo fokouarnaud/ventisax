@@ -3,7 +3,8 @@
 # Cartographie du dépôt Ventisax (pour Claude Code)
 
 `AGENTS.md`, importé ci-dessus, porte le cadrage, le PRD et l'historique des décisions : il fait foi.
-Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 sur `develop`, mis à jour le 15 octobre 2026.
+Journal de formation : GOALS et PRD du 22 octobre 2026 (US-16 à US-22, règles RJ-01 à RJ-07) dans la sous-section « journal de formation, partie 2 » de `## GOALS`.
+Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 sur `develop`, mis à jour le 22 octobre 2026.
 
 ## Points d'entrée
 
@@ -19,7 +20,8 @@ Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 
 langue opposée) → `localized(obj, lang)` aplatit les champs `*_fr` / `*_en` et ajoute secteurs publics, liens,
 image, `youtube_id`, réseaux → `hub/templates/hub/page.html` inclut `pages/<page>.html`
 (`partials/news_list.html`, `partials/breadcrumbs.html`, `partials/profiles.html`) dans `base.html`. Libellés d'interface : `LABELS` dans `views.py` (la rubrique `news` s'affiche « Journal de formation » / « Training log », bouton `notify` « Me prévenir à l'ouverture » et son message pré-rempli).
-Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut), SVG.
+Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut, choix du thème sans rechargement), SVG.
+Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` sur `<html>`), vue `hub.views.theme` (`/theme/<system|light|dark>/?next=`), contrôle `partials/theme_switch.html` en fin de navigation.
 
 ## Modèles (`hub/models.py`)
 
@@ -40,15 +42,17 @@ Statique : `hub/static/hub/site.css`, `site.js` (menu, bandeau, retour en haut),
 
 ## Commandes, scripts, tests
 
-- `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`.
-- `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
-- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 148 tests (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`, `journal` (`inventaire <partie>`, `verifier <fichier>`, `comparer <fichier> --site URL`, sans écriture en base).
+- `hub/journal.py` : fichiers sources du Journal de formation (`parse_source`, `source_errors`, `modules_sans_entree`, `ecarts_page`, `publier` pour l'aperçu local).
+- `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives ; `--journal <dossier>` publie les fichiers sources réels du journal à la place), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
+- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 177 tests, dont 15 dans `test_journal.py` et 12 dans `test_theme.py` (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Skill de projet `.claude/skills/journal-formation/` : publication et correction des entrées du Journal de formation à partir des références de cours (publication directe dans Unfold de production via Playwright, connexion du porteur).
 - Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).
 - Documentation : `README.md` (installation, déploiement PythonAnywhere), `docs/` (exploitation, déploiement, sécurité, validation d'interface, versions de base, `acquisition.md` : capsules, réseaux, WhatsApp Business).
 
 ## Hors dépôt et outils associés
 
-- `programme_shorts_pedago/` (non suivi) : scripts et capsule du module 3, visuels et générateurs dans `visuels/src/`. Médias `*.mp4 *.mp3 *.wav` ignorés.
+- `programme_shorts_pedago/` (non suivi) : scripts et capsule du module 3, visuels et générateurs dans `visuels/src/` ; `reference/cours/<partie>/<module>/` (pages du manuel, sources privées à ne pas publier) et `nouvelles/<partie>/<module>/` (fichier source de chaque entrée du Journal de formation). Médias `*.mp4 *.mp3 *.wav` ignorés.
 - `videos/` (ignoré) : photos du manuel et du planning de formation, sources privées à ne pas publier.
 - `C:\openshorts` : OpenShorts (Docker) utilisé par les skills `clip-local` (montage, sous-titres karaoké, contrôle de voix) et `voix-off-locale` (Kokoro, Piper).
 - `db.sqlite3`, `media/`, `staticfiles/`, `backups/`, `.env` : données locales, jamais versionnées.

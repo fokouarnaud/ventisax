@@ -5,8 +5,10 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import translation
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
 
+from .context_processors import THEME_COOKIE
 from .models import SOCIAL_NAMES, ConfigurationGenerale, Nouvelle, Secteur
 
 
@@ -20,7 +22,8 @@ LABELS = {
                instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
                notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
                               "et de froid. Mon quartier : ",
-               follow="Suivre Ventisax"),
+               follow="Suivre Ventisax", theme="Thème", theme_system="Thème : système",
+               theme_light="Thème : clair", theme_dark="Thème : sombre"),
     "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
                empty="No published news yet.", group="Group", all="All sectors", filter="Filter",
                previous="Previous", next="Next", learning="Learning", step="Next step", preparation="In preparation",
@@ -30,7 +33,8 @@ LABELS = {
                notify="Notify me at launch",
                notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
                               "services open. My neighbourhood: ",
-               follow="Follow Ventisax"),
+               follow="Follow Ventisax", theme="Theme", theme_system="Theme: system",
+               theme_light="Theme: light", theme_dark="Theme: dark"),
 }
 
 
@@ -139,3 +143,17 @@ def not_found(request, exception):
     other = "fr" if lang == "en" else "en"
     return render(request, "hub/not_found.html", {"lang": lang, "labels": LABELS[lang], "language_url": f"/{other}/",
                   "preview": getattr(settings, "VENTISAX_PREVIEW", False)}, status=404)
+
+
+def theme(request, choice):
+    """Enregistre le thème choisi (cookie lisible par site.js, sans suivi) puis revient sur la page d'origine."""
+    target = request.GET.get("next", "")
+    if not (target.startswith("/") and url_has_allowed_host_and_scheme(target, allowed_hosts={request.get_host()},
+                                                                      require_https=request.is_secure())):
+        target = "/"
+    response = redirect(target)
+    if choice == "system":
+        response.delete_cookie(THEME_COOKIE, samesite="Lax")
+    else:
+        response.set_cookie(THEME_COOKIE, choice, max_age=365 * 24 * 3600, samesite="Lax", secure=request.is_secure())
+    return response
