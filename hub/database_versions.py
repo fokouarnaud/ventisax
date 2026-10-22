@@ -19,7 +19,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 from .models import DatabaseVersion
-from .models import ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle
+from .models import ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle, missing_text, social_host_errors
 
 _lock = threading.RLock()
 
@@ -149,6 +149,8 @@ def validate(db):
             if model == ConfigurationGenerale:
                 if any(not getattr(obj, name).strip() for name in model.required_texts()):
                     raise ValidationError('Présentation générale bilingue incomplète.')
+                if social_host_errors(obj, model.profile_fields):
+                    raise ValidationError('Lien de réseau social hors du domaine attendu.')
                 if obj.image_accueil:
                     path = (Path(settings.MEDIA_ROOT).resolve() / obj.image_accueil.name).resolve()
                     if (Path(settings.MEDIA_ROOT).resolve() not in path.parents or not path.is_file()
@@ -158,6 +160,11 @@ def validate(db):
                 raise ValidationError('Horodatage de première publication manquant.')
             if model == Nouvelle and obj.publie and not obj.date_jalon:
                 raise ValidationError('Date du jalon obligatoire pour une nouvelle publiée.')
+            if model == Nouvelle and obj.link_errors():
+                raise ValidationError('Vidéo ou lien de réseau social invalide.')
+            if (model == Nouvelle and obj.publie and (obj.compte_rendu_fr.strip() or obj.compte_rendu_en.strip())
+                    and missing_text(obj, ('compte_rendu_fr', 'compte_rendu_en'), '')):
+                raise ValidationError('Compte rendu traduit obligatoire pour une nouvelle publiée.')
             if model == LienNouvelle and db.execute('SELECT publie FROM hub_nouvelle WHERE id=?', (obj.nouvelle_id,)).fetchone() == (1,):
                 obj.validate_publication()
     for table, fields in [('hub_secteur', ('nom', 'slug', 'description', 'apprentissages', 'prochaine_etape')),

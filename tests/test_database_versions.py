@@ -137,6 +137,11 @@ def test_charger_deux_slots_preserve_acces_et_revoque_sessions(verified_client, 
     "DELETE FROM django_migrations WHERE app='hub'",
     "UPDATE hub_nouvelle SET date_jalon=NULL WHERE publie=1",
     "UPDATE hub_secteur SET site_url='javascript:alert(1)'",
+    "UPDATE hub_configurationgenerale SET academie_url='javascript:alert(1)'",
+    "UPDATE hub_configurationgenerale SET tiktok_url='https://evil.example/'",
+    "UPDATE hub_nouvelle SET facebook_url='https://evil.example/' WHERE publie=1",
+    "UPDATE hub_nouvelle SET video_youtube='https://www.youtube.com/playlist?list=PL0123456789' WHERE publie=1",
+    "UPDATE hub_nouvelle SET compte_rendu_fr='Objet : essai', compte_rendu_en='' WHERE publie=1",
     "UPDATE hub_nouvelle SET uuid='invalid'",
 ])
 def test_import_incompatible_preserve_slots(verified_client, settings, mutation):
@@ -282,6 +287,35 @@ from hub.models import Secteur
 rows=list(Secteur.objects.order_by('pk').values_list('nom_fr','slug_fr','uuid'))
 assert [(r[0],r[1]) for r in rows]==[('A','a'),('B','b')]
 assert rows[0][2] != rows[1][2]
+connection.close()
+'''
+    result = subprocess.run([sys.executable, '-c', code], env=os.environ.copy(), capture_output=True, text=True, timeout=40)
+    assert result.returncode == 0, result.stderr
+
+
+def test_migration_academie_preserve_configuration_existante(tmp_path):
+    import os
+    import subprocess
+    import sys
+    code = f'''
+import os
+os.environ['DJANGO_SETTINGS_MODULE']='config.test_settings'
+from django.conf import settings
+settings.DATABASES['default']['NAME']={str(tmp_path / 'academie.sqlite3')!r}
+import django
+django.setup()
+from django.db import connection
+from django.db.migrations.executor import MigrationExecutor
+executor=MigrationExecutor(connection)
+old=[('hub','0011_nouvelle_compte_rendu')]
+executor.migrate(old)
+apps=executor.loader.project_state(old).apps
+apps.get_model('hub','ConfigurationGenerale').objects.create(pk=1, email='porteur@example.com', whatsapp='+237699123456', identite_fr='Ventisax')
+executor=MigrationExecutor(connection)
+executor.migrate([('hub','0012_configurationgenerale_academie_url')])
+from hub.models import ConfigurationGenerale
+c=ConfigurationGenerale.objects.get()
+assert (c.email, c.whatsapp, c.identite_fr, c.academie_url) == ('porteur@example.com', '+237699123456', 'Ventisax', '')
 connection.close()
 '''
     result = subprocess.run([sys.executable, '-c', code], env=os.environ.copy(), capture_output=True, text=True, timeout=40)

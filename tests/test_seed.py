@@ -51,3 +51,14 @@ def test_initialisation_refuse_coordonnees_invalides_sans_publication_partielle(
         call_command("seed_content", email="bad", whatsapp="inconnu")
     assert not ConfigurationGenerale.objects.exists()
     assert not Secteur.objects.exists()
+
+
+def test_initialisation_presente_un_projet_et_non_une_sarl_operationnelle(client):
+    call_command("seed_content", email="public@example.com")
+    for lang, statut in (("fr", "projet de groupe en développement"), ("en", "group project in development")):
+        accueil = client.get(f"/{lang}/").content.decode()
+        presentation = client.get(f"/{lang}/presentation/").content.decode()
+        assert statut in accueil
+        for page in (accueil, presentation):
+            assert "Ventisax SARL" not in page
+    assert "future SARL" in client.get("/fr/presentation/").content.decode()

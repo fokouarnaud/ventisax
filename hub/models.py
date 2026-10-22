@@ -181,12 +181,17 @@ class Nouvelle(Publication):
     def youtube_id(self):
         return youtube_video_id(self.video_youtube) if self.video_youtube else ""
 
-    def clean(self):
-        super().clean()
+    def link_errors(self):
+        """Vidéo YouTube unique et réseaux à domaine vérifié ; partagé avec la validation des bases importées."""
         errors = {}
         if self.video_youtube and not self.youtube_id:
             errors["video_youtube"] = "Lien d'une vidéo YouTube unique attendu (watch, shorts, embed ou youtu.be)."
         errors.update(social_host_errors(self, ("instagram_url", "facebook_url")))
+        return errors
+
+    def clean(self):
+        super().clean()
+        errors = self.link_errors()
         if errors:
             raise ValidationError(errors)
         if self.image and not self.image._committed:
@@ -280,6 +285,8 @@ class ConfigurationGenerale(ValidatedModel):
     instagram_url = models.URLField("profil Instagram", blank=True, validators=[HTTP_URL])
     facebook_url = models.URLField("page Facebook", blank=True, validators=[HTTP_URL])
     tiktok_url = models.URLField("profil TikTok", blank=True, validators=[HTTP_URL])
+    academie_url = models.URLField("adresse de l'Académie", blank=True, validators=[HTTP_URL],
+                                   help_text="Espace de révision (cours, quiz) ; vide, aucun renvoi n'est affiché.")
     profile_fields = ("youtube_channel_url", "facebook_url", "tiktok_url", "instagram_url")
     image_accueil = models.ImageField("image d'accueil", upload_to="accueil/", blank=True,
                                       help_text="Photo réelle et publiable (2 Mio max). La remplacer supprime la précédente ; "
@@ -328,11 +335,15 @@ class ConfigurationGenerale(ValidatedModel):
     def email_url(self):
         return "mailto:" + quote(self.email, safe="@.")
 
+    def whatsapp_text_url(self, message):
+        return f"{self.whatsapp_url}?text={quote(message, safe='')}" if self.whatsapp else ""
+
+    def email_text_url(self, subject, message):
+        return f"{self.email_url}?subject={quote(subject, safe='')}&body={quote(message, safe='')}"
+
     def notify_url(self, message, subject):
         """Lien « Me prévenir » : WhatsApp pré-rempli, sinon e-mail pré-rempli."""
-        if self.whatsapp:
-            return f"{self.whatsapp_url}?text={quote(message, safe='')}"
-        return f"{self.email_url}?subject={quote(subject, safe='')}&body={quote(message, safe='')}"
+        return self.whatsapp_text_url(message) or self.email_text_url(subject, message)
 
 
 class DatabaseVersion(models.Model):

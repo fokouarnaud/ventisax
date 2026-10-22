@@ -31,9 +31,10 @@ def seed():
         implantation_fr="Yaoundé et ses environs · Cameroun", implantation_en="Yaoundé and surrounding areas · Cameroon",
         email="demo@example.com", whatsapp="+237699000000",
         tiktok_url="https://www.tiktok.com/@ventisax-demo", facebook_url="https://www.facebook.com/ventisax-demo",
+        academie_url="https://acadventisax.pythonanywhere.com/",
     )
     cooling = Secteur.objects.create(nom_fr="Climatisation & froid", nom_en="Air conditioning & refrigeration",
-        slug_fr=slugify(name), slug_en=f"{slugify(name)}-en",
+        slug_fr="climatisation-froid", slug_en="air-conditioning-refrigeration",
         description_fr="Découvrir les systèmes de climatisation et de réfrigération, puis construire progressivement les connaissances du métier.",
         description_en="Explore air conditioning and refrigeration systems, then gradually build technical knowledge.",
         apprentissages_fr="Texte de démonstration : principes du froid, fonctionnement des équipements et sécurité.",

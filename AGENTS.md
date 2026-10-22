@@ -330,7 +330,9 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
   Une capture Playwright est conservée hors des données privées.
 - [x] Le texte publié est identique à celui du fichier source ; l'URL publique y est inscrite.
 - [x] La sauvegarde datée par e-mail est envoyée, et son envoi est confirmé par Unfold.
-- [ ] Aucun secret n'apparaît dans les fichiers, les captures, les commits ou le compte rendu.
+- [x] Aucun secret n'apparaît dans les fichiers, les captures, les commits ou le compte rendu.
+  *22/10/2026 : fichiers versionnés sans mot de passe ni secret SMTP ; captures `.playwright-mcp/journal-*.png` relues
+  (aperçu local, contenus publics).*
 
 **Skill (US-21, US-22)**
 
@@ -344,13 +346,249 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
 
 **Livraison**
 
-- [ ] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` et le skill sont commités sur `develop` ; `git status` ne montre aucun
+- [x] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` et le skill sont commités sur `develop` ; `git status` ne montre aucun
   fichier de `programme_shorts_pedago/` ni de donnée locale.
-- [ ] `hub/journal.py`, la commande `journal` et leurs tests sont commités avec le skill ; la suite
+- [x] `hub/journal.py`, la commande `journal` et leurs tests sont commités avec le skill ; la suite
   (`.venv/Scripts/python -m pytest`) et `manage.py check` restent verts hors écarts préexistants signalés.
 - [ ] Ni fusion sur `main`, ni déploiement.
+  *Écart constaté le 22/10/2026 : le commit `df221b9` (outillage et skill) est contenu dans `main`, emporté par le
+  déploiement ultérieur `2dc37a2` ; décision du porteur à consigner.*
 - [ ] Le compte rendu final distingue ce qui a été vérifié de ce qui ne l'a pas été (par exemple la
   réception réelle de l'e-mail de sauvegarde).
+
+### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
+
+**Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
+l'utilisateur, qui a demandé leur transformation en PRD (ci-dessous).** Le reste de l'historique est conservé.
+
+Faits relevés avant le grill : l'e-mail et le numéro WhatsApp sont déjà modifiables à tout moment dans
+Unfold (`ConfigurationGenerale`, section « Coordonnées ») ; `acadventisax.pythonanywhere.com` est une
+plateforme de cours, quiz et examens, bilingue (bascule FR/EN), accessible par identifiant, qui se
+présente aujourd'hui comme celle d'un « centre de formation Ventisax ».
+
+#### 1. Objectifs fonctionnels prioritaires
+
+- **Orienter vers les supports de cours** : un visiteur du Journal de formation qui veut le contenu des
+  cours est renvoyé vers l'Académie Ventisax, présentée comme un **espace de révision** (cours et quiz de
+  la formation suivie), ouvert sur demande (Q1). Le hub ne la présente jamais comme un centre de formation.
+- **Demander un identifiant** par WhatsApp ou par e-mail, avec un message fixe et bilingue pré-rempli qui
+  demande le nom et le motif (Q6, Q9) :
+  - FR : « Bonjour Ventisax, je souhaite un identifiant pour l'Académie Ventisax. Mon nom : … Pourquoi je
+    m'y intéresse : … », objet « Demande d'accès à l'Académie ».
+  - EN : « Hello Ventisax, I would like a login for the Ventisax Academy. My name: … Why I'm interested:
+    … », objet « Academy access request ».
+  Le bouton WhatsApp n'apparaît que si un numéro est renseigné ; le bouton e-mail est toujours présent,
+  l'e-mail étant obligatoire.
+- **Coordonnées administrables à tout moment** : la demande d'accès réutilise l'e-mail et le WhatsApp
+  existants de la configuration générale, source unique déjà partagée par Contact et « Me prévenir » ;
+  aucun « contact académie » séparé (Q4).
+- **Adresse de l'Académie administrable** : champ facultatif `academie_url` dans la configuration générale,
+  saisi dans Unfold ; vide, aucun bloc n'est affiché (Q5).
+- **Emplacement** : un bloc « Réviser les cours » / « Review the lessons » sous le titre du Journal de
+  formation, en fin de chaque détail d'entrée (après le compte rendu) et sur Contact ; ni dans l'en-tête,
+  ni dans le hero de l'accueil, qui restent à « Me prévenir » (Q7).
+- **Textes fixes et bilingues** (Q8) : « Les cours et quiz de cette formation sont sur l'Académie Ventisax.
+  L'accès se fait avec un identifiant personnel : demandez-le-nous. » / « The lessons and quizzes from this
+  training are on the Ventisax Academy. Access requires a personal login: ask us for one. » Boutons
+  « Ouvrir l'Académie », « Demander un accès par WhatsApp », « Demander un accès par e-mail » / « Open the
+  Academy », « Request access on WhatsApp », « Request access by email ».
+
+#### 2. Contraintes techniques
+
+- **Stack inchangée** : Django, SQLite, Unfold, templates serveur et CSS ; aucun JavaScript ni dépendance
+  ajoutés. Un champ `academie_url` (URLField facultatif, validateur http/https existant `HTTP_URL`) et sa
+  migration `0012` ; aucune autre entité.
+- **Liens** construits par le modèle à partir des coordonnées validées, sur le mécanisme de `notify_url`
+  (`wa.me?text=`, `mailto:?subject=&body=`, valeurs encodées) ; libellés et messages dans `LABELS`.
+- **Ouverture de l'Académie** : URL saisie telle quelle, nouvel onglet, `rel="noopener noreferrer"`, sans
+  mention « in French », l'Académie ayant sa propre bascule de langue (Q10).
+- **Confidentialité** : rien n'est stocké sur le hub (ni message, ni demande, ni clic) ; aucun identifiant
+  ni mot de passe n'est affiché ou transmis par le hub ; l'attribution se fait hors du site par le porteur.
+- **Droits** : le contenu de l'Académie est rédigé par nous ou autorisé, sans reproduction du manuel
+  (Q2, RJ-07).
+- **Interface** : jetons existants, modes clair et sombre, cibles de 44 px, clavier et focus visibles, sans
+  débordement de 320 à 1 280 px.
+- **Livraison** (Q11) : TDD sur `develop` (test d'abord en échec, puis vert), `check` et
+  `makemigrations --check` propres, consignation dans `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md`, commit.
+  Fusion sur `main` et déploiement (migrations `0008` à `0012`) seulement après accord explicite ; le
+  porteur saisit ensuite l'URL dans Unfold de production.
+- **Reste au porteur, hors dépôt** : corriger sur l'Académie la mention « centre de formation » pour rester
+  cohérent avec le statut de projet en formation (Q1).
+
+#### 3. Périmètre strictement Hors-Scope
+
+- Formulaire de demande d'accès, stockage des demandes, notification ou suivi des clics.
+- Création de comptes, attribution ou envoi automatique d'identifiants, authentification unique entre le
+  hub et l'Académie, reprise ou affichage en iframe du contenu de l'Académie.
+- Modification du code ou des textes de l'Académie depuis ce dépôt.
+- Prix, mention « gratuit », inscription payante, promesse de formation dispensée ou présentation de
+  Ventisax comme centre de formation (Q3).
+- Contact WhatsApp ou e-mail distinct pour l'Académie ; messages pré-remplis administrables.
+- Bloc Académie dans l'en-tête, le hero ou les pages Présentation et secteurs.
+- Publication d'extraits ou de photos du manuel, sur le hub comme via le renvoi.
+
+### PRD — Renvoi vers l'Académie Ventisax et demande d'accès (22 octobre 2026)
+
+**Statut : rédigé à partir des GOALS validés ci-dessus, en attente de validation par l'utilisateur.** Il
+précise les comportements attendus et n'autorise pas encore le développement. Le PRD V1 reste la référence
+pour tout ce qu'il ne modifie pas (publication bilingue, contact sans stockage, sécurité, accessibilité).
+
+#### 1. Contexte, problème et résultat attendu
+
+Le Journal de formation résume chaque journée de la formation froid et climatisation, mais un visiteur qui
+veut aller plus loin (cours, quiz) ne sait pas où les trouver. Ces supports sont sur l'Académie Ventisax
+(`acadventisax.pythonanywhere.com`), accessible par identifiant ; le hub ne dit pas qu'elle existe ni
+comment obtenir un accès. Les coordonnées de contact sont déjà administrables ; il manque le renvoi, la
+demande d'accès pré-remplie et une adresse d'Académie modifiable sans toucher au code.
+
+**Résultat attendu :** sur le journal, chaque entrée et Contact, en français et en anglais, un bloc
+discret mène à l'Académie et permet de demander un identifiant par WhatsApp ou e-mail, avec les
+coordonnées en vigueur dans Unfold ; le porteur peut changer l'adresse de l'Académie, l'e-mail et le
+WhatsApp à tout moment, sans déploiement.
+
+| Rôle | Besoin | Accès |
+| --- | --- | --- |
+| Visiteur, apprenant ou curieux | Trouver les cours et quiz, demander un identifiant | Pages publiques fr/en |
+| Porteur du projet, administrateur | Renseigner ou changer l'adresse de l'Académie et les coordonnées ; attribuer les identifiants hors du site | Unfold, second facteur |
+
+#### 2. Périmètre
+
+| Élément | Comportement requis |
+| --- | --- |
+| Configuration générale | Champ facultatif « adresse de l'Académie » (http/https), saisi dans Unfold |
+| Bloc Académie | Titre, texte, lien « Ouvrir l'Académie », boutons de demande d'accès WhatsApp (si numéro) et e-mail ; affiché seulement si l'adresse est renseignée |
+| Pages | Journal de formation (sous le titre), détail d'une entrée (après le compte rendu), Contact ; fr et en |
+| Documentation | `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` ; commit sur `develop` |
+
+Hors périmètre : voir « Périmètre strictement Hors-Scope » des GOALS ci-dessus.
+
+#### 3. User Stories et critères d'acceptation
+
+##### US-23 — Trouver les supports de cours
+
+En tant que visiteur du Journal de formation, je veux savoir où réviser les cours afin d'approfondir une
+journée qui m'intéresse.
+
+- Lorsque l'adresse de l'Académie est renseignée, le bloc « Réviser les cours » / « Review the lessons »
+  apparaît sous le titre du journal, à la fin de chaque détail d'entrée et sur Contact, dans la langue de
+  la page, avec les textes fixés par les GOALS.
+- « Ouvrir l'Académie » / « Open the Academy » pointe exactement vers l'adresse saisie, s'ouvre dans un
+  nouvel onglet avec `rel="noopener noreferrer"` et un libellé accessible qui annonce l'ouverture externe.
+- Le bloc n'apparaît ni sur l'accueil, ni sur Présentation, ni sur les fiches secteur, ni dans l'en-tête.
+- Le bloc ne contient ni « centre de formation », ni « gratuit », ni prix, ni promesse de formation.
+
+##### US-24 — Demander un identifiant
+
+En tant que visiteur, je veux demander un accès sans rédiger mon message de zéro.
+
+- « Demander un accès par WhatsApp » ouvre `https://wa.me/<numéro>?text=<message>` avec le message de la
+  langue de la page, encodé ; il n'apparaît que si un numéro WhatsApp est renseigné.
+- « Demander un accès par e-mail » ouvre `mailto:<e-mail>?subject=<objet>&body=<message>`, encodés,
+  dans la langue de la page ; il est toujours présent quand le bloc l'est.
+- Le message demande le nom et le motif ; il ne demande ni mot de passe, ni donnée sensible.
+- Le hub n'enregistre ni la demande, ni le clic ; aucun identifiant n'est affiché.
+
+##### US-25 — Administrer l'Académie et les coordonnées
+
+En tant qu'administrateur, je veux changer l'adresse de l'Académie, l'e-mail et le WhatsApp à tout moment
+dans Unfold.
+
+- Le champ « adresse de l'Académie » figure dans la configuration générale, avec un texte d'aide ; il est
+  facultatif.
+- Une adresse non http/https (`javascript:`, `data:`, etc.) est refusée sans modifier les valeurs
+  enregistrées (RM-10).
+- Vider le champ retire le bloc de toutes les pages ; le renseigner l'affiche partout, sans déploiement.
+- Modifier l'e-mail ou le WhatsApp met à jour ensemble les liens de Contact, de « Me prévenir » et de la
+  demande d'accès.
+
+##### US-26 — Lire le bloc sur mobile, au clavier et dans les deux thèmes
+
+En tant que visiteur sur téléphone ou sans souris, je veux utiliser le bloc comme le reste du site.
+
+- Aucun débordement horizontal de 320 à 1 280 px ; cibles d'au moins 44 px ; ordre de tabulation
+  conforme à l'ordre visuel ; focus visible.
+- Contraste lisible en thème clair et sombre ; icônes décoratives masquées aux technologies d'assistance.
+
+#### 4. Règles métier
+
+| ID | Règle |
+| --- | --- |
+| RA-01 | L'Académie est présentée comme un espace de révision ouvert sur demande ; jamais comme un centre de formation ni comme une offre. |
+| RA-02 | Une seule source de coordonnées : l'e-mail et le WhatsApp de la configuration générale. |
+| RA-03 | Sans adresse d'Académie, aucun bloc ni lien n'est rendu. Sans WhatsApp, seule la demande par e-mail est proposée. |
+| RA-04 | Les liens sont construits par le code à partir de valeurs validées et encodées ; aucun HTML ni lien libre saisi. |
+| RA-05 | Le hub ne stocke ni ne trace aucune demande ; l'attribution des identifiants se fait hors du site, par le porteur. |
+| RA-06 | Les textes et messages du bloc sont fixes et bilingues dans le code ; leur changement passe par une décision et un commit. |
+| RA-07 | Le contenu de l'Académie relève de sa propre responsabilité : rédigé par nous ou autorisé, sans reproduction du manuel (RJ-07). |
+
+#### 5. Modélisation logique des données
+
+**Aucune nouvelle entité.** Un attribut est ajouté à une entité existante :
+
+| Entité | Attribut | Type logique | Contraintes |
+| --- | --- | --- | --- |
+| ConfigurationGenerale | `academie_url` (« adresse de l'Académie ») | URL facultative | Vide par défaut ; http/https seulement (validateur `HTTP_URL`) ; non traduite, l'Académie gérant sa langue |
+| ConfigurationGenerale | `email`, `whatsapp` | Existants | Inchangés : e-mail obligatoire, WhatsApp facultatif au format international |
+
+Valeurs dérivées, non stockées : lien d'ouverture de l'Académie, lien WhatsApp pré-rempli, lien e-mail
+pré-rempli, calculés à l'affichage selon la langue. Messages et libellés : constantes `LABELS`. Migration
+`0012` sur la seule configuration générale ; aucune donnée existante n'est modifiée.
+
+```mermaid
+erDiagram
+    ConfigurationGenerale ||--o| BlocAcademie : "alimente (si academie_url)"
+    BlocAcademie }o--|| PagePublique : "affiché sur journal, détail, contact"
+```
+
+`BlocAcademie` et `PagePublique` sont des notions d'affichage, pas des tables.
+
+#### 6. Definition of Done — critères stricts de validation
+
+Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de ce PRD.
+
+**TDD et contrôles**
+
+- [x] `tests/test_academy.py` écrit avant le code ; échec observé pour la raison attendue (champ ou bloc
+  absent), puis vert. Cas couverts : adresse vide (aucun bloc sur les trois pages fr/en) ; adresse
+  renseignée (lien exact, nouvel onglet, `rel`, libellés de la langue, présence sur journal, détail,
+  Contact, absence sur accueil, présentation, secteur) ; WhatsApp présent ou absent ; encodage des
+  messages et objets fr/en ; URL `javascript:`/`data:` refusée ; changement d'e-mail et de numéro reflété ;
+  absence de « centre de formation » et de « gratuit ».
+- [x] Tests existants de « Me prévenir » et de Contact toujours verts après refactoring de la construction
+  des liens.
+- [x] Suite complète (`.venv/Scripts/python -m pytest`) verte hors les 5 échecs préexistants liés au `.env` ;
+  `manage.py check` et `makemigrations --check --dry-run` sans constat ; migration `0012` appliquée sur une
+  base neuve et sur une copie de la base locale sans perte.
+  *22/10/2026 : 191 tests, 186 réussis, 5 échecs préexistants liés au `.env` ; `check` et `makemigrations --check`
+  sans constat ; migration appliquée sur la base neuve des tests, testée de `0011` à `0012`, et sur une copie de
+  `db.sqlite3` (configuration, secteurs, nouvelles et associations identiques). Critères restants (annonce de
+  l'ouverture externe, bloc unique, source unique des coordonnées, message sans secret, import `javascript:`
+  refusé) testés et mis en échec par mutation (`docs/tdd.md`). Revue des autres stories backend : import refusant
+  réseaux hors domaine, playlist et compte rendu unilingue, date de cours absente ou future dans le journal, `.env`
+  neutralisé pour la suite ; critères V1 restants (US-01, US-02, US-03, US-08, US-11) testés ; traçabilité de
+  chaque story backend dans `docs/tdd.md` ; 202 tests réussis, aucun échec.*
+
+**Parcours réels**
+
+- [ ] Unfold local : saisie, modification, effacement de l'adresse ; adresse `javascript:` refusée avec
+  message, valeur précédente conservée.
+- [x] Aperçu (`scripts/preview_site.py`) : journal, détail, Contact en fr et en, à 320, 390 et 1 280 px,
+  thèmes clair et sombre, sans débordement ; liens `wa.me` et `mailto:` relevés et décodés conformes ;
+  parcours clavier avec focus visible. Captures sans donnée privée.
+  *22/10/2026, Playwright : 36 combinaisons (6 pages × 320/390/1 280 px × clair/sombre) sans débordement, cibles
+  ≥ 44 px, icônes `aria-hidden`, contraste minimal 6,74:1 ; liens décodés conformes fr/en ; à 390 px, ordre de
+  tabulation conforme et contour de focus de 3 px. Détail dans `docs/validation-interface.md`.*
+- [x] Le bloc reste sobre : un seul élément plein par en-tête conservé, aucune étiquette en capitales
+  supplémentaire sur la page (règles taste existantes).
+
+**Livraison**
+
+- [ ] `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md` à jour ; commit sur `develop` ; `git status` sans donnée
+  locale ni fichier de `programme_shorts_pedago/`.
+- [ ] Ni fusion sur `main`, ni déploiement sans accord explicite. Après accord : migrations `0008` à `0012`
+  en production, adresse saisie dans Unfold, bloc vérifié en ligne en fr et en.
+- [ ] Le compte rendu distingue le vérifié du non vérifié (ouverture réelle de WhatsApp sur téléphone,
+  correction de la mention « centre de formation » sur l'Académie, à la charge du porteur).
 
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 

@@ -2,7 +2,7 @@
 comparaison au site publié. `publier` sert à l'aperçu et à la validation locale ; la production passe par Unfold."""
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import date, datetime
 from html import unescape
 
 from django.core.exceptions import ValidationError
@@ -90,9 +90,13 @@ RUBRIQUES = {"compte_rendu_fr": ("Objet", "Matériel", "Déroulement", "Durée")
 MAX_PARAGRAPHES = 3
 
 
-def source_errors(source, interdits=()):
-    """Écarts aux règles RJ-03 et RJ-04 et noms interdits (formateur, centre, client), en messages lisibles."""
+def source_errors(source, interdits=(), today=None):
+    """Écarts aux règles RJ-01, RJ-03 et RJ-04 et noms interdits (formateur, centre, client), en messages lisibles."""
     errors = list(source.erreurs)
+    if not source.date_jalon and not source.erreurs:
+        errors.append("date_jalon : date du cours obligatoire (RJ-01).")
+    elif source.date_jalon and source.date_jalon > (today or date.today()):
+        errors.append("date_jalon : date future ; seul un module réellement suivi a une entrée (RJ-01).")
     errors += [f"{name} doit commencer par « {prefix} »." for name, prefix in PREFIXES.items()
               if not getattr(source, name).startswith(prefix)]
     for name in ("corps_fr", "corps_en"):

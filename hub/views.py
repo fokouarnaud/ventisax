@@ -22,6 +22,14 @@ LABELS = {
                instagram="Voir sur Instagram", facebook="Voir sur Facebook", notify="Me prévenir à l’ouverture",
                notify_message="Bonjour Ventisax, prévenez-moi à l’ouverture de vos services de climatisation "
                               "et de froid. Mon quartier : ",
+               academy_title="Réviser les cours",
+               academy_text="Les cours et quiz de cette formation sont sur l'Académie Ventisax. L'accès se fait avec "
+                            "un identifiant personnel : demandez-le-nous.",
+               academy_open="Ouvrir l'Académie", academy_new_tab="(nouvel onglet)",
+               academy_whatsapp="Demander un accès par WhatsApp", academy_email="Demander un accès par e-mail",
+               academy_subject="Demande d'accès à l'Académie",
+               academy_message="Bonjour Ventisax, je souhaite un identifiant pour l'Académie Ventisax. Mon nom : … "
+                               "Pourquoi je m'y intéresse : …",
                follow="Suivre Ventisax", theme="Thème", theme_system="Thème : système",
                theme_light="Thème : clair", theme_dark="Thème : sombre"),
     "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
@@ -33,9 +41,28 @@ LABELS = {
                notify="Notify me at launch",
                notify_message="Hello Ventisax, please let me know when your air conditioning and refrigeration "
                               "services open. My neighbourhood: ",
+               academy_title="Review the lessons",
+               academy_text="The lessons and quizzes from this training are on the Ventisax Academy. Access requires "
+                            "a personal login: ask us for one.",
+               academy_open="Open the Academy", academy_new_tab="(new tab)",
+               academy_whatsapp="Request access on WhatsApp", academy_email="Request access by email",
+               academy_subject="Academy access request",
+               academy_message="Hello Ventisax, I would like a login for the Ventisax Academy. My name: … "
+                               "Why I'm interested: …",
                follow="Follow Ventisax", theme="Theme", theme_system="Theme: system",
                theme_light="Theme: light", theme_dark="Theme: dark"),
 }
+
+
+ACADEMY_PAGES = ("news", "detail", "contact")  # Renvoi vers l'Académie : journal, entrées et contact seulement.
+
+
+def academy_links(config, labels):
+    """Liens du bloc Académie, ou None sans adresse ; demandes d'accès sur les coordonnées administrées."""
+    if not config.academie_url:
+        return None
+    return dict(url=config.academie_url, whatsapp_url=config.whatsapp_text_url(labels["academy_message"]),
+                email_url=config.email_text_url(labels["academy_subject"], labels["academy_message"]))
 
 
 VIEWS = ("liste", "grille")  # Affichages du journal ; l'URL porte le choix (partageable, sans JavaScript).
@@ -134,6 +161,7 @@ def public(request, lang, page="home", slug=None):
         context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url,
                        notify_url=config.notify_url(labels["notify_message"], labels["notify"]),
                        hero_image=config.image_accueil or None,
+                       academy=academy_links(config, labels) if page in ACADEMY_PAGES else None,
                        profils=[(SOCIAL_NAMES[f], getattr(config, f)) for f in config.profile_fields if getattr(config, f)])
         return render(request, "hub/page.html", context)
 

@@ -4,6 +4,7 @@
 
 `AGENTS.md`, importé ci-dessus, porte le cadrage, le PRD et l'historique des décisions : il fait foi.
 Journal de formation : GOALS et PRD du 22 octobre 2026 (US-16 à US-22, règles RJ-01 à RJ-07) dans la sous-section « journal de formation, partie 2 » de `## GOALS`.
+Renvoi vers l'Académie Ventisax (`acadventisax.pythonanywhere.com`) et demande d'accès par WhatsApp/e-mail : GOALS validés et PRD du 22 octobre 2026 (US-23 à US-26, règles RA-01 à RA-07, PRD en attente de validation) dans la sous-section « renvoi vers l'Académie » de `## GOALS` ; backend et gabarits implémentés en TDD, parcours réels non exercés.
 Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 sur `develop`, mis à jour le 22 octobre 2026.
 
 ## Points d'entrée
@@ -30,7 +31,7 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 - `Secteur` : textes fr/en, `etat` (préparation/actif, distinct de la visibilité), `ordre`, `site_url`.
 - `Nouvelle` : titre/corps fr/en, `date_jalon`, image optimisée (`hub/images.py::optimize`) + alt fr/en, secteurs (M2M via `NouvelleSecteur`, suppression de secteur protégée), `video_youtube` (`youtube_video_id()`, propriété `youtube_id`), `instagram_url`, `facebook_url`, `compte_rendu_fr/en` (lignes « Rubrique : valeur », rendues par `views.report_rows()` en fiche repliée). Nettoyage des images remplacées après commit.
 - `LienNouvelle` : liens externes ordonnés, libellés fr/en exigés à la publication.
-- `ConfigurationGenerale` : singleton (identité, présentation, parcours, implantation, e-mail, WhatsApp facultatif, profils facultatifs YouTube/Facebook/TikTok/Instagram validés par `SOCIAL_HOSTS` et `social_host_errors`) ; `notify_url(message, sujet)` construit le lien « Me prévenir » (`wa.me?text=` ou `mailto:` en repli) ; `image_accueil` + `alt_accueil_fr/en` (image du hero, logo sinon), `required_texts()`. Sauvegarde d'image partagée : `save_with_image()` (optimisation, nettoyage différé de l'ancienne image).
+- `ConfigurationGenerale` : singleton (identité, présentation, parcours, implantation, e-mail, WhatsApp facultatif, profils facultatifs YouTube/Facebook/TikTok/Instagram validés par `SOCIAL_HOSTS` et `social_host_errors`) ; `notify_url(message, sujet)` construit le lien « Me prévenir » (`wa.me?text=` ou `mailto:` en repli) ; `image_accueil` + `alt_accueil_fr/en` (image du hero, logo sinon), `academie_url` (renvoi vers l'Académie, facultatif), `required_texts()`. Sauvegarde d'image partagée : `save_with_image()` (optimisation, nettoyage différé de l'ancienne image).
 - `DatabaseVersion` : métadonnées des versions de base (voir ci-dessous).
 
 ## Administration et sécurité
@@ -45,7 +46,7 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 - `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`, `journal` (`inventaire <partie>`, `verifier <fichier>`, `comparer <fichier> --site URL`, sans écriture en base).
 - `hub/journal.py` : fichiers sources du Journal de formation (`parse_source`, `source_errors`, `modules_sans_entree`, `ecarts_page`, `publier` pour l'aperçu local).
 - `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives ; `--journal <dossier>` publie les fichiers sources réels du journal à la place), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
-- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 177 tests, dont 15 dans `test_journal.py` et 12 dans `test_theme.py` (5 tests de `test_security.py`/`test_deployment.py` échouent tant qu'un `.env` local définit `DJANGO_DEBUG`/`DJANGO_SECRET_KEY`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 203 tests, dont 16 dans `test_journal.py`, 12 dans `test_theme.py` et 12 dans `test_academy.py` (`config/test_settings.py` neutralise le `.env` local via `DJANGO_ENV_FILE`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
 - Skill de projet `.claude/skills/ventisax-deploy/` : procédure de déploiement PythonAnywhere (commits, main en avance rapide, console Playwright : pull, migrate, collectstatic, check --deploy, touch WSGI, vérifications).
 - Skill de projet `.claude/skills/journal-formation/` : publication et correction des entrées du Journal de formation à partir des références de cours (publication directe dans Unfold de production via Playwright, connexion du porteur).
 - Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).
@@ -62,4 +63,5 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 
 - La lecture effective du lecteur YouTube et la saisie Unfold derrière le second facteur n'ont pas été exercées dans un navigateur réel pour les champs vidéo/réseaux.
 - La politique de sécurité du contenu (CSP) n'existe pas : l'iframe YouTube fonctionne sans elle ; en ajouter une imposera d'autoriser `youtube-nocookie.com`.
-- Déploiement des migrations `0008` à `0011` sur PythonAnywhere : non fait, soumis à accord explicite.
+- Déploiement des migrations `0008` à `0012` sur PythonAnywhere : non fait, soumis à accord explicite.
+- Académie : `ConfigurationGenerale.academie_url` (migration `0012`, section « Académie » d'Unfold), `whatsapp_text_url()` / `email_text_url()` (réutilisées par `notify_url`), `views.academy_links()` limité à `ACADEMY_PAGES` (journal, détail, Contact), `partials/academy.html` ; vérifié dans l'aperçu Playwright (largeurs, thèmes, clavier), non déployé ; aperçu fictif avec `academie_url` ; l'e-mail et le WhatsApp de contact sont déjà administrables (section « Coordonnées » de `hub/admin.py`). L'Académie se présente encore comme « centre de formation » : correction à la charge du porteur, hors dépôt.

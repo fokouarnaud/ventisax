@@ -1,4 +1,5 @@
 import re
+from datetime import date
 import pytest
 from tests.factories import secteur, nouvelle, configuration
 
@@ -217,3 +218,47 @@ def test_pagination_conserve_la_vue_grille(client):
         nouvelle(f"jalon-{index}", publie=True)
     html = client.get("/fr/nouvelles/?vue=grille").content.decode()
     assert 'href="?page=2&amp;vue=grille"' in html
+
+
+def test_secteurs_dans_l_ordre_administre_avec_etat_traduit(client):
+    configuration()
+    secteur("froid", nom_fr="Climatisation", nom_en="Cooling", ordre=2, publie=True)
+    secteur("electronique", nom_fr="Électronique", nom_en="Electronics", ordre=1, etat="actif", publie=True)
+    accueil = client.get("/fr/").content.decode()
+    assert accueil.index("Électronique") < accueil.index("Climatisation")
+    filtre = client.get("/en/nouvelles/").content.decode()
+    assert filtre.index('value="electronique-en"') < filtre.index('value="froid-en"')
+    assert '<span class="status">In preparation</span>' in client.get("/en/secteurs/froid-en/").content.decode()
+    assert '<span class="status">Actif</span>' in client.get("/fr/secteurs/electronique/").content.decode()
+
+
+def test_lien_vers_le_site_dedie_seulement_s_il_est_renseigne(client):
+    configuration()
+    secteur(publie=True)
+    secteur("electronique", site_url="https://electronique.example.org/", publie=True)
+    for lang, label in (("fr", "Site du secteur"), ("en", "Sector website")):
+        sans = client.get(f"/{lang}/secteurs/{'froid' if lang == 'fr' else 'froid-en'}/").content.decode()
+        assert label not in sans
+        avec = client.get(f"/{lang}/secteurs/{'electronique' if lang == 'fr' else 'electronique-en'}/").content.decode()
+        assert f'href="https://electronique.example.org/">{label}' in avec
+
+
+def test_detail_date_du_jalon_et_non_de_publication(client):
+    configuration()
+    n = nouvelle(publie=True, date_jalon=date(2026, 1, 15))
+    assert n.premiere_publication.date() != date(2026, 1, 15)
+    page = client.get("/fr/nouvelles/formation/").content.decode()
+    assert 'datetime="2026-01-15"' in page
+    assert n.premiere_publication.strftime("%Y-%m-%d") not in page
+
+
+def test_republication_d_un_secteur_retablit_ses_associations_visibles(client):
+    configuration()
+    s = secteur(publie=True)
+    n = nouvelle(publie=True)
+    n.secteurs.add(s)
+    s.unpublish()
+    assert b"/fr/secteurs/froid/" not in client.get("/fr/nouvelles/formation/").content
+    s.publish()
+    assert b"/fr/secteurs/froid/" in client.get("/fr/nouvelles/formation/").content
+    assert client.get("/fr/nouvelles/?secteur=froid").context["page_obj"].paginator.count == 1

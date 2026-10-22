@@ -247,3 +247,23 @@ aucun débordement. Changement de langue : aucune règle du skill n'impose de le
 la place actuelle respecte la navigation sur une ligne, l'absence d'élément flottant et la préservation de
 l'architecture (§11.C, §11.F) ; le déplacer décalerait l'ordre de tabulation de l'ordre visuel ou retirerait la langue
 de la première ligne mobile. Conservé.
+
+## Bloc Académie (US-26) — 22 octobre 2026
+
+Aperçu `scripts/preview_site.py` (données fictives, adresse d'Académie de démonstration), Playwright MCP.
+
+- Journal, détail et Contact, en fr et en, à 320, 390 et 1 280 px, en thèmes clair et sombre (36 combinaisons) :
+  aucun débordement horizontal de la page ni du bloc ; liens du bloc d'au moins 44 px ; icônes `aria-hidden` ;
+  contraste minimal 6,74:1 sur le titre, le texte et les liens ; police Lexend chargée.
+- Liens décodés : « Ouvrir l'Académie (nouvel onglet) » / « Open the Academy (new tab) » vers l'adresse saisie,
+  `target="_blank"`, `rel="noopener noreferrer"` ; `wa.me` et `mailto:` avec l'objet et le message de la langue.
+- Contact à 390 px, au clavier (21 tabulations) : les trois liens du bloc atteints dans l'ordre visuel, contour de
+  focus de 3 px sur chaque élément parcouru.
+- Aucune étiquette en capitales ajoutée ; « Contact » reste le seul élément plein de l'en-tête.
+
+Captures locales non versionnées : `.playwright-mcp/academie-contact-390-focus.png`,
+`academie-journal-en-1280-dark.png`. Non exercés : ouverture réelle de WhatsApp sur téléphone, lecteur d'écran,
+saisie dans Unfold local.
+
+L'aperçu fictif ne démarrait plus (`NameError: slugify`, introduit par `df221b9`) : test
+`tests/test_preview.py` d'abord en échec pour cette raison, puis slug fixe ; suite complète à 203 tests réussis.

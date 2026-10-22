@@ -219,3 +219,17 @@ def test_compte_rendu_bilingue_exige_a_la_publication_s_il_est_renseigne():
     n.compte_rendu_en = "Purpose: test"
     n.publish()
     assert nouvelle("sans-cr", publie=True).compte_rendu_fr == ""
+
+
+def test_etat_du_secteur_independant_de_sa_visibilite(client):
+    configuration()
+    actif_brouillon = secteur("actif", etat="actif")
+    en_preparation = secteur("froid", publie=True)
+    assert not actif_brouillon.publie and client.get("/fr/secteurs/actif/").status_code == 404
+    en_preparation.etat = "actif"
+    en_preparation.save()
+    en_preparation.refresh_from_db()
+    assert en_preparation.publie and client.get("/fr/secteurs/froid/").status_code == 200
+    en_preparation.unpublish()
+    en_preparation.refresh_from_db()
+    assert en_preparation.etat == "actif"

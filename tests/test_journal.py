@@ -104,6 +104,14 @@ def test_regles_editoriales_signalent_chaque_ecart():
     assert any("Dupont" in e for e in errors)
 
 
+def test_date_du_cours_obligatoire_et_jamais_future():
+    sans_date = journal.parse_source(SOURCE.replace("| Date du jalon | 21/10/2026 |\n", ""))
+    assert any("date_jalon" in e for e in journal.source_errors(sans_date, today=date(2026, 10, 22)))
+    source = journal.parse_source(SOURCE)
+    assert journal.source_errors(source, today=date(2026, 10, 21)) == []
+    assert any("date_jalon" in e and "future" in e for e in journal.source_errors(source, today=date(2026, 10, 20)))
+
+
 @pytest.mark.django_db
 def test_republier_une_source_corrige_sans_dupliquer_ni_changer_les_urls():
     from hub.models import Nouvelle
