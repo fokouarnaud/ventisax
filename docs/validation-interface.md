@@ -215,3 +215,12 @@ densité 4). Gabarits audités : `base.html`, `pages/news.html` (liste et grille
 Points sans objet sur ces gabarits (non modifiés ou absents) : hero, bento, mur de logos, citations, marquee,
 animations GSAP, images. Aucun nouveau gabarit de page : les vues validées réutilisent `page.html` ; le seul
 gabarit ajouté est `partials/theme_switch.html`, et les seuls fichiers statiques modifiés sont `site.css` et `site.js`.
+
+### Design Read et revue taste du composant `partials/theme_switch.html`
+
+Design Read (taste §0.B) : contrôle de préférence dans l'en-tête d'un journal de formation éditorial pour de futurs
+clients de Yaoundé ; langage sobre et technique (Lexend, bleu `#0b2d46`, turquoise `#68ddce`), CSS natif sans
+framework (contrainte du cadrage). Réglages (§1, refonte-préservation) : variance 5, mouvement 3 (transitions de
+couleur seulement), densité 4. Revue : icônes Tabler (§3.C), pilule cohérente (§4.4), contraste 6:1 à 9,96:1 (§4.5),
+navigation sur une ligne de 73 px (§4.7), mode sombre testé (§6.C) : conformes. Écart corrigé : retour tactile
+`:active` absent (§4.5), ajouté en `scale(.94)` sous `prefers-reduced-motion: no-preference` (§6.B).
