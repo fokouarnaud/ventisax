@@ -210,3 +210,8 @@ Procédure du skill `ventisax-deploy`.
   `db.sqlite3` et `media/.env` en 404, `/admin/` en 302, connexion 200, HTTP vers HTTPS vérifié.
 - Non exercé : réception effective de l'e-mail de sauvegarde ; bloc Académie en ligne (adresse à saisir par le
   porteur dans Unfold, section « Académie ») ; téléphone physique.
+- Complément (demande du porteur : le lien vers l'Académie n'apparaissait pas) : `academie_url` renseignée en
+  production à `https://acadventisax.pythonanywhere.com/` depuis la console (`ConfigurationGenerale.save()`, avec
+  validation complète ; valeur précédente vide). Vérifié en ligne : bloc et lien (nouvel onglet,
+  `rel="noopener noreferrer"`) présents sur le journal, une entrée et Contact en fr et en, absents de l'accueil et de
+  la présentation ; demande d'accès WhatsApp pré-remplie sur le numéro public.
