@@ -358,6 +358,27 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
 - [ ] Le compte rendu final distingue ce qui a été vérifié de ce qui ne l'a pas été (par exemple la
   réception réelle de l'e-mail de sauvegarde).
 
+**Module 5 (22 octobre 2026, décision modifiée à la demande explicite du porteur) :** « Formation : câbler un
+va-et-vient » / « Training: wiring two-way switching », cours du 22/10, 8 h, va-et-vient puis double allumage
+va-et-vient sur planche, dans une seule entrée (`/fr/nouvelles/formation-va-et-vient/`). Au lieu d'Unfold, le porteur
+a demandé la publication directe « avec le skill deploy » : depuis la console PythonAnywhere déjà ouverte, copie
+SQLite préalable (`/home/ventisax/backups/avant-module5-20261022.sqlite3`), fichier source transmis en base64
+(empreinte SHA-256 identique), `source_errors` sans écart puis `hub.journal.publier` (validation `full_clean` et
+`publish()` du modèle), fichier temporaire supprimé. Ce canal déroge, pour cette entrée, au hors-scope « accès à la
+console PythonAnywhere » ; `journal comparer` en production : deux pages vérifiées, aucun écart. Sauvegarde par
+e-mail non envoyée (session Unfold non ouverte) ; `--interdit` non exercé, relecture manuelle sans nom propre.
+
+**Module 6 (23 octobre 2026, même canal à la demande explicite du porteur, « deploy en utilisant deploy ») :**
+« Formation : câbler un télérupteur » / « Training: wiring an impulse relay », cours du 23/10, 8 h, télérupteur
+modulaire commandant deux lampes depuis trois boutons-poussoirs, sur planche (`/fr/nouvelles/formation-telerupteur/`,
+`/en/nouvelles/training-impulse-relay/`). Aperçu local conforme (journal liste/grille et détails fr/en, 1 280 et
+390 px, clair et sombre, sans débordement). Console PythonAnywhere : copie SQLite cohérente par l'API `backup`
+(`/home/ventisax/backups/avant-module6-20261023.sqlite3`), fichier source en base64 (SHA-256 identique),
+`source_errors` vide, `hub.journal.publier` (id 15, secteur « Climatisation et froid »), fichier temporaire supprimé ;
+aucun code ni migration déployés. `journal comparer` en production : deux pages vérifiées, aucun écart ; journal
+fr/en regroupé sous le 23 octobre. Sauvegarde par e-mail non envoyée (session Unfold non ouverte) ; `--interdit`
+non exercé, relecture manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
