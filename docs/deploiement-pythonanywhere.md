@@ -249,3 +249,24 @@ par Unfold).
 - Non exercé : réception effective de l'e-mail de sauvegarde ; saisie de l'adresse dans le formulaire Unfold réel ;
   téléphone physique ; correction de « centre de formation » sur Electro Acad (à la charge du porteur).
 
+## Déploiement du 23 octobre 2026, `c6c2193` (demande du porteur : appliquer la critique taste des fiches secteur, puis déployer avec le skill deploy)
+
+- Contrôles locaux : 214 tests réussis (une première passe avait un échec instable dans `test_security.py`, vert en
+  relance et en seconde passe complète), `check` et `makemigrations --check` sans constat ; `main` avancé de
+  `8068f5e` à `c6c2193` et poussé.
+- Sauvegarde avant mise à jour : copie SQLite par l'API `backup` (`/home/ventisax/backups/avant-c6c2193-20261023.sqlite3`).
+- Serveur : `git pull --ff-only` jusqu'à `c6c2193` ; aucune migration ; `collectstatic` (1 fichier copié) ;
+  `check --deploy` sans problème ; WSGI rechargé.
+- Contenu, depuis la console par `Secteur.save()` (validation complète), script en base64 à empreinte identique,
+  fichier temporaire supprimé : clim, `formation_url` = adresse de l'Académie (auparavant vide), description,
+  apprentissages et prochaine étape fr/en ; électronique, description fr/en. Secteurs publiés, en préparation, slugs
+  inchangés.
+- Après : base courante envoyée par e-mail au superadministrateur (1 message, 405 504 octets, `20261023T193422Z`).
+- Vérifications Playwright sur le site réel, 4 fiches fr/en et l'accueil, 320 et 1 280 px, clair et sombre : clim avec
+  le bloc Académie après l'état du secteur, électronique avec « Approfondir en ligne » après l'état, aucune pastille du
+  secteur courant, nouvelles descriptions, ni « centre de formation » ni « gratuit » ni « certificat », aucun
+  débordement. `check_deployment.py` depuis la console : pages 200, fichiers privés 404, `/admin/` 302, HTTP vers HTTPS.
+- Entrées va-et-vient et télérupteur : `journal comparer` sans écart ; aucune republication (numérotation du manuel
+  confirmée par le porteur).
+- Non exercé : réception de l'e-mail ; demande d'accès WhatsApp depuis un téléphone.
+
