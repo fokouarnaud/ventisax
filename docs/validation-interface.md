@@ -359,3 +359,11 @@ cookie de thème : fiche `fr` et `en` à 320, 390 et 1 280 px, clair et sombre (
   aucune nouvelle couleur.
 - Non exercé : lecteur d'écran réel, téléphone physique.
 
+## Fiches secteur après la comparaison taste — 23 octobre 2026
+
+Comparaison des fiches clim et électronique en production (1 280 et 390 px), puis aperçu après correction : 4 fiches
+(fr/en de chaque secteur) à 320, 390 et 1 280 px, clair et sombre (24 combinaisons). Renvoi (Académie pour la clim,
+Electro Acad pour l'électronique) après l'état du secteur, en section ouverte sans fond ; aucune pastille du secteur
+courant ; aucun débordement ; liens et boutons de 44 px au moins. Une réponse 500 isolée de l'aperçu sur la fiche clim
+anglaise n'a pas été reproduite (requête suivante 200, test client 200).
+

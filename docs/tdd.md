@@ -271,3 +271,19 @@ Un premier rendu en carte avec bouton a été remplacé, après la passe taste, 
 avec un lien simple (comme le bloc Académie dans une entrée) : pas de troisième carte face au contenu du secteur,
 lien sur une ligne à 320 px en anglais. Les tests, qui portent sur le contenu et les attributs, sont restés verts.
 
+### Fiches secteur après la comparaison taste — 23 octobre 2026
+
+| Contrat | Échec observé avant code | Suite verte après code |
+| --- | --- | --- |
+| Sur une fiche secteur, pas de pastille du secteur courant ; pastille d'un autre secteur conservée ; journal inchangé | pastille `/fr/secteurs/froid/` présente | 1 test |
+| Renvoi placé après « Prochaine étape » | bloc trouvé avant l'état du secteur | 1 test |
+| Secteur dont `formation_url` est l'adresse de l'Académie : bloc Académie (titre fr/en, demande WhatsApp), pas de renvoi simple, placé après l'état | `data-academy` absent | 1 test |
+| Aperçu : la fiche clim fictive porte le bloc Académie | `data-academy` absent | `test_preview.py` vert |
+
+Ajustement de test, sans réduire ce qu'il vérifie : le troisième test cherchait « Prochaine » sur la page anglaise
+(`ValueError`) ; il cherche désormais le libellé de la langue de la page.
+Suite complète : une première passe à 213 réussis et 1 échec
+(`test_security.py::test_url_active_refusee_par_post_admin_sans_perte[javascript:alert(1)]`, formulaire Nouvelle
+d'Unfold, non touché par ce changement), vert en relance isolée ; seconde passe complète à 214 réussis, aucun échec.
+Test instable à surveiller, non corrigé dans cette passe.
+

@@ -37,7 +37,8 @@ def seed():
         apprentissages_fr="Texte de démonstration : principes du froid, fonctionnement des équipements et sécurité.",
         apprentissages_en="Sample text: refrigeration principles, equipment operation and safety.",
         prochaine_etape_fr="Exemple de prochaine étape : documenter un premier jalon de formation réel.",
-        prochaine_etape_en="Sample next step: document a first actual training milestone.", publie=True, ordre=0)
+        prochaine_etape_en="Sample next step: document a first actual training milestone.", publie=True, ordre=0,
+        formation_url="https://acadventisax.pythonanywhere.com/")
     electronics = Secteur.objects.create(nom_fr="Matériel électronique", nom_en="Electronic equipment",
         slug_fr="materiel-electronique", slug_en="electronic-equipment",
         description_fr="Explorer les équipements électroniques, leurs usages et les connaissances nécessaires pour un futur secteur dédié.",

@@ -166,10 +166,12 @@ def public(request, lang, page="home", slug=None):
         if not config:
             return render(request, "hub/unavailable.html", context, status=503)
         labels = LABELS[lang]
+        # Secteur dont la plateforme de cours est l'Académie : son bloc, avec la demande d'accès, remplace le renvoi simple.
+        academy_sector = page == "sector" and bool(obj.formation_url) and obj.formation_url == config.academie_url
         context.update(config=localized(config, lang), whatsapp_url=config.whatsapp_url, email_url=config.email_url,
                        notify_url=config.notify_url(labels["notify_message"], labels["notify"]),
                        hero_image=config.image_accueil or None,
-                       academy=academy_links(config, labels) if page in ACADEMY_PAGES else None,
+                       academy=academy_links(config, labels) if page in ACADEMY_PAGES or academy_sector else None,
                        profils=[(SOCIAL_NAMES[f], getattr(config, f)) for f in config.profile_fields if getattr(config, f)])
         return render(request, "hub/page.html", context)
 

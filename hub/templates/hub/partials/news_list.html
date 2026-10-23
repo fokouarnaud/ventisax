@@ -9,7 +9,7 @@
       <article class="news-item">
         <div>{% if page == 'news' %}<h2><a href="{{ item.url }}">{{ item.titre }}</a></h2>{% else %}<h3><a href="{{ item.url }}">{{ item.titre }}</a></h3>{% endif %}
           {% if vue == 'grille' %}<p class="news-excerpt">{{ item.corps|truncatewords:22 }}</p>{% endif %}
-          <div class="tags">{% for sector in item.secteurs %}<a class="tag" href="{{ sector.url }}">{{ sector.nom }}</a>{% empty %}<span class="tag">{{ labels.group }}</span>{% endfor %}</div>
+          <div class="tags">{% for sector in item.secteurs %}{% if sector.url != secteur.url %}<a class="tag" href="{{ sector.url }}">{{ sector.nom }}</a>{% endif %}{% empty %}<span class="tag">{{ labels.group }}</span>{% endfor %}</div>
         </div>
         <a class="news-chevron" href="{{ item.url }}" aria-label="{% if lang == 'fr' %}Lire{% else %}Read{% endif %} : {{ item.titre }}">{% include 'hub/partials/icon.html' with name='arrow-up-right' %}</a>
       </article>

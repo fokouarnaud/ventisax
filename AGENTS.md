@@ -686,6 +686,35 @@ préparation » comme apprentissages ; son champ `site_url` désigne le futur si
 - Renommage du secteur ou changement de ses slugs ; fusion avec le bloc global de l'Académie clim.
 - Entrées de journal électroniques avant une partie réussie ; modification de la plateforme depuis ce dépôt.
 
+#### Décisions modifiées — comparaison taste des fiches secteur, 23 octobre 2026
+
+Demande explicite du porteur (« compare et critique… avec taste skill », puis « applique les recommandations » et
+« déploie avec skill deploy »). Elles modifient Q2 et Q8 ci-dessus :
+
+- **Ordre (modifie Q2)** : le renvoi d'un secteur se place après « Apprentissages » et « Prochaine étape », en section
+  ouverte sous un filet ; l'état du secteur passe avant le renvoi externe.
+- **Clim (modifie Q8)** : quand `formation_url` d'un secteur est l'adresse de l'Académie (`academie_url`), sa fiche
+  affiche le bloc Académie existant, avec la demande d'identifiant, à la place du renvoi simple. Pas de nouveau champ :
+  le secteur « Climatisation et froid » reçoit l'adresse de l'Académie.
+- **Pastilles** : sur une fiche secteur, le journal n'affiche plus la pastille du secteur courant ; les autres
+  secteurs d'une entrée restent affichés.
+- **Contenus (Unfold ou console, sans code)** : la fiche clim disait « Formation en préparation » et « Commencer la
+  formation » au-dessus de 12 entrées réelles ; descriptions des deux secteurs trop génériques. Nouveaux textes :
+  - Clim, description : « Notre future activité en climatisation et froid à Yaoundé : nous suivons une formation qui
+    commence par la sécurité et l'électricité domestique. » / « Our future air conditioning and refrigeration activity
+    in Yaoundé: we are following a training course that starts with safety and domestic electricity. »
+  - Clim, apprentissages : partie 1 (habilitation et sécurité professionnelle) et partie 2 (bases de l'électricité
+    domestique) d'après les titres publiés du journal ; prochaine étape : minuterie et horloge (interrupteur
+    horaire), puis l'électricité industrielle.
+  - Électronique, description : « Notre future activité autour du matériel électronique : nous apprenons d'abord
+    l'électronique, du courant continu jusqu'aux alimentations. » / « Our future activity around electronic
+    equipment: we are first learning electronics, from direct current to power supplies. »
+- **Numérotation des modules** : la référence est celle du manuel (`reference/cours/`), confirmée par le porteur
+  (module 6 = montage du télérupteur). Le planning affiché en salle numérote autrement (télérupteur en 5) ; il n'est
+  pas suivi pour les numéros. Les entrées publiées (« Cinquième module » pour le va-et-vient, « Sixième module » pour
+  le télérupteur) restent inchangées.
+- Point 6 de la critique (texte de l'état vide) non retenu : gain faible.
+
 ### PRD — Renvoi vers Electro Acad Ventisax depuis le secteur électronique (23 octobre 2026)
 
 **Statut : validé par l'utilisateur le 23 octobre 2026, qui a demandé l'implémentation en TDD, l'aperçu, le commit,

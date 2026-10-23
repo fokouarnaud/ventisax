@@ -86,3 +86,38 @@ def test_adresse_modifiable_dans_unfold_et_refus_sans_perte(verified_client):
     assert verified_client.post(url, payload).status_code == 302
     s.refresh_from_db()
     assert s.formation_url == "" and s.publie
+
+
+ACADEMIE = "https://acadventisax.pythonanywhere.com/"
+
+
+def test_fiche_secteur_sans_pastille_du_secteur_courant(client):
+    configuration()
+    froid = secteur(publie=True)
+    autre = secteur(slug="electronique", publie=True, nom_fr="Électronique publique")
+    n = nouvelle(publie=True)
+    n.secteurs.add(froid, autre)
+    fiche = page(client, "/fr/secteurs/froid/")
+    assert 'class="tag" href="/fr/secteurs/froid/"' not in fiche
+    assert 'class="tag" href="/fr/secteurs/electronique/"' in fiche
+    journal = page(client, "/fr/nouvelles/")
+    assert 'class="tag" href="/fr/secteurs/froid/"' in journal
+
+
+def test_renvoi_apres_l_etat_du_secteur(client):
+    configuration()
+    secteur(publie=True, formation_url=ELECTRO)
+    content = page(client, "/fr/secteurs/froid/")
+    assert content.index("Prochaine étape") < content.index("data-formation")
+
+
+def test_secteur_renvoye_vers_l_academie_affiche_la_demande_d_acces(client):
+    configuration(academie_url=ACADEMIE)
+    secteur(publie=True, formation_url=ACADEMIE)
+    for path, titre, etape in (("/fr/secteurs/froid/", "Réviser les cours", "Prochaine étape"),
+                               ("/en/secteurs/froid-en/", "Review the lessons", "Next step")):
+        content = page(client, path)
+        assert content.count("data-academy") == 1 and titre in content
+        assert "data-formation" not in content
+        assert "https://wa.me/237699123456?text=" in content
+        assert content.index(etape) < content.index("data-academy")
