@@ -5,7 +5,7 @@
 `AGENTS.md`, importé ci-dessus, porte le cadrage, le PRD et l'historique des décisions : il fait foi.
 Journal de formation : GOALS et PRD du 22 octobre 2026 (US-16 à US-22, règles RJ-01 à RJ-07) dans la sous-section « journal de formation, partie 2 » de `## GOALS`.
 Renvoi vers l'Académie Ventisax (`acadventisax.pythonanywhere.com`) et demande d'accès par WhatsApp/e-mail : GOALS validés et PRD du 22 octobre 2026 (US-23 à US-26, règles RA-01 à RA-07, PRD en attente de validation) dans la sous-section « renvoi vers l'Académie » de `## GOALS` ; backend et gabarits implémentés en TDD, parcours réels non exercés.
-Renvoi vers Electro Acad Ventisax (`electroacadventisax.pythonanywhere.com`) depuis la fiche « Matériel électronique » : GOALS et PRD du 23 octobre 2026 (US-27 à US-30, règles RE-01 à RE-06, champ `Secteur.formation_url`, migration `0013`, PRD validé) dans la sous-section « renvoi vers Electro Acad » de `## GOALS` ; implémenté en TDD (`tests/test_formation.py`, `partials/formation.html`, `.formation-panel`, rendu sur la seule fiche secteur).
+Renvoi vers Electro Acad Ventisax (`electroacadventisax.pythonanywhere.com`) depuis la fiche « Matériel électronique » : GOALS et PRD du 23 octobre 2026 (US-27 à US-30, règles RE-01 à RE-06, champ `Secteur.formation_url`, migration `0013`, PRD validé) dans la sous-section « renvoi vers Electro Acad » de `## GOALS` ; implémenté en TDD (`tests/test_formation.py`, `partials/formation.html`, `.formation-panel`, rendu sur la seule fiche secteur) ; déployé le 23 octobre 2026 (`d6f958e`, migration `0013`), adresse et textes du secteur électronique renseignés en production.
 Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 sur `develop`, mis à jour le 22 octobre 2026.
 
 ## Points d'entrée
@@ -64,5 +64,5 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 
 - La lecture du lecteur YouTube a été exercée dans l'aperçu (Playwright, 22 octobre 2026) ; la saisie Unfold derrière le second facteur des champs vidéo/réseaux ne l'a pas été.
 - La politique de sécurité du contenu (CSP) n'existe pas : l'iframe YouTube fonctionne sans elle ; en ajouter une imposera d'autoriser `youtube-nocookie.com`.
-- Migrations `0008` à `0012` déployées sur PythonAnywhere (22 octobre 2026, `0ca1593`) ; adresse de l'Académie renseignée en production le même jour.
+- Migrations `0008` à `0012` déployées sur PythonAnywhere (22 octobre 2026, `0ca1593`), `0013` le 23 octobre (`d6f958e`) ; adresse de l'Académie renseignée en production le même jour.
 - Académie : `ConfigurationGenerale.academie_url` (migration `0012`, section « Académie » d'Unfold), `whatsapp_text_url()` / `email_text_url()` (réutilisées par `notify_url`), `views.academy_links()` limité à `ACADEMY_PAGES` (journal, détail, Contact), `partials/academy.html` ; vérifié dans l'aperçu Playwright (largeurs, thèmes, clavier), non déployé ; aperçu fictif avec `academie_url` ; l'e-mail et le WhatsApp de contact sont déjà administrables (section « Coordonnées » de `hub/admin.py`). L'Académie se présente encore comme « centre de formation » : correction à la charge du porteur, hors dépôt.

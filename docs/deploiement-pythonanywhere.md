@@ -220,3 +220,32 @@ Procédure du skill `ventisax-deploy`.
   `fokouvirtualone@gmail.com`), WhatsApp `+237652317898` (inchangé, format international). Vérifié en ligne :
   liens e-mail et WhatsApp de Contact, de « Me prévenir » et de la demande d'accès à l'Académie sur les nouvelles
   coordonnées, en fr et en ; ancienne adresse absente.
+
+## Déploiement du 23 octobre 2026, `d6f958e` (demande explicite du porteur : déployer avec le skill deploy après passe taste)
+
+Procédure du skill `ventisax-deploy`, entièrement par la console PythonAnywhere (le porteur a demandé de ne pas passer
+par Unfold).
+
+- Contrôles locaux : 211 tests réussis, `check` et `makemigrations --check` sans constat, passe taste du bloc
+  (`docs/validation-interface.md`), aucun secret dans les changements ; `main` avancé de `151d57f` à `d6f958e` et poussé.
+- Sauvegarde avant mise à jour : copie SQLite cohérente par l'API `backup`
+  (`/home/ventisax/backups/avant-0013-20261023.sqlite3`).
+- Serveur : arbre propre à `0ca1593` ; `git pull --ff-only` jusqu'à `d6f958e` ; migration `0013`
+  (`Secteur.formation_url`) appliquée ; `collectstatic` (1 fichier copié, 120 post-traités) ; `check --deploy` sans
+  problème ; WSGI rechargé.
+- Contenu (US-29) : secteur « Matériel électronique » mis à jour depuis la console par `Secteur.save()` (validation
+  complète) : `formation_url` = `https://electroacadventisax.pythonanywhere.com/fr/catalogue/` (auparavant vide),
+  apprentissages et prochaine étape fr/en du PRD ; publié, en préparation, slugs inchangés. Script transmis en base64
+  (SHA-256 identique), fichier temporaire supprimé.
+- Après publication : base courante envoyée par e-mail au superadministrateur depuis la console, par le code du bouton
+  d'Unfold ; envoi accepté par le serveur SMTP (1 message, 405 504 octets, `20261023T191430Z`).
+- Vérifications : `/fr/`, `/en/`, journal en liste et en grille, Contact, fiches secteur fr/en en 200 ; CSS avec
+  empreinte `site.94d5ee650ff3.css` contenant `.formation-panel` ; bloc « Approfondir en ligne » présent une fois sur
+  la fiche électronique fr et en, absent de l'accueil, du journal, de Contact et de la fiche clim ; ni « centre de
+  formation », ni « gratuit », ni « certificat » ; Playwright sur le site réel à 320 et 1 280 px, clair et sombre :
+  aucun débordement, lien de 44 px ; clic : nouvel onglet sur le catalogue Electro Acad, `window.opener` nul ;
+  `check_deployment.py` depuis la console (le poste local subissait `WinError 10060`) : pages 200, `.env`,
+  `db.sqlite3` et `media/.env` en 404, `/admin/` en 302, connexion 200, HTTP vers HTTPS vérifié.
+- Non exercé : réception effective de l'e-mail de sauvegarde ; saisie de l'adresse dans le formulaire Unfold réel ;
+  téléphone physique ; correction de « centre de formation » sur Electro Acad (à la charge du porteur).
+

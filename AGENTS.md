@@ -812,11 +812,17 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
 
 **Livraison**
 
-- [ ] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` à jour ; commit sur `develop` ; `git status` sans donnée locale.
-- [ ] Ni fusion sur `main`, ni déploiement sans accord explicite. Après accord : migration `0013` en production,
+- [x] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` à jour ; commit sur `develop` ; `git status` sans donnée locale.
+  *23/10/2026 : `d6f958e`.*
+- [x] Ni fusion sur `main`, ni déploiement sans accord explicite. Après accord : migration `0013` en production,
   adresse et textes du secteur saisis, fiche vérifiée en ligne en fr et en en.
-- [ ] Le compte rendu distingue le vérifié du non vérifié (inscription réelle sur la plateforme, correction de
+  *23/10/2026, accord explicite (« deploie avec skill ventisax deploy ») : `d6f958e` déployé, migration `0013`
+  appliquée ; adresse et textes enregistrés depuis la console (`Secteur.save()`, validation complète) à la demande du
+  porteur, au lieu d'Unfold ; fiche vérifiée en ligne en fr et en en (`docs/deploiement-pythonanywhere.md`).*
+- [x] Le compte rendu distingue le vérifié du non vérifié (inscription réelle sur la plateforme, correction de
   « centre de formation » sur Electro Acad à la charge du porteur).
+  *Non vérifiés : réception de l'e-mail de sauvegarde, saisie dans le formulaire Unfold réel, inscription sur la
+  plateforme, téléphone physique ; mention « centre de formation » toujours présente sur Electro Acad.*
 
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
