@@ -105,6 +105,8 @@ class Secteur(Publication):
     etat = models.CharField(max_length=20, default="preparation", choices=[("preparation", "En préparation"), ("actif", "Actif")])
     ordre = models.PositiveIntegerField(default=0)
     site_url = models.URLField(blank=True, validators=[HTTP_URL])
+    formation_url = models.URLField("adresse de la plateforme de cours", blank=True, validators=[HTTP_URL],
+                                    help_text="Cours suivis pour ce secteur ; vide, aucun renvoi n'est affiché.")
     translated_fields = ("nom", "description", "apprentissages", "prochaine_etape")
 
     class Meta(Publication.Meta):

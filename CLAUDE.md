@@ -5,6 +5,7 @@
 `AGENTS.md`, importé ci-dessus, porte le cadrage, le PRD et l'historique des décisions : il fait foi.
 Journal de formation : GOALS et PRD du 22 octobre 2026 (US-16 à US-22, règles RJ-01 à RJ-07) dans la sous-section « journal de formation, partie 2 » de `## GOALS`.
 Renvoi vers l'Académie Ventisax (`acadventisax.pythonanywhere.com`) et demande d'accès par WhatsApp/e-mail : GOALS validés et PRD du 22 octobre 2026 (US-23 à US-26, règles RA-01 à RA-07, PRD en attente de validation) dans la sous-section « renvoi vers l'Académie » de `## GOALS` ; backend et gabarits implémentés en TDD, parcours réels non exercés.
+Renvoi vers Electro Acad Ventisax (`electroacadventisax.pythonanywhere.com`) depuis la fiche « Matériel électronique » : GOALS et PRD du 23 octobre 2026 (US-27 à US-30, règles RE-01 à RE-06, champ `Secteur.formation_url`, migration `0013`, PRD validé) dans la sous-section « renvoi vers Electro Acad » de `## GOALS` ; implémenté en TDD (`tests/test_formation.py`, `partials/formation.html`, `.formation-panel`, rendu sur la seule fiche secteur).
 Ce fichier décrit seulement **où se trouve quoi**. Relevé le 14 octobre 2026 sur `develop`, mis à jour le 22 octobre 2026.
 
 ## Points d'entrée
@@ -28,7 +29,7 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 
 - `ValidatedModel` : `save()` appelle `full_clean()`.
 - `Publication` (abstrait) : `uuid`, `publie`, `slug_fr/en` verrouillés après `premiere_publication`, `publish()` / `unpublish()`, complétude bilingue des `translated_fields`.
-- `Secteur` : textes fr/en, `etat` (préparation/actif, distinct de la visibilité), `ordre`, `site_url`.
+- `Secteur` : textes fr/en, `etat` (préparation/actif, distinct de la visibilité), `ordre`, `site_url`, `formation_url` (plateforme de cours, bloc « Approfondir en ligne » sur la fiche).
 - `Nouvelle` : titre/corps fr/en, `date_jalon`, image optimisée (`hub/images.py::optimize`) + alt fr/en, secteurs (M2M via `NouvelleSecteur`, suppression de secteur protégée), `video_youtube` (`youtube_video_id()`, propriété `youtube_id`), `instagram_url`, `facebook_url`, `compte_rendu_fr/en` (lignes « Rubrique : valeur », rendues par `views.report_rows()` en fiche repliée). Nettoyage des images remplacées après commit.
 - `LienNouvelle` : liens externes ordonnés, libellés fr/en exigés à la publication.
 - `ConfigurationGenerale` : singleton (identité, présentation, parcours, implantation, e-mail, WhatsApp facultatif, profils facultatifs YouTube/Facebook/TikTok/Instagram validés par `SOCIAL_HOSTS` et `social_host_errors`) ; `notify_url(message, sujet)` construit le lien « Me prévenir » (`wa.me?text=` ou `mailto:` en repli) ; `image_accueil` + `alt_accueil_fr/en` (image du hero, logo sinon), `academie_url` (renvoi vers l'Académie, facultatif), `required_texts()`. Sauvegarde d'image partagée : `save_with_image()` (optimisation, nettoyage différé de l'ancienne image).
@@ -46,7 +47,7 @@ Thème : cookie `theme` lu par `hub/context_processors.py::theme` (`data-theme` 
 - `hub/management/commands/` : `seed_content` (contenus du brief, `--announce-classes`), `backupventisax`, `restoreventisax`, `journal` (`inventaire <partie>`, `verifier <fichier>`, `comparer <fichier> --site URL`, sans écriture en base).
 - `hub/journal.py` : fichiers sources du Journal de formation (`parse_source`, `source_errors`, `modules_sans_entree`, `ecarts_page`, `publier` pour l'aperçu local).
 - `scripts/` : `preview_site.py` (aperçu isolé, base temporaire, données fictives ; `--journal <dossier>` publie les fichiers sources réels du journal à la place), `security_preview.py`, `smoke_backend.py`, `check_deployment.py`.
-- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 204 tests, dont 16 dans `test_journal.py`, 12 dans `test_theme.py` et 12 dans `test_academy.py` (`config/test_settings.py` neutralise le `.env` local via `DJANGO_ENV_FILE`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
+- Tests : `.venv/Scripts/python -m pytest` (`pytest.ini` → `config.test_settings`), 211 tests, dont 16 dans `test_journal.py`, 12 dans `test_theme.py`, 12 dans `test_academy.py` et 7 dans `test_formation.py` (`config/test_settings.py` neutralise le `.env` local via `DJANGO_ENV_FILE`) ; fabriques dans `tests/factories.py`. Contrôles : `DJANGO_DEBUG=1 .venv/Scripts/python manage.py check` et `makemigrations --check --dry-run`. Journal TDD : `docs/tdd.md`.
 - Skill de projet `.claude/skills/ventisax-deploy/` : procédure de déploiement PythonAnywhere (commits, main en avance rapide, console Playwright : pull, migrate, collectstatic, check --deploy, touch WSGI, vérifications).
 - Skill de projet `.claude/skills/journal-formation/` : publication et correction des entrées du Journal de formation à partir des références de cours (publication directe dans Unfold de production via Playwright, connexion du porteur).
 - Styles : `hub/static/hub/site.css` (Lexend auto-hébergée dans `hub/static/hub/fonts/`, licence OFL).

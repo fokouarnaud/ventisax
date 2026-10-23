@@ -45,7 +45,8 @@ def seed():
         apprentissages_fr="Exemple de contenu : composants, lecture des caractéristiques et usages des équipements.",
         apprentissages_en="Sample content: components, specifications and equipment uses.",
         prochaine_etape_fr="Renseigner les premiers apprentissages réels avant le lancement.",
-        prochaine_etape_en="Record the first actual learning milestones before launch.", publie=True, ordre=1)
+        prochaine_etape_en="Record the first actual learning milestones before launch.", publie=True, ordre=1,
+        formation_url="https://electroacadventisax.pythonanywhere.com/fr/catalogue/")
     titles = [("Un aperçu du parcours de formation", "A preview of the training journey"),
               ("Préparer les premiers apprentissages techniques", "Preparing the first technical learning steps"),
               ("Structurer la préparation du projet", "Structuring the project preparation")]

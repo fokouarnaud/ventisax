@@ -30,6 +30,10 @@ LABELS = {
                academy_subject="Demande d'accès à l'Académie",
                academy_message="Bonjour Ventisax, je souhaite un identifiant pour l'Académie Ventisax. Mon nom : … "
                                "Pourquoi je m'y intéresse : …",
+               formation_title="Approfondir en ligne",
+               formation_text="Les cours, quiz et examens que nous suivons pour ce secteur sont en ligne, en français "
+                              "et en anglais.",
+               formation_open="Voir le programme",
                follow="Suivre Ventisax", theme="Thème", theme_system="Thème : système",
                theme_light="Thème : clair", theme_dark="Thème : sombre"),
     "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
@@ -49,6 +53,10 @@ LABELS = {
                academy_subject="Academy access request",
                academy_message="Hello Ventisax, I would like a login for the Ventisax Academy. My name: … "
                                "Why I'm interested: …",
+               formation_title="Go further online",
+               formation_text="The lessons, quizzes and exams we follow for this sector are online, in French and "
+                              "in English.",
+               formation_open="See the programme",
                follow="Follow Ventisax", theme="Theme", theme_system="Theme: system",
                theme_light="Theme: light", theme_dark="Theme: dark"),
 }
@@ -82,7 +90,7 @@ def localized(obj, lang, kind=None):
     if kind:
         data["url"] = reverse(kind, kwargs={"lang": lang, "slug": getattr(obj, "slug_" + lang)})
     if isinstance(obj, Secteur):
-        data.update(site_url=obj.site_url, etat=LABELS[lang]["preparation" if obj.etat == "preparation" else "active"])
+        data.update(site_url=obj.site_url, formation_url=obj.formation_url, etat=LABELS[lang]["preparation" if obj.etat == "preparation" else "active"])
     if isinstance(obj, Nouvelle):
         data.update(date_jalon=obj.date_jalon, premiere_publication=obj.premiere_publication,
                     secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],

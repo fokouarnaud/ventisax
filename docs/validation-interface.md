@@ -343,3 +343,19 @@ débordement, boutons visibles sans défilement (bas à 628 px pour 800 px à 32
 
 Captures locales non versionnées : `.playwright-mcp/v23-*.png`, `v23b-*.png`, `v24-hero-320.png`. Téléphone physique
 non exercé.
+
+## Bloc « Approfondir en ligne » sur la fiche secteur — 23 octobre 2026
+
+Aperçu `scripts/preview_site.py` (secteur électronique fictif avec `formation_url`), Playwright, contextes neufs sans
+cookie de thème : fiche `fr` et `en` à 320, 390 et 1 280 px, clair et sombre (12 combinaisons).
+
+- Aucun débordement horizontal ; lien « Voir le programme » / « See the programme » de 44 px, sur une ligne partout.
+- Contraste mesuré : lien 6,33:1 et texte 6,37:1 en clair, 10,60:1 et 8,65:1 en sombre.
+- Icône `aria-hidden` ; mention « (nouvel onglet) » pour les lecteurs d'écran ; à 390 px, tabulation dans l'ordre
+  visuel (fil d'Ariane, puis le lien du bloc, puis le journal), contour de focus de 3 px.
+- Passe taste (préservation) : premier rendu en carte avec bouton refusé (troisième carte au même niveau que
+  « Apprentissages » et « Prochaine étape », bouton anglais sur deux lignes à 320 px) ; retenu : section ouverte sous
+  un filet, sous la description, titre de 1,25 rem, lien texte. Aucune étiquette en capitales, aucun tiret cadratin,
+  aucune nouvelle couleur.
+- Non exercé : lecteur d'écran réel, téléphone physique.
+

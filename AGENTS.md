@@ -613,6 +613,211 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
 - [ ] Le compte rendu distingue le vérifié du non vérifié (ouverture réelle de WhatsApp sur téléphone,
   correction de la mention « centre de formation » sur l'Académie, à la charge du porteur).
 
+### Évolution autorisée — renvoi vers Electro Acad Ventisax depuis le secteur électronique, 23 octobre 2026
+
+**Statut : GOALS rédigés à partir du grill (Q1–Q12, toutes les recommandations acceptées), récapitulatif validé
+par l'utilisateur.** Le reste de l'historique est conservé ; les décisions de l'Académie clim (22 octobre) restent
+inchangées.
+
+Faits relevés avec Playwright avant et pendant le grill : `electroacadventisax.pythonanywhere.com` est une
+plateforme bilingue de cours, quiz et examens d'électronique (une formation, trois parties, 11 modules, 94 h,
+certificat par partie). Sans compte, `/` redirige vers la connexion ; le catalogue `/fr/catalogue/` est public ;
+l'inscription y est libre, avec confirmation par e-mail, et annoncée « gratuite ». Son pied de page dit
+« Ventisax, centre de formation à Yaoundé » et la connexion parle d'« identifiant remis par le centre ». Le porteur
+y suit réellement la formation : au 23 octobre, « Révision du courant continu » et « Le courant alternatif » sont
+lus (mini-projets exceptés), les autres modules entamés, aucun examen passé. Sur le hub, le secteur publié
+« Matériel électronique » / « Electronic equipment » est en préparation, sans nouvelle, avec « Formation en
+préparation » comme apprentissages ; son champ `site_url` désigne le futur site sectoriel.
+
+#### 1. Objectifs fonctionnels prioritaires
+
+- **Orienter vers l'électronique en ligne (Q1)** : Electro Acad est présentée comme l'espace où nous apprenons
+  l'électronique, ouvert aux curieux ; jamais comme une offre ni comme un centre de formation.
+- **Emplacement (Q2)** : un bloc sur la fiche « Matériel électronique » seulement, sous sa description, en `/fr/`
+  et `/en/` ; ni en-tête, ni accueil, ni journal, ni Contact.
+- **Lien par secteur (Q3, Q8)** : champ facultatif `Secteur.formation_url` (« adresse de la plateforme de cours »),
+  saisi dans Unfold ; vide, aucun bloc. Renseigné pour l'électronique seulement ; vide pour « Climatisation et
+  froid », déjà renvoyée vers l'Académie par le bloc global. `site_url` conserve son sens de site sectoriel.
+- **Appel à l'action (Q4)** : un seul lien, vers l'URL saisie (le catalogue `/fr/`, Q12), sur les deux langues ;
+  pas de demande d'accès WhatsApp ou e-mail, l'inscription y étant libre.
+- **Textes fixes, bilingues et génériques (Q5, Q7)** : « Approfondir en ligne » / « Go further online » ;
+  « Les cours, quiz et examens que nous suivons pour ce secteur sont en ligne, en français et en anglais. » /
+  « The lessons, quizzes and exams we follow for this sector are online, in French and in English. » ; lien
+  « Voir le programme » / « See the programme ». Ni « centre de formation », ni « gratuit », ni « certificat »,
+  ni promesse.
+- **Secteur électronique (Q6, Q9, Q10)** : nom et slugs inchangés ; « Apprentissages » et « Prochaine étape »
+  mis à jour dans Unfold, sans pourcentage :
+  - FR : « Nous suivons en ligne une formation en électronique en trois parties : courant continu et
+    semi-conducteurs, courant alternatif et filtres, puis amplification et alimentations. Nous avons commencé par
+    la révision du courant continu et le courant alternatif. » ; « Terminer la première partie (diode et
+    transistor) et passer son examen. »
+  - EN : « We are following an online electronics course in three parts: direct current and semiconductors,
+    alternating current and filters, then amplification and power supplies. We started with a review of direct
+    current and with alternating current. » ; « Finish the first part (diode and transistor) and take its exam. »
+- **Journal (Q11)** : une entrée par partie d'électronique réussie (examen passé), datée de l'examen, rattachée à
+  « Matériel électronique », trois paragraphes au plus avec nos mots, compte rendu seulement pour un mini-projet
+  réellement monté, ni certificat ni capture de la plateforme. Aucune entrée au 23 octobre. Le skill
+  `journal-formation` et la présence du bloc sur le journal seront revus à la première partie réussie.
+
+#### 2. Contraintes techniques
+
+- **Stack inchangée** : Django, SQLite, Unfold, templates serveur et CSS ; aucun JavaScript ni dépendance ajoutés.
+  Un champ `URLField` facultatif sur `Secteur` (validateur `HTTP_URL`), migration `0013` ; aucune autre entité.
+- **Ouverture** : URL saisie telle quelle, nouvel onglet, `rel="noopener noreferrer"`, mention « (nouvel onglet) »
+  / « (new tab) » pour les technologies d'assistance ; pas de mention de langue, la plateforme ayant sa propre bascule.
+- **Libellés** dans `LABELS` (RA-06) ; bloc dans un gabarit partiel, rendu par la seule page `sector`.
+- **Confidentialité** : rien n'est stocké ni tracé sur le hub ; aucun identifiant affiché.
+- **Interface** : jetons existants, clair et sombre, cibles de 44 px, clavier et focus visibles, sans débordement
+  de 320 à 1 280 px ; pas de nouvelle étiquette en capitales (règles taste).
+- **Livraison (Q12)** : TDD sur `develop` (test d'abord en échec, puis vert), `check` et `makemigrations --check`
+  propres, aperçu Playwright, consignation dans `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md`, commit. Déploiement
+  (`ventisax-deploy`, migration `0013`) et saisie de l'URL et des textes en production seulement après accord
+  explicite du porteur.
+- **Reste au porteur, hors dépôt** : corriger sur Electro Acad « centre de formation » et « identifiant remis par
+  le centre ».
+
+#### 3. Périmètre strictement Hors-Scope
+
+- Bloc Electro Acad dans l'en-tête, le hero, l'accueil, le journal, les entrées, Contact ou la fiche clim.
+- Demande d'accès par WhatsApp ou e-mail, formulaire, création de comptes, authentification partagée, iframe ou
+  reprise du contenu de la plateforme.
+- Lien distinct par langue, texte du bloc administrable, nom de la plateforme dans le texte fixe.
+- Prix, « gratuit », certificats, pourcentage de progression, présentation de Ventisax comme centre de formation.
+- Renommage du secteur ou changement de ses slugs ; fusion avec le bloc global de l'Académie clim.
+- Entrées de journal électroniques avant une partie réussie ; modification de la plateforme depuis ce dépôt.
+
+### PRD — Renvoi vers Electro Acad Ventisax depuis le secteur électronique (23 octobre 2026)
+
+**Statut : validé par l'utilisateur le 23 octobre 2026, qui a demandé l'implémentation en TDD, l'aperçu, le commit,
+puis le déploiement et la saisie en production après passe taste.** Le PRD V1 et celui de l'Académie (22 octobre) restent la référence pour
+tout ce qu'il ne modifie pas.
+
+#### 1. Contexte, problème et résultat attendu
+
+Le secteur « Matériel électronique » est en préparation et affirme « Formation en préparation », alors que le
+porteur suit désormais une formation d'électronique en ligne sur Electro Acad Ventisax. Un visiteur intéressé par
+l'électronique ne trouve ni cette progression ni le chemin vers les cours.
+
+**Résultat attendu :** la fiche électronique, en français et en anglais, dit où nous apprenons l'électronique et
+mène au programme en ligne ; le porteur change cette adresse dans Unfold sans déploiement ; les textes du secteur
+reflètent la progression réelle.
+
+| Rôle | Besoin | Accès |
+| --- | --- | --- |
+| Visiteur, curieux d'électronique | Voir ce que nous apprenons et accéder au programme | Pages publiques fr/en |
+| Porteur, administrateur | Renseigner, changer ou retirer l'adresse par secteur ; tenir à jour apprentissages et prochaine étape | Unfold, second facteur |
+
+#### 2. Périmètre
+
+| Élément | Comportement requis |
+| --- | --- |
+| Secteur | Champ facultatif « adresse de la plateforme de cours » (http/https), saisi dans Unfold |
+| Bloc « Approfondir en ligne » | Titre, texte fixe, lien « Voir le programme » ; affiché sur la fiche du secteur seulement si l'adresse est renseignée et le secteur publié |
+| Contenu | Apprentissages et prochaine étape du secteur électronique, fr/en (GOALS §1), saisis dans Unfold après déploiement |
+| Documentation | `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` ; commit sur `develop` |
+
+#### 3. User Stories et critères d'acceptation
+
+##### US-27 — Approfondir l'électronique en ligne
+
+En tant que visiteur de la fiche électronique, je veux savoir où ces cours se suivent afin d'y accéder.
+
+- Lorsque `formation_url` est renseignée, la fiche du secteur affiche, sous la description, le bloc « Approfondir
+  en ligne » / « Go further online » avec les textes fixes des GOALS, dans la langue de la page.
+- « Voir le programme » / « See the programme » pointe exactement vers l'adresse saisie, sur les deux langues,
+  s'ouvre dans un nouvel onglet avec `rel="noopener noreferrer"` et annonce l'ouverture externe aux technologies
+  d'assistance.
+- Le bloc n'apparaît sur aucune autre page, ni sur la fiche d'un secteur dont le champ est vide.
+- Le bloc ne contient ni « centre de formation », ni « gratuit », ni « certificat », ni prix.
+
+##### US-28 — Administrer l'adresse par secteur
+
+En tant qu'administrateur, je veux renseigner, changer ou retirer l'adresse de la plateforme d'un secteur dans
+Unfold.
+
+- Le champ figure dans le formulaire Secteur, avec un texte d'aide ; il est facultatif et non traduit.
+- Une adresse non http/https (`javascript:`, `data:`…) est refusée sans modifier les valeurs enregistrées (RM-10),
+  y compris sur un secteur publié.
+- Vider le champ retire le bloc ; le renseigner l'affiche, sans déploiement. `site_url` et son lien restent
+  indépendants.
+
+##### US-29 — Refléter la progression réelle du secteur
+
+En tant que futur client, je veux lire où en est réellement le secteur électronique.
+
+- Après saisie, « Apprentissages » et « Prochaine étape » de la fiche fr/en reprennent les textes des GOALS, sans
+  pourcentage ni promesse ; le secteur reste « En préparation », nom et URL inchangés.
+
+##### US-30 — Lire le bloc sur mobile, au clavier et dans les deux thèmes
+
+- Aucun débordement de 320 à 1 280 px ; cible d'au moins 44 px ; ordre de tabulation conforme ; focus visible ;
+  contraste lisible en clair et en sombre ; icône décorative masquée.
+
+#### 4. Règles métier
+
+| ID | Règle |
+| --- | --- |
+| RE-01 | La plateforme est présentée comme l'espace où nous apprenons ; jamais comme une offre ni un centre de formation (comme RA-01). |
+| RE-02 | Sans `formation_url`, aucun bloc ; l'adresse vaut pour les deux langues. |
+| RE-03 | Seules des URL http/https validées sont rendues ; aucun HTML ni texte libre saisi pour le bloc. |
+| RE-04 | Textes du bloc fixes, bilingues et génériques dans le code ; leur changement passe par une décision et un commit. |
+| RE-05 | Une entrée de journal électronique correspond à une partie réussie, datée de son examen (décision Q11, mise en œuvre ultérieure). |
+| RE-06 | Le hub ne stocke ni ne trace aucun clic ni aucune inscription. |
+
+#### 5. Modélisation logique des données
+
+**Aucune nouvelle entité.** Un attribut est ajouté à une entité existante :
+
+| Entité | Attribut | Type logique | Contraintes |
+| --- | --- | --- | --- |
+| Secteur | `formation_url` (« adresse de la plateforme de cours ») | URL facultative | Vide par défaut ; http/https seulement (`HTTP_URL`) ; non traduite ; indépendante de `site_url` et de la publication bilingue |
+
+Valeur dérivée, non stockée : le bloc d'affichage. Libellés : `LABELS`. Migration `0013` sur `Secteur` seulement ;
+aucune donnée existante modifiée.
+
+```mermaid
+erDiagram
+    Secteur ||--o| BlocFormation : "alimente (si formation_url)"
+    BlocFormation }o--|| FicheSecteur : "affiché sur"
+```
+
+`BlocFormation` et `FicheSecteur` sont des notions d'affichage, pas des tables.
+
+#### 6. Definition of Done — critères stricts de validation
+
+Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de ce PRD.
+
+**TDD et contrôles**
+
+- [x] Tests écrits avant le code, échec observé pour la raison attendue (champ ou bloc absent), puis verts. Cas :
+  champ vide (aucun bloc fr/en) ; champ renseigné (lien exact sur les deux langues, nouvel onglet, `rel`, mention
+  « nouvel onglet », libellés de la langue) ; absence sur accueil, présentation, journal, détail, Contact et autre
+  secteur ; `javascript:`/`data:` refusées sans écrasement ; secteur dépublié introuvable ; `site_url` inchangé ;
+  absence de « centre de formation », « gratuit », « certificat ».
+  *23/10/2026 : `tests/test_formation.py` (7 tests), six en échec sur `TypeError … 'formation_url'`, puis verts ;
+  aperçu `tests/test_preview.py` en échec sur `data-formation` absent, puis vert.*
+- [x] Suite complète verte ; `manage.py check` et `makemigrations --check --dry-run` sans constat ; migration
+  `0013` appliquée sur une base neuve et sur une copie de la base locale sans perte.
+  *23/10/2026 : 211 tests réussis, aucun échec ; copie de `db.sqlite3` migrée de `0011` à `0013`, secteurs,
+  nouvelles et associations identiques (2, 7, 6).*
+
+**Parcours réels**
+
+- [x] Aperçu (`scripts/preview_site.py`) : fiche électronique fr/en à 320, 390 et 1 280 px, clair et sombre, sans
+  débordement ; parcours clavier avec focus visible ; captures sans donnée privée.
+  *23/10/2026 : 12 combinaisons, lien 44 px sur une ligne, contraste ≥ 6,33:1, focus 3 px ; passe taste : carte et
+  bouton remplacés par une section ouverte sous la description (`docs/validation-interface.md`).*
+- [ ] Unfold local : saisie, modification, effacement de l'adresse ; `javascript:` refusée avec message.
+  *Exercé par le client de test sur le formulaire Unfold (refus sans perte, effacement) ; pas dans un navigateur.*
+
+**Livraison**
+
+- [ ] `AGENTS.md`, `CLAUDE.md`, `docs/tdd.md` à jour ; commit sur `develop` ; `git status` sans donnée locale.
+- [ ] Ni fusion sur `main`, ni déploiement sans accord explicite. Après accord : migration `0013` en production,
+  adresse et textes du secteur saisis, fiche vérifiée en ligne en fr et en en.
+- [ ] Le compte rendu distingue le vérifié du non vérifié (inscription réelle sur la plateforme, correction de
+  « centre de formation » sur Electro Acad à la charge du porteur).
+
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
 ### 1. Objectifs fonctionnels prioritaires

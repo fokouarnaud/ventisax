@@ -250,3 +250,24 @@ restauré à l'identique, `cmp`).
 
 « V1 » renvoie aux cycles rouge-vert consignés plus haut dans ce journal. Suite complète : **202 tests réussis, aucun
 échec** ; `check` et `makemigrations --check` sans constat.
+
+## Renvoi vers Electro Acad depuis la fiche d'un secteur — 23 octobre 2026
+
+PRD « Renvoi vers Electro Acad Ventisax » (US-27 à US-30, RE-01 à RE-06). Fichiers : `hub/models.py`
+(`Secteur.formation_url`, migration `0013`), `hub/views.py` (`LABELS` `formation_*`, `localized`),
+`hub/templates/hub/pages/sector.html`, `partials/formation.html`, `site.css` (`.formation-panel`),
+`scripts/preview_site.py`, `tests/test_formation.py`, `tests/test_preview.py`.
+
+| Contrat (story) | Échec observé avant code | Suite verte après code |
+| --- | --- | --- |
+| Adresse facultative, http/https seulement (`javascript:`, `data:`, `ftp:` refusés) (US-28, RE-03) | `TypeError: Secteur() got unexpected keyword arguments: 'formation_url'` | 1 test |
+| Bloc fr/en sur la fiche : textes fixes, lien exact, nouvel onglet, `rel`, mention « nouvel onglet », un seul bloc ; ni « centre de formation », « gratuit »/« free », « certificat » (US-27, RE-01, RE-04) | même `TypeError` (champ absent) | 2 tests |
+| Bloc absent de l'accueil, de la présentation, du journal, d'une entrée, de Contact et d'un autre secteur ; secteur dépublié en 404 (US-27, RE-02) | même `TypeError` | 2 tests |
+| Sans adresse, aucun bloc et `site_url` inchangé (RE-02) | passait d'emblée, comportement attendu sans le bloc | 1 test |
+| Champ modifiable dans Unfold ; `javascript:` refusée sans perte ; effacement accepté, secteur toujours publié (US-28) | même `TypeError` | 1 test |
+| Aperçu fictif : la fiche électronique porte le bloc | `data-formation` absent | `test_preview.py` vert |
+
+Un premier rendu en carte avec bouton a été remplacé, après la passe taste, par une section ouverte sous un filet
+avec un lien simple (comme le bloc Académie dans une entrée) : pas de troisième carte face au contenu du secteur,
+lien sur une ligne à 320 px en anglais. Les tests, qui portent sur le contenu et les attributs, sont restés verts.
+
