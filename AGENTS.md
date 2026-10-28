@@ -379,6 +379,18 @@ aucun code ni migration déployés. `journal comparer` en production : deux page
 fr/en regroupé sous le 23 octobre. Sauvegarde par e-mail non envoyée (session Unfold non ouverte) ; `--interdit`
 non exercé, relecture manuelle sans nom propre.
 
+**Module 7 (28 octobre 2026, même canal à la demande explicite du porteur, « deploie avec skill deploy ») :**
+« Formation : câbler une minuterie » / « Training: wiring a lighting timer », cours du 27/10 (le porteur a d'abord
+désigné le module 6, puis confirmé le module 7 du manuel), 8 h, minuterie avec effet puis sans effet commandant une
+lampe depuis trois boutons-poussoirs, sur planche (`/fr/nouvelles/formation-minuterie/`,
+`/en/nouvelles/training-lighting-timer/`). Aperçu local : pages et journal liste/grille en 200, entrée sous le 27/10 ;
+largeurs et thèmes non contrôlés (Playwright indisponible à ce moment). Console PythonAnywhere : copie SQLite par l'API
+`backup` (`/home/ventisax/backups/avant-module7-20261028.sqlite3`), fichier source en base64 (SHA-256 identique),
+`source_errors` vide, `hub.journal.publier` (id 16), fichier temporaire supprimé, arbre git du serveur propre ; aucun
+code ni migration déployés. `journal comparer` en production : deux pages vérifiées, aucun écart ; journal regroupé sous
+le 27 octobre. Sauvegarde par e-mail non envoyée (session Unfold non ouverte) ; `--interdit` non exercé, relecture
+manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
