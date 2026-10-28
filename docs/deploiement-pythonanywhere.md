@@ -287,3 +287,20 @@ par Unfold).
   et `media/.env` en 404, `/admin/` 302, connexion 200, HTTP vers HTTPS vérifié.
 - Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; largeurs et thèmes de l'entrée dans un navigateur ;
   `journal verifier --interdit` (noms non fournis, relecture manuelle).
+
+## Déploiement du 28 octobre 2026, `4eb8201` (demande du porteur : publier le module 8 du journal avec le skill deploy)
+
+- Contenu publié avant le déploiement, depuis la console : entrée « Formation : monter et régler une horloge » /
+  « Training: wiring and setting a time switch » (cours du 28/10, id 17) par `hub.journal.publier`, après copie SQLite
+  par l'API `backup` (`/home/ventisax/backups/avant-module8-20261028.sqlite3`, 405 504 octets) ; fichier source en
+  base64 à empreinte identique, fichier temporaire supprimé. Partie 2 complète (modules 1 à 8).
+- Contrôles locaux : 214 tests réussis, `check` et `makemigrations --check` sans constat ; `main` avancé de `f266560`
+  à `4eb8201` et poussé avec `develop`.
+- Serveur : arbre propre, `git pull --ff-only` de `5f484b8` à `4eb8201` ; aucune migration ; `collectstatic`
+  (0 fichier copié) ; `check --deploy` sans problème ; WSGI rechargé.
+- Vérifications publiques : `/fr/`, `/en/`, journal liste et grille, Contact et les deux pages de l'entrée en 200 ;
+  CSS avec empreinte ; `journal comparer` sans écart pour les modules 7 et 8 ; journal regroupé sous le 28 octobre.
+  `check_deployment.py` depuis la console : pages 200, `.env`, `db.sqlite3` et `media/.env` en 404, `/admin/` 302,
+  connexion 200, HTTP vers HTTPS vérifié. Aperçu local Playwright conforme (1 280 et 390 px, clair et sombre).
+- Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; `journal verifier --interdit` (noms non fournis,
+  relecture manuelle).
