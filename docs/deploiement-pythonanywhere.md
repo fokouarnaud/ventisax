@@ -270,3 +270,20 @@ par Unfold).
   confirmée par le porteur).
 - Non exercé : réception de l'e-mail ; demande d'accès WhatsApp depuis un téléphone.
 
+
+## Déploiement du 28 octobre 2026, `5f484b8` (demande du porteur : publier le module 7 du journal, puis « deploie avec skill deploy »)
+
+- Contenu publié avant le déploiement, depuis la console : entrée « Formation : câbler une minuterie » / « Training:
+  wiring a lighting timer » (cours du 27/10, id 16) par `hub.journal.publier`, après copie SQLite par l'API `backup`
+  (`/home/ventisax/backups/avant-module7-20261028.sqlite3`, 405 504 octets) ; fichier source en base64 à empreinte
+  identique, fichier temporaire supprimé.
+- Contrôles locaux : 214 tests réussis, `check` et `makemigrations --check` sans constat ; `main` avancé de `230971e`
+  à `5f484b8` (consignation dans `AGENTS.md`) et poussé avec `develop`.
+- Serveur : arbre propre, `git pull --ff-only` de `c6c2193` à `5f484b8` ; aucune migration ; `collectstatic`
+  (0 fichier copié) ; `check --deploy` sans problème ; WSGI rechargé.
+- Vérifications publiques : `/fr/`, `/en/`, journal liste et grille, Contact et les deux pages de l'entrée en 200 ;
+  CSS avec empreinte (`site.463f5090c743.css`) ; `journal comparer` sans écart ; journal regroupé sous le 27 octobre.
+  `check_deployment.py` depuis la console (TLS local interrompu, `WinError 10054`) : pages 200, `.env`, `db.sqlite3`
+  et `media/.env` en 404, `/admin/` 302, connexion 200, HTTP vers HTTPS vérifié.
+- Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; largeurs et thèmes de l'entrée dans un navigateur ;
+  `journal verifier --interdit` (noms non fournis, relecture manuelle).
