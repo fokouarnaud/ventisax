@@ -391,6 +391,19 @@ code ni migration déployés. `journal comparer` en production : deux pages vér
 le 27 octobre. Sauvegarde par e-mail non envoyée (session Unfold non ouverte) ; `--interdit` non exercé, relecture
 manuelle sans nom propre.
 
+**Module 8 (28 octobre 2026, même canal puis skill deploy, à la demande explicite du porteur) :** « Formation : monter
+et régler une horloge » / « Training: wiring and setting a time switch », cours du 28/10, 8 h : horloge modulaire
+analogique câblée sur planche pour commander une lampe, réglage des cavaliers et test des plages, lecture du schéma d'un
+réfrigérateur No Frost pour repérer l'horloge de dégivrage (lecture seulement, aucun câblage du réfrigérateur affirmé) ;
+aucune valeur de division tirée du manuel (`/fr/nouvelles/formation-horloge/`, `/en/nouvelles/training-time-switch/`).
+Aperçu local conforme (détails fr/en et journal liste/grille, 1 280 et 390 px, clair et sombre, sans débordement,
+titre sur deux lignes au plus). Console : copie SQLite par l'API `backup`
+(`/home/ventisax/backups/avant-module8-20261028.sqlite3`), base64 à SHA-256 identique, `source_errors` vide,
+`hub.journal.publier` (id 17), fichier temporaire supprimé, arbre serveur propre. `journal comparer` en production :
+deux pages vérifiées, aucun écart ; journal regroupé sous le 28 octobre. **Partie 2 complète** : `journal inventaire
+02_partie2` ne signale plus aucun module. Sauvegarde par e-mail non envoyée ; `--interdit` non exercé, relecture
+manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
