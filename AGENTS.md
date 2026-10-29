@@ -404,6 +404,20 @@ deux pages vérifiées, aucun écart ; journal regroupé sous le 28 octobre. **P
 02_partie2` ne signale plus aucun module. Sauvegarde par e-mail non envoyée ; `--interdit` non exercé, relecture
 manuelle sans nom propre.
 
+**Module 9 (29 octobre 2026, même canal à la demande explicite du porteur) :** « Formation : câbler un crépusculaire et un
+détecteur de mouvement » / « Training: wiring a dusk switch and a motion sensor », cours du 29/10, 8 h : interrupteur
+crépusculaire puis détecteur de mouvement infrarouge câblés sur planche, chacun commandant une lampe, réglés (seuil ;
+durée, luminosité, sensibilité) et essayés ; association des deux appareils non affirmée
+(`/fr/nouvelles/formation-crepusculaire-detecteur/`, `/en/nouvelles/training-dusk-switch-motion-sensor/`). Le manuel
+comptant un module 9, la partie 2 n'était pas complète au 28/10 : l'entrée du module 8 est corrigée à la demande du
+porteur (« Huitième et dernier module » → « Huitième module », « Eighth and last » → « Eighth »), slugs inchangés. Aperçu
+local conforme (détails fr/en des modules 8 et 9, journal liste/grille, 1 280 et 390 px, clair et sombre : 32 pages en
+200, sans débordement, titre sur deux lignes). Console : copie SQLite par l'API `backup`
+(`/home/ventisax/backups/avant-module9-20261029.sqlite3`), deux fichiers en base64 à SHA-256 identique, `source_errors`
+vide, `hub.journal.publier` (id 18 créé, id 17 corrigé), fichiers temporaires supprimés, arbre serveur propre ; aucun code
+ni migration déployés. `journal comparer` en production : quatre pages vérifiées, aucun écart ; journal fr/en regroupé
+sous le 29 octobre. Sauvegarde par e-mail non envoyée ; `--interdit` non exercé, relecture manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
