@@ -418,6 +418,28 @@ vide, `hub.journal.publier` (id 18 créé, id 17 corrigé), fichiers temporaires
 ni migration déployés. `journal comparer` en production : quatre pages vérifiées, aucun écart ; journal fr/en regroupé
 sous le 29 octobre. Sauvegarde par e-mail non envoyée ; `--interdit` non exercé, relecture manuelle sans nom propre.
 
+**Partie 3, modules 1 à 5 (6 novembre 2026, skill `journal-formation` puis canal console du skill deploy, à la demande
+explicite du porteur ; la connexion Unfold n'a pas été ouverte) :** intitulé de partie « Électricité industrielle » /
+« Industrial electricity » confirmé par le porteur ; références du manuel dans `reference/cours/03_partie3/`. Faits
+confirmés : module 1 (moteurs électriques : identification, enroulements, plaque signalétique, tensions du réseau,
+couplage étoile/triangle sur plaque à bornes, 4 h) et module 2 (appareillage industriel, identification seule, sans
+câblage, 4 h) le 02/11 ; module 3 (démarrage direct un sens, câblé sur plaque et essayé, sans arrêt d'urgence) les 3 et 4
+novembre, **une seule entrée datée du 03/11**, 12 h ; module 4 (inversion du sens de marche avec verrouillage électrique,
+câblé et essayé, fins de course étudiées sans câblage) le 05/11, 8 h ; module 5 (démarrage étoile-triangle avec contact
+temporisé, câblé en coffret et essayé) le 06/11, 8 h. Les durées du manuel (8, 4, 12, 16 et 16 h) ne sont pas reprises.
+Slugs : `formation-moteurs-electriques`, `formation-appareillage-industriel`, `formation-demarrage-direct`,
+`formation-inversion-sens-marche`, `formation-demarrage-etoile-triangle` (et `training-electric-motors`,
+`training-industrial-switchgear`, `training-direct-on-line-starter`, `training-motor-reversing`,
+`training-star-delta-starter`) ; aucune valeur de tableau ni marque de plaque reprise du manuel. `journal verifier` conforme
+×5 ; aperçu local conforme (journal liste/grille et détails fr/en, 1 280 et 390 px, clair et sombre : 56 pages en 200,
+sans débordement, titres sur deux lignes au plus). Console : copie SQLite par l'API `backup`
+(`/home/ventisax/backups/avant-partie3-20261106.sqlite3`, 405 504 octets), paquet des cinq fichiers et script en base64 à
+SHA-256 identique, `source_errors` vide ×5, `hub.journal.publier` dans l'ordre 2, 1, 3, 4, 5 (id 19 à 23, module 1
+au-dessus du module 2 le 02/11), fichiers temporaires supprimés, arbre serveur propre ; aucun code ni migration déployés.
+`journal comparer` en production : dix pages vérifiées, aucun écart ; journal fr/en regroupé sous les 6, 5, 3 et 2
+novembre. Module 6 de la partie 3 sans entrée (aucune date fournie par le porteur). Sauvegarde par e-mail non envoyée ; `--interdit` non
+exercé, relecture manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
