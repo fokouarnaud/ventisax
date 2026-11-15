@@ -440,6 +440,21 @@ au-dessus du module 2 le 02/11), fichiers temporaires supprimés, arbre serveur 
 novembre. Module 6 de la partie 3 sans entrée (aucune date fournie par le porteur). Sauvegarde par e-mail non envoyée ; `--interdit` non
 exercé, relecture manuelle sans nom propre.
 
+**Partie 3, module 6 (16 novembre 2026, skill `journal-formation`, même canal console à la demande du porteur) :**
+« Formation : câbler un démarrage à enroulements fractionnés » / « Training: wiring a part-winding starter », cours du
+09/11, 8 h : repérage au multimètre des deux bobinages d'un moteur à enroulements fractionnés (résistances entre les six
+bornes), câblage avec deux contacteurs, leurs relais thermiques et un contact temporisé, essai du démarrage en deux temps
+(`/fr/nouvelles/formation-demarrage-fractionne/`, `/en/nouvelles/training-part-winding-starter/`) ; aucune valeur de
+tableau ni schéma repris du manuel. `journal verifier` conforme ; aperçu local conforme (journal liste/grille et détails
+fr/en, 1 280 et 390 px, clair et sombre : 24 pages en 200, sans débordement, titre sur deux lignes sur ordinateur). Avant
+publication, le site entier affichait « Coming Soon: PythonAnywhere » (application gratuite non prolongée) ; après
+connexion du porteur, l'échéance était repoussée au 15 décembre 2026 et le site répondait de nouveau. Console : copie
+SQLite par l'API `backup` (`/home/ventisax/backups/avant-p3module6-20261116.sqlite3`, 421 888 octets), fichier source et
+script en base64 à SHA-256 identique, `source_errors` vide, `hub.journal.publier` (id 24), fichiers temporaires supprimés,
+arbre serveur propre ; aucun code ni migration déployés. `journal comparer` en production : deux pages vérifiées, aucun
+écart ; journal fr/en regroupé sous le 9 novembre. `journal inventaire 03_partie3` ne signale plus aucun module. Sauvegarde
+par e-mail non envoyée ; `--interdit` non exercé, relecture manuelle sans nom propre.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
