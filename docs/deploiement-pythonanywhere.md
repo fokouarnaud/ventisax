@@ -304,3 +304,24 @@ par Unfold).
   connexion 200, HTTP vers HTTPS vérifié. Aperçu local Playwright conforme (1 280 et 390 px, clair et sombre).
 - Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; `journal verifier --interdit` (noms non fournis,
   relecture manuelle).
+
+## Déploiement du 16 novembre 2026, `4c0f829` (demande du porteur : « deploy avec le skill » après publication des parties 3 et 4)
+
+- Contexte : le site entier affichait « Coming Soon: PythonAnywhere » le 16/11 (application gratuite non prolongée) ;
+  après connexion du porteur, l'échéance était au 15 décembre 2026 et le site répondait de nouveau. Contenus publiés
+  avant le déploiement, depuis la console (`hub.journal.publier`, copies SQLite préalables) : partie 3 modules 1 à 5
+  (id 19 à 23), module 6 (id 24), partie 4 modules 1 à 4 (id 25 à 28).
+- Contrôles locaux : `check` et `makemigrations --check` sans constat ; `pytest` : 211 réussis, **3 échecs**
+  (`test_security.py::test_enrolement_en_cours_reverifie_appareil_au_post_final`,
+  `test_security.py::test_enrolement_initial_change_session_a_elevation_otp`,
+  `test_deployment.py::test_email_otp_parcours_reel_admin_rejeu_expiration_et_cooldown`, `KeyError: 'secret_key'` dans le
+  contexte de gabarit), reproduits à l'identique sur `main` avant fusion : préexistants, sans lien avec ce déploiement qui
+  ne change que de la documentation ; cause non recherchée. `main` avancé de `ce0bf99` à `4c0f829` et poussé avec `develop`.
+- Serveur : arbre propre, `git pull --ff-only` de `4eb8201` à `4c0f829` (`AGENTS.md`, `docs/deploiement-pythonanywhere.md`) ;
+  aucune migration ; `collectstatic` (0 fichier copié) ; `check --deploy` sans problème ; WSGI rechargé.
+- Vérifications publiques : `/fr/`, `/en/`, journal liste et grille, Contact en 200 ; CSS avec empreinte
+  (`site.463f5090c743.css`) ; `/theme/dark/?next=/fr/contact/` en 302 avec cookie `Secure` ; `journal comparer` sans écart
+  pour les cinq entrées du 9 au 13 novembre. `check_deployment.py` depuis la console (TLS local interrompu,
+  `WinError 10054`) : pages 200, `.env`, `db.sqlite3` et `media/.env` en 404, `/admin/` 302, connexion 200, HTTP vers HTTPS
+  vérifié.
+- Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; correction des 3 tests en échec.
