@@ -455,6 +455,24 @@ arbre serveur propre ; aucun code ni migration déployés. `journal comparer` en
 écart ; journal fr/en regroupé sous le 9 novembre. `journal inventaire 03_partie3` ne signale plus aucun module. Sauvegarde
 par e-mail non envoyée ; `--interdit` non exercé, relecture manuelle sans nom propre.
 
+**Partie 4, modules 1 à 4 (16 novembre 2026, skill `journal-formation`, même canal console) :** intitulé de partie
+« Assemblage et montage frigorifique » / « Refrigeration assembly and installation » confirmé par le porteur ; références
+dans `reference/cours/04_partie4/` (18 modules au manuel). Faits confirmés, 8 h chacun (le manuel prévoit 16 h pour le
+module 4) : module 1 (outillage et appareils de mesure du frigoriste présentés et pris en main) le 10/11 ; module 2 (raccords
+identifiés, sans assemblage) le 11/11 ; module 3 (tuyauteries identifiées ; coupe et collage du PVC non pratiqués) le 12/11 ;
+module 4 (longueur développée, coupe, ébavurage, cintrage, dudgeons et emboutissage de tube cuivre ; filetage de l'acier
+étudié sans pratique) le 13/11. Slugs : `formation-outillage-frigoriste`, `formation-raccords-froid`,
+`formation-tuyauteries-froid`, `formation-travail-tube` (et `training-refrigeration-tools`, `training-refrigeration-fittings`,
+`training-refrigeration-piping`, `training-copper-tube-work`). Aucune valeur de tableau, aucun calcul chiffré ni marque du
+manuel (« Lokring » remplacé par « raccords à bague »). `journal verifier --interdit Lokring --interdit Geberit --interdit
+Testo` conforme ×4 (marques seulement ; noms de formateur et de centre non fournis, relecture manuelle) ; aperçu local
+conforme (48 pages en 200, 1 280 et 390 px, clair et sombre, sans débordement, titres sur deux lignes au plus). Console :
+copie SQLite par l'API `backup` (`/home/ventisax/backups/avant-partie4-20261116.sqlite3`, 425 984 octets), paquet et script
+en base64 à SHA-256 identique, `source_errors` vide ×4, `hub.journal.publier` (id 25 à 28), fichiers temporaires supprimés,
+arbre serveur propre ; aucun code ni migration déployés. `journal comparer` en production : huit pages vérifiées, aucun
+écart ; journal fr/en daté du 13 au 10 novembre. Modules 5 à 18 sans entrée, à traiter quand ils seront suivis. Sauvegarde
+par e-mail non envoyée.
+
 ### Évolution autorisée — renvoi vers l'Académie Ventisax et demande d'accès, 22 octobre 2026
 
 **Statut : GOALS rédigés à partir du grill (Q1–Q11, toutes les recommandations acceptées), validés par
