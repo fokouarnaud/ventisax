@@ -1560,9 +1560,13 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
   390, 768, 960, 961 et 1 280 px, en clair et en sombre, sans débordement ; en-tête à cinq liens conforme
   à US-46 ; parcours clavier avec focus visible (`docs/validation-interface.md`).
 - [ ] Saisie d'un projet réel dans Unfold : création, étapes, figures, publication, dépublication.
-- [ ] `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md` à jour ; commit sur `develop`. Ni fusion sur `main`, ni
+  *18/11/2026 : projet réel saisi en production par la console (validation et `publish()` du modèle), pas dans le
+  formulaire Unfold ; dépublication non exercée en ligne.*
+- [x] `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md` à jour ; commit sur `develop`. Ni fusion sur `main`, ni
   déploiement sans accord explicite. Après accord : migration en production et fiche vérifiée en ligne
   en fr et en en.
+  *18/11/2026, accord explicite : `66d0847` déployé, migration `0014` appliquée, fiche publiée et vérifiée en ligne en fr
+  et en en (`docs/deploiement-pythonanywhere.md`).*
 - [ ] Le compte rendu distingue le vérifié du non vérifié (téléphone physique, accord écrit du binôme,
   résultats encore non mesurés).
 

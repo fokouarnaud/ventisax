@@ -325,3 +325,25 @@ par Unfold).
   `WinError 10054`) : pages 200, `.env`, `db.sqlite3` et `media/.env` en 404, `/admin/` 302, connexion 200, HTTP vers HTTPS
   vérifié.
 - Non exercé : sauvegarde par e-mail (session Unfold non ouverte) ; correction des 3 tests en échec.
+
+## 18 novembre 2026 — rubrique Projets et chambre froide solaire connectée (`66d0847`)
+
+Demande explicite du porteur (« recoder la rubrique puis déployer », skill `ventisax-deploy`).
+
+- Local : suite complète à 255 tests réussis, aucun échec (les trois échecs du 16 novembre venaient des variables
+  `DJANGO_*` exportées par le shell ; `config/test_settings.py` les écarte désormais) ; `check` et
+  `makemigrations --check` sans constat. `main` avancé de `e6c9836` à `66d0847` et poussé avec `develop`.
+- Serveur : arbre propre en `4c0f829` ; copie SQLite par l'API `backup`
+  (`/home/ventisax/backups/avant-projets-20261118.sqlite3`, 442 368 octets) ; `git pull --ff-only` jusqu'à `66d0847` ;
+  migration `hub.0014_projets` appliquée ; `collectstatic` (3 fichiers copiés, 122 post-traités) ; `check --deploy` sans
+  problème ; WSGI rechargé.
+- Contenu : fiche « Chambre froide solaire connectée » créée par un script de console transmis en base64 (SHA-256
+  identique), validation complète du modèle et `publish()` : projet 1, statut « En validation », 7 étapes, 1 figure (image
+  fixe des statiques et version interactive `chambre-froide-solaire.html`), secteur « Climatisation et froid » ; fichier
+  temporaire supprimé, arbre serveur propre.
+- Vérifications publiques : `/fr/`, `/en/`, journal liste et grille, Contact, `/fr/projets/`, `/en/projects/`, fiche fr
+  et en en 200 ; bloc « Projet en cours » sur l'accueil et sur `/fr/secteurs/climatisation-froid/` ; page interactive
+  (`chambre-froide-solaire.f6dec013fbff.html`) et image (`/media/projets/…jpg`, 1 328 × 921) en 200 ; CSS avec empreinte
+  (`site.7c6e4d3131df.css`) ; capture Playwright de la fiche en ligne.
+- Non exercé : sauvegarde par e-mail (session Unfold non ouverte), saisie du projet dans le formulaire Unfold réel,
+  thème sombre et menu mobile ouvert en ligne, téléphone physique, `check_deployment.py`.
