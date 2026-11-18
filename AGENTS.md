@@ -947,6 +947,636 @@ Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de
   *Non vérifiés : réception de l'e-mail de sauvegarde, saisie dans le formulaire Unfold réel, inscription sur la
   plateforme, téléphone physique ; mention « centre de formation » toujours présente sur Electro Acad.*
 
+### Évolution proposée — chambre froide solaire connectée (JPO) et rubrique « Projets », 18 novembre 2026
+
+**Statut : GOALS rédigés à partir du grill (série 1 : Q1–Q22, archivée ; série 2 : S2-Q1–S2-Q25),
+validés par l'utilisateur, qui a demandé leur transformation en PRD (ci-dessous).** Ils n'autorisent ni
+développement, ni achat, ni déploiement.
+Le reste de l'historique est conservé.
+
+Brief initial : avec son binôme, le porteur prépare pour les journées portes ouvertes (JPO) de sa
+formation froid et climatisation une « chambre froide solaire connectée », pilotable depuis un smartphone
+ou un ordinateur. Le projet doit suivre les parties d'un projet (introduction, problématique, revue,
+conception illustrée avec le skill `anatomy`, réalisation et résultats, analyse, conclusion) et présenter
+un budget à valider avant réalisation.
+
+Déroulé du grill : la série 1 a d'abord été conduite sous contrainte de budget (moins de 50 k FCFA,
+réfrigérateur existant). À Q22, le porteur a demandé de « tout recommencer en supposant le budget compris,
+Raspberry Pi compris : faisons d'abord de façon idéale ». Les GOALS ci-dessous reposent sur la série 2 ;
+la contrainte réelle de 50 k FCFA est reprise dans le découpage du budget en tranches (S2-Q14).
+
+#### 1. Objectifs fonctionnels prioritaires
+
+- **Maquette fonctionnelle (S2-Q1)** : caisson neuf d'environ 150 L utiles, conçu par le binôme (panneaux
+  sandwich ou PU de 8 à 10 cm, porte frontale à joint, hublot), transportable sur chariot et démontrable
+  en salle aux JPO (date à plus d'un mois ; le formateur valide dossier et budget avant tout achat).
+- **Froid réel (S2-Q2)** : compresseur DC 12/24 V à vitesse variable (type Secop BD) au R600a,
+  condenseur ventilé, détendeur, évaporateur ventilé ; brasé, éprouvé à l'azote, tiré au vide et chargé
+  par le binôme dans l'atelier du centre, sous le contrôle du formateur.
+- **Énergie solaire (S2-Q3)** : panneaux + régulateur MPPT + batterie LiFePO4 24 V à BMS communicant,
+  et plaques eutectiques qui stockent le froid aux heures de soleil ; l'analyse compare les deux
+  stratégies de stockage.
+- **Cahier des charges chiffré (S2-Q11)** : consigne +4 °C ±1 °C (plage 0 à +10 °C), ambiante jusqu'à
+  35 °C ; descente à vide de 30 à +4 °C en moins de 2 h ; retour à la consigne en moins de 15 min après
+  30 s de porte ouverte ; 48 h sans soleil. Dimensionnement indicatif ~400 Wc et LiFePO4 24 V 100 Ah,
+  confirmé par le bilan thermique.
+- **Mesures (S2-Q7)** : températures (intérieur ×2, entrée et sortie évaporateur, refoulement, sortie
+  condenseur, ambiante, eutectique) et humidité intérieure ; pressions BP/HP avec surchauffe et
+  sous-refroidissement calculés ; énergie (production PV, état de charge et courant BMS, consommation et
+  vitesse du compresseur, irradiance) ; contact de porte.
+- **Supervision et commande (S2-Q9)** : trois rôles. Visiteur sans compte : tableau de bord en lecture,
+  mode grand écran. Opérateur (binôme) : consigne bornée de 0 à +10 °C, modes marche, arrêt, éco et
+  priorité eutectique, dégivrage manuel, acquittement des alarmes, début et fin d'essai, export CSV.
+  Administrateur : seuils d'alarme, étalonnage, comptes. Chaque commande est journalisée et accusée par
+  l'ESP32, qui refuse toute valeur hors bornes.
+- **Alarmes (S2-Q10)** : froid et porte (hors plage plus de 10 min, porte ouverte plus de 2 min,
+  givrage) ; circuit (HP haute, BP basse, surchauffe anormale, compresseur bloqué) ; énergie (batterie
+  faible puis délestage du compresseur, défaut BMS, production nulle de jour) ; système (sonde,
+  liaison ESP32–Pi par chien de garde, disque plein, perte d'Internet). Alerte par buzzer et voyant,
+  bandeau dans l'appli et message distant lorsque Internet est disponible.
+- **Accès (S2-Q5)** : Wi-Fi local fonctionnant sans Internet ; accès distant par routeur 4G et tunnel
+  VPN ; alertes WhatsApp/Telegram ou SMS.
+- **Livrables (S2-Q12, S2-Q13, S2-Q22)** :
+  1. *Dossier de validation*, avant achat : introduction, problématique et objectifs, revue (état de
+     l'art), cahier des charges chiffré, conception (frigorifique, énergétique, électrique, logicielle),
+     budget, planning, risques et sécurité.
+  2. *Rapport final* : le même socle, plus réalisation, protocoles d'essai et résultats, analyse
+     (cibles atteintes ou non), conclusion et perspectives, annexes.
+  3. Quatre figures `anatomy`, interactives sur l'écran du stand et en A4 PDF : vue éclatée de la
+     maquette, cycle frigorifique animé (P/T, surchauffe, sous-refroidissement), chaîne énergétique
+     solaire (jour/nuit, eutectique) et architecture connectée.
+  4. Formats : dossiers Word (.docx, export PDF) ; diaporama PowerPoint pour la validation ; affiche A1
+     et figures en boucle aux JPO.
+- **Budget (S2-Q14)** : budget idéal complet par poste, avec devis réels en FCFA (deux fournisseurs par
+  poste majeur) et 10 % d'imprévus. Il est découpé en tranches finançables, chacune démontrable :
+  - T0 ≤ 50 k FCFA : supervision connectée d'un réfrigérateur existant ;
+  - T1 : froid DC ;
+  - T2 : énergie solaire ;
+  - T3 : Raspberry Pi et accès distant.
+
+  Le dossier sert aussi de demande de financement.
+- **Binôme (S2-Q15)** : la répartition est la suivante ; chaque partie du dossier est signée par son
+  auteur principal.
+
+  | Membre | Responsabilités |
+  | --- | --- |
+  | Binôme | Caisson, circuit frigorifique, eutectiques, câblage de puissance et solaire, bilan thermique |
+  | Porteur | Capteurs, ESP32, Raspberry Pi, appli Django, figures `anatomy` |
+  | Ensemble | Cahier des charges, budget, essais, analyse, présentation |
+- **Rubrique « Projets » / « Projects » sur le hub (S2-Q16 à S2-Q20, S2-Q23, S2-Q24)** :
+  - *Adresses* : `/fr/projets/` et `/en/projects/`. La rubrique présente les projets techniques menés
+    pendant la formation, avec un statut (en conception, en validation, en réalisation, terminé) et sans
+    promesse commerciale. La chambre froide solaire connectée en est le premier projet.
+  - *Fiche publique* (fr/en, administrable dans Unfold) : présentation, problématique, objectifs
+    chiffrés, statut, dates et secteur Climatisation et froid ; étapes datées et entrées du Journal de
+    formation liées ; figures et résultats mesurés, jamais inventés ; budget par tranche ; nom du binôme
+    affiché seulement avec son accord écrit.
+  - *Figures* : image fixe téléversée, optimisée, avec alternatives fr/en, et lien « Version
+    interactive » vers une page statique versionnée dans le dépôt.
+  - *Données de la maquette* : le direct n'est pas affiché sur le hub. Les résultats d'essais sont
+    publiés à la main, résumés et datés.
+  - *Navigation* : « Projets » devient le 5e lien du menu, entre Journal et Contact. Un bloc « Projet en
+    cours » apparaît sur l'accueil et sur la fiche Climatisation et froid.
+
+#### 2. Contraintes techniques
+
+- **Contrôle (S2-Q4)** : l'ESP32 régule seul (capteurs, compresseur, ventilateurs, thermostat,
+  anti-court-cycle, protections batterie et pression) et continue si le Pi s'arrête. Un Raspberry Pi 5
+  sur SSD, sans carte SD, assure la supervision : point d'accès Wi-Fi (20 à 30 téléphones), appli,
+  base de données, alarmes et écran du stand. Les deux communiquent par MQTT.
+- **Logiciel de la maquette (S2-Q6)** : la chaîne est la suivante.
+  - *ESP32* : firmware Arduino C++ sous PlatformIO, avec une logique de régulation isolée et testée sur
+    PC.
+  - *Raspberry Pi* : Mosquitto, un service Python qui écrit les messages MQTT dans SQLite, et Django
+    (modèles, admin des paramètres, pages responsives téléphone/PC, direct par SSE ou HTMX).
+  - *Graphiques et tests* : Chart.js embarqué, aucun CDN (la salle peut être sans Internet) ; tests
+    pytest en TDD, comme sur le hub.
+- **Modèle de données de la maquette (S2-Q8)** : format long. Il comprend :
+  - Capteur : code, grandeur, unité, emplacement, étalonnage.
+  - Mesure : capteur, instant UTC, valeur ; une mesure toutes les 10 s, gardée 30 jours.
+  - Agrégat : minute et heure (min, max, moyenne), gardé indéfiniment.
+  - Essai : nom, début, fin, objectif, conditions, notes.
+  - Consigne et paramètres, versionnés.
+  - Commande : qui, quand, quoi, accusé de l'ESP32.
+  - Alarme : type, début, fin, acquittée par.
+  - Utilisateur et rôle.
+- **Sécurité réseau (S2-Q5, S2-Q9)** : aucun port ouvert sur Internet (tunnel VPN type Tailscale ou
+  WireGuard) ; Wi-Fi protégé par mot de passe ; comptes opérateur et administrateur authentifiés ; bornes
+  vérifiées à la fois par l'appli et par l'ESP32.
+- **Sécurité du stand (S2-Q25)** : les règles suivantes figurent dans la partie « risques et sécurité »
+  du dossier.
+  - *Fluide* : charge de R600a ≤ 150 g, étiquetage « fluide inflammable », ni flamme ni brasage sur le
+    stand.
+  - *Batterie* : coffret fermé avec fusible, BMS et coupure générale accessible.
+  - *Installation* : câbles protégés au sol, parties sous tension et tuyauteries chaudes capotées,
+    extincteur à portée.
+  - *Présence et contrôle* : un membre du binôme toujours présent ; contrôle du formateur avant
+    l'ouverture.
+- **Dépôts (S2-Q21)** :
+  - *Dépôt dédié « chambre-froide-solaire »*, partagé avec le binôme : `firmware/`, `supervision/`,
+    `figures/` et `dossier/`. Il se déploie sur le Pi, jamais sur PythonAnywhere.
+  - *Hub Ventisax* : il reçoit seulement la rubrique Projets et les pages statiques des figures
+    interactives retenues.
+- **Rubrique Projets du hub (S2-Q23)** : stack inchangée (Django, SQLite, Unfold, templates serveur,
+  CSS) ; une seule migration. Entités prévues :
+  - `Projet` : hérite de `Publication` (bilingue, slugs verrouillés après publication). Champs : titre,
+    slug, résumé, problématique, objectifs et résultats fr/en ; statut ; dates ; secteurs (M2M) ; binôme
+    facultatif avec une case « accord obtenu » ; ordre.
+  - `ÉtapeProjet` : libellé fr/en, date, état (à venir, en cours, fait), montant FCFA facultatif, ordre.
+  - `FigureProjet` : image optimisée par `hub/images.py::optimize`, alternatives fr/en, légende, version
+    interactive choisie dans une liste de pages versionnées (jamais du HTML saisi).
+  - Lien `Nouvelle` ↔ `Projet` en M2M facultatif.
+
+  Les règles RM-01 à RM-12 s'appliquent : publication bilingue complète, URL http/https seulement,
+  textes échappés, retrait sans perte.
+- **Interface du hub (S2-Q24)** : avec le 5e lien, l'en-tête est revérifié de 320 à 1 280 px, en clair et
+  en sombre (passe taste) : menu sur une colonne jusqu'à 380 px, sur deux colonnes jusqu'à 700 px, sur
+  une ligne de 961 à 1 260 px, cibles de 44 px, aucun débordement.
+- **Livraison** : TDD sur `develop` pour la rubrique Projets, après rédaction et validation de son PRD ;
+  fusion sur `main` et déploiement seulement après accord explicite.
+- **Hypothèse non posée en question** : sur le hub, les règles RJ s'appliquent (ni centre ni formateur
+  nommés, aucune source de cours) ; les dossiers remis au centre peuvent les nommer.
+
+#### 3. Périmètre strictement Hors-Scope
+
+- Vraie chambre froide installée ou mini chambre démontable en panneaux à crochets ; deuxième zone à
+  température négative.
+- Achat ou commande de matériel avant validation du dossier et du budget par le formateur.
+- Brasage, ouverture du circuit ou recharge de fluide hors de l'atelier ou sans supervision ; toute
+  intervention frigorifique sur le stand.
+- Régulation ou sécurités dépendant du Raspberry Pi, de l'appli ou d'Internet ; commande directe de la
+  vitesse du compresseur depuis l'appli.
+- Commandes par les visiteurs ; port ouvert sur Internet ; tableau de bord cloud public.
+- Sur le hub : direct des mesures, API d'écriture ou données brutes de la maquette ; code de figure
+  ou HTML saisi dans Unfold ; ressource distante (CDN).
+- Code de la maquette (firmware, supervision) dans le dépôt du hub ou déployé sur PythonAnywhere.
+- Promesse de prestation, d'offre commerciale ou de vente de chambres froides ; résultats d'essai
+  inventés ou anticipés.
+- Nom du binôme publié sans son accord écrit ; nom du centre ou du formateur, extrait ou photo du manuel
+  sur le hub.
+- Rubriques « Projets d'avenir », « Futurs tech » ou fusion des projets dans le Journal de formation.
+
+#### Liste des questions du grill
+
+Série 1, sous contrainte de budget, archivée :
+
+| Q | Sujet | Réponse retenue |
+| --- | --- | --- |
+| Q1 | Objet | Maquette fonctionnelle |
+| Q2 | Échéance et valideur | JPO dans plus d'un mois ; le formateur valide |
+| Q3 | Production du froid | Compresseur DC 12/24 V, circuit monté par le binôme |
+| Q4 | Fluide et supervision | R600a, en atelier supervisé |
+| Q5 | Stockage d'énergie | LiFePO4 |
+| Q6 | Ce que l'appli commande | Supervision et réglages bornés |
+| Q7 | Réseau | Local d'abord |
+| Q8 | Contrôleur | ESP32 seul |
+| Q9 | Mesures | Températures, énergie, porte, humidité |
+| Q10 | Historique | microSD, une ligne par minute, horloge RTC |
+| Q11 | Alarmes | Les quatre familles |
+| Q12 | Accès | Rôles visiteur et opérateur |
+| Q13 | Affluence | Écran du stand + 4 connexions |
+| Q14 | Logiciel | Arduino / PlatformIO |
+| Q15 | Cibles | 100 L, +4 °C, 24 h |
+| Q16 | Caisson | Congélateur coffre récupéré |
+| Q17 | Circuit d'origine | Réutilisé après essai à l'azote |
+| Q18 | Budget | Moins de 50 k FCFA, avec un appareil existant |
+| Q19 | Origine du solaire | Recherche d'un financement |
+| Q20 | Phasage | Deux phases |
+| Q21 | Appareil existant | Réfrigérateur libre, dédié au projet |
+| Q22 | Commande 230 V | Sans réponse : série relancée |
+
+Série 2, conception idéale, réponses retenues :
+
+| Q | Sujet | Réponse retenue |
+| --- | --- | --- |
+| S2-Q1 | Objet | Maquette neuve de 100 à 200 L |
+| S2-Q2 | Groupe froid | Compresseur DC, circuit monté |
+| S2-Q3 | Stockage | LiFePO4 + eutectique |
+| S2-Q4 | Contrôle | ESP32 régule, Pi supervise |
+| S2-Q5 | Réseau | Local + distant |
+| S2-Q6 | Pile logicielle | Django + MQTT |
+| S2-Q7 | Mesures | Les quatre groupes |
+| S2-Q8 | Modèle de données | Long + agrégats + essais |
+| S2-Q9 | Rôles | Trois rôles, commandes bornées |
+| S2-Q10 | Alarmes | Les quatre familles |
+| S2-Q11 | Cibles | 150 L, +4 °C, 48 h |
+| S2-Q12 | Livrables | Dossier de validation + rapport final |
+| S2-Q13 | Figures `anatomy` | Les quatre |
+| S2-Q14 | Budget | Idéal + tranches |
+| S2-Q15 | Binôme | Froid/énergie d'un côté, connecté de l'autre |
+| S2-Q16 | Lien avec le hub | Création d'une rubrique |
+| S2-Q17 | Nom de la rubrique | « Projets » |
+| S2-Q18 | Contenu de la fiche | Les quatre blocs, budget et binôme compris |
+| S2-Q19 | Figures sur le hub | Image + version interactive |
+| S2-Q20 | Direct sur le hub | Non |
+| S2-Q21 | Code de la maquette | Dépôt dédié |
+| S2-Q22 | Formats | Word + diaporama + affiche |
+| S2-Q23 | Modèle hub | Projet + Étape + liens |
+| S2-Q24 | Navigation | 5e lien + bloc sur l'accueil |
+| S2-Q25 | Sécurité du stand | Règles de stand |
+
+### PRD — Chambre froide solaire connectée et rubrique « Projets » (18 novembre 2026)
+
+**Statut : rédigé à partir des GOALS validés ci-dessus, en attente de validation par l'utilisateur.**
+Il précise les comportements attendus. Il n'autorise ni développement, ni achat, ni déploiement. Le PRD V1
+du hub reste la référence pour tout ce qu'il ne modifie pas : publication bilingue, slugs verrouillés,
+retrait sans perte, sécurité, accessibilité.
+
+Le PRD couvre deux produits distincts :
+
+- **A. La maquette** : matériel, firmware ESP32 et supervision Django sur le Raspberry Pi. Elle vit dans
+  un dépôt dédié, « chambre-froide-solaire », et s'accompagne des dossiers du projet.
+- **B. La rubrique « Projets » du hub Ventisax** : elle est développée dans ce dépôt.
+
+Les exigences de A sont consignées ici pour garder un cadrage unique. Elles seront recopiées dans le
+dépôt dédié à sa création.
+
+#### 1. Contexte, problème et résultat attendu
+
+Le porteur et son binôme doivent présenter aux journées portes ouvertes (JPO) un projet qui démontre ce
+qu'ils apprennent en froid : produire du froid, l'alimenter par le solaire et le superviser à distance.
+Aujourd'hui, ils ne disposent ni d'un dossier validable, ni d'un budget chiffré, ni de prototype. Les
+fonds disponibles sont inférieurs à 50 k FCFA. Le hub Ventisax n'a aucun endroit où montrer un projet
+technique au-delà des entrées quotidiennes du Journal de formation.
+
+**Résultat attendu :**
+
+- un dossier de validation que le formateur peut accepter, découpé en tranches finançables ;
+- une maquette qui tient ses cibles chiffrées et reste démontrable en salle, sans Internet et en toute
+  sécurité ;
+- un rapport final qui mesure les résultats au lieu de les affirmer ;
+- sur le hub, une rubrique « Projets » qui montre l'avancement réel du projet, sans promesse
+  commerciale.
+
+| Rôle | Besoin | Accès |
+| --- | --- | --- |
+| Formateur, valideur | Juger le dossier, le budget et la sécurité avant achat et avant ouverture du stand | Dossier Word, présentation |
+| Visiteur des JPO | Comprendre la maquette et voir son état en direct | Stand, Wi-Fi de la maquette (lecture), écran du stand |
+| Opérateur (binôme) | Régler, conduire les essais, acquitter les alarmes, exporter les mesures | Appli du Pi, compte opérateur, local ou VPN |
+| Administrateur de la maquette (porteur) | Seuils, étalonnage, comptes | Admin Django du Pi |
+| Visiteur du hub, futur client | Suivre la progression réelle du projet | Pages publiques fr/en |
+| Administrateur du hub (porteur) | Créer, mettre à jour et publier le projet | Unfold, second facteur |
+
+#### 2. Périmètre
+
+| Élément | Comportement requis | Lieu |
+| --- | --- | --- |
+| Dossier de validation | Introduction, problématique, revue, cahier des charges, conception, budget en tranches, planning, risques et sécurité, figures `anatomy` | Dépôt dédié, `dossier/` |
+| Caisson et groupe froid | ~150 L, compresseur DC R600a, circuit monté et chargé à l'atelier | Atelier |
+| Énergie | Panneaux, MPPT, LiFePO4 24 V à BMS communicant, eutectiques | Maquette |
+| Régulation | ESP32 autonome : thermostat, anti-court-cycle, protections, délestage | `firmware/` |
+| Supervision | Pi 5 : Wi-Fi, MQTT, Django, SQLite, alarmes, essais, export, VPN | `supervision/` |
+| Figures | Quatre figures interactives et en A4 PDF | `figures/` |
+| Rapport final, diaporama, affiche | Résultats mesurés et analysés | `dossier/` |
+| Rubrique Projets | Liste, fiche, étapes, figures, liens vers le journal, 5e lien du menu, blocs accueil et secteur | Ce dépôt (`hub/`) |
+
+Hors périmètre : voir « Périmètre strictement Hors-Scope » des GOALS ci-dessus.
+
+#### 3. User Stories et critères d'acceptation
+
+##### A. Projet et maquette
+
+###### US-31 — Faire valider le projet avant tout achat
+
+En tant que binôme, je veux soumettre un dossier complet afin d'obtenir l'accord du formateur et un
+financement.
+
+- Le dossier contient, dans cet ordre : introduction, problématique et objectifs, revue, cahier des
+  charges chiffré (S2-Q11), conception (frigorifique, énergétique, électrique, logicielle), budget,
+  planning, risques et sécurité. Il est livré en `.docx` avec un export PDF.
+- Le budget liste chaque poste en FCFA avec deux devis pour chaque poste majeur et 10 % d'imprévus. Il
+  est découpé en tranches T0 ≤ 50 k, T1 froid, T2 énergie, T3 Pi et distant ; chaque tranche indique ce
+  qu'elle rend démontrable.
+- Le dimensionnement (panneaux, batterie, eutectiques) découle d'un bilan thermique écrit, pas des
+  valeurs indicatives.
+- Chaque partie porte le nom de son auteur principal (S2-Q15).
+- Aucun achat n'a lieu avant l'accord du formateur, qui est consigné et daté.
+
+###### US-32 — Produire un froid conforme au cahier des charges
+
+En tant que futur client visitant le stand, je veux voir une maquette qui tient réellement +4 °C.
+
+- Le circuit est brasé, éprouvé à l'azote, tiré au vide et chargé au R600a (≤ 150 g, charge pesée) à
+  l'atelier, sous contrôle du formateur ; chaque étape est consignée.
+- Mesures attendues :
+  - descente à vide de 30 à +4 °C en moins de 2 h ;
+  - consigne tenue à ±1 °C en régime établi ;
+  - retour à la consigne en moins de 15 min après 30 s de porte ouverte ;
+  - ambiante jusqu'à 35 °C.
+- Surchauffe et sous-refroidissement sont calculés à partir des pressions BP/HP et des températures ; une
+  valeur hors plage déclenche l'alarme correspondante.
+
+###### US-33 — Fonctionner sur l'énergie solaire
+
+En tant que visiteur, je veux constater que la maquette fonctionne sans le réseau électrique.
+
+- Le compresseur est alimenté par la batterie, chargée par les panneaux via le MPPT ; aucune
+  alimentation secteur n'est raccordée pendant les essais d'autonomie ni pendant les JPO.
+- En mode « priorité eutectique », le compresseur accélère quand la production solaire le permet, et les
+  plaques stockent le froid.
+- La maquette tient 48 h sans production solaire à partir d'une batterie pleine et d'eutectiques chargés
+  (essai mesuré). L'analyse compare la batterie seule, l'eutectique seul et la combinaison des deux.
+- Sous le seuil bas de la batterie, l'ESP32 déleste le compresseur et le relance après recharge.
+
+###### US-34 — Réguler en sécurité, même sans supervision
+
+En tant qu'opérateur, je veux que la maquette reste sûre si le Pi, l'appli ou le réseau tombent.
+
+- L'ESP32 applique seul la dernière consigne valide : thermostat avec hystérésis, au moins 5 min entre
+  deux démarrages du compresseur, coupure HP, protection BP, délestage batterie, ventilateur intérieur
+  coupé porte ouverte.
+- Si l'ESP32 perd le Pi (aucun message pendant le délai du chien de garde), il continue de réguler, et
+  le buzzer et le voyant signalent la perte de liaison.
+- Une commande hors bornes (par exemple une consigne à +15 °C) est refusée par l'ESP32, même si elle
+  vient d'un client MQTT direct ; le refus est accusé et journalisé.
+
+###### US-35 — Superviser en direct depuis un téléphone ou un ordinateur
+
+En tant que visiteur ou opérateur, je veux voir l'état de la maquette sur mon écran.
+
+- Le tableau de bord affiche les températures, l'humidité, les pressions, la surchauffe et le
+  sous-refroidissement, l'énergie (PV, état de charge, consommation, vitesse du compresseur,
+  irradiance), la porte, le mode et les alarmes actives, avec l'heure de la dernière mesure.
+- Les valeurs se mettent à jour sans recharger la page, au moins toutes les 10 s.
+- Une donnée de plus de 60 s est signalée comme périmée, sans être affichée comme actuelle.
+- La page est utilisable à 360 px et en grand écran (mode stand) ; elle fonctionne sans Internet, sans
+  aucune ressource distante.
+- 25 téléphones connectés en même temps au Wi-Fi de la maquette ne dégradent pas la régulation
+  (essai mesuré).
+
+###### US-36 — Régler la maquette selon son rôle
+
+En tant qu'opérateur ou administrateur, je veux agir sur la maquette sans que les visiteurs le puissent.
+
+- Sans compte, le tableau de bord est en lecture seule ; aucune commande n'apparaît.
+- L'opérateur, une fois connecté, peut :
+  - régler la consigne entre 0 et +10 °C ;
+  - choisir le mode (marche, arrêt, éco, priorité eutectique) ;
+  - lancer un dégivrage manuel ;
+  - acquitter une alarme ;
+  - démarrer ou terminer un essai ;
+  - exporter des mesures en CSV.
+- L'administrateur règle les seuils d'alarme, l'étalonnage des capteurs et les comptes.
+- Chaque commande crée une ligne (auteur, instant, commande, valeur, accusé ou refus de l'ESP32).
+  L'interface affiche l'état « en attente », puis « appliquée » ou « refusée ».
+
+###### US-37 — Être alerté
+
+En tant qu'opérateur, je veux être prévenu d'une anomalie sur le stand ou à distance.
+
+- Les quatre familles d'alarmes des GOALS sont détectées avec leur seuil et leur temporisation : froid
+  et porte, circuit, énergie, système.
+- Une alarme active déclenche le buzzer et le voyant, un bandeau dans l'appli et, si Internet est
+  disponible, un message distant (WhatsApp/Telegram ou SMS). Sans Internet, le message est retenté au
+  retour de la connexion.
+- Une alarme a un début, une fin (retour à la normale) et un acquittement (qui, quand). Acquitter coupe
+  le buzzer sans masquer la cause.
+
+###### US-38 — Conduire et exporter des essais
+
+En tant que binôme, je veux découper les mesures en essais pour rédiger les résultats.
+
+- Un essai porte un nom, un objectif, des conditions, des notes, un début et une fin. Les mesures de sa
+  période lui sont rattachées par l'instant.
+- Le tableau des cibles du cahier des charges est calculé à partir des mesures de l'essai (valeur
+  mesurée, cible, atteint ou non).
+- L'export CSV d'un essai contient les valeurs canoniques (instant UTC ISO-8601, code capteur, valeur
+  en unité SI ou °C, point décimal), avec l'échappement des formules (`=`, `+`, `-`, `@`).
+- Les mesures brutes à 10 s sont conservées 30 jours, puis seuls les agrégats minute et heure restent.
+  Un essai exporté avant purge reste exploitable.
+
+###### US-39 — Accéder à distance sans exposer la maquette
+
+En tant qu'opérateur, je veux consulter la maquette depuis chez moi.
+
+- L'accès distant passe par le routeur 4G et un tunnel VPN ; aucun port n'est ouvert sur Internet (scan
+  externe sans port joignable).
+- Les comptes et rôles sont les mêmes qu'en local ; un appareil hors du VPN n'accède à rien.
+
+###### US-40 — Présenter le projet aux JPO en sécurité
+
+En tant que visiteur, je veux comprendre la maquette sans risque.
+
+- Le stand applique les règles S2-Q25 ; le formateur les contrôle avant l'ouverture, au moyen d'une
+  liste signée.
+- L'écran du stand fait défiler le tableau de bord et les quatre figures `anatomy`. L'affiche A1 se lit
+  à 2 m.
+- Chaque figure (vue éclatée, cycle frigorifique, chaîne solaire, architecture) nomme les pièces au
+  survol ou au toucher et existe en A4 PDF dans les dossiers.
+
+###### US-41 — Analyser et conclure honnêtement
+
+En tant que formateur, je veux un rapport final qui distingue le mesuré de l'espéré.
+
+- Le rapport reprend le socle du dossier de validation et ajoute la réalisation, les protocoles d'essai,
+  les résultats (courbes et tableaux tirés des exports), l'analyse cible par cible (atteint, non atteint,
+  écart et cause), la conclusion, les perspectives et les annexes.
+- Une cible non mesurée est déclarée « non vérifiée », jamais « atteinte ».
+
+##### B. Rubrique « Projets » du hub
+
+###### US-42 — Découvrir les projets de Ventisax
+
+En tant que futur client, je veux voir les projets techniques menés pendant la formation.
+
+- `/fr/projets/` et `/en/projects/` listent les projets publiés par ordre administré, avec le titre, le
+  résumé, le statut traduit et l'image principale éventuelle.
+- Une liste vide affiche un état vide explicite. Un brouillon répond 404 dans les deux langues.
+- Le menu affiche « Projets » / « Projects » entre Journal et Contact. Un bloc « Projet en cours »
+  apparaît sur l'accueil et sur la fiche du secteur associé lorsqu'un projet publié a le statut en
+  conception, en validation ou en réalisation.
+
+###### US-43 — Lire la fiche d'un projet
+
+En tant que visiteur, je veux comprendre un projet et son avancement réel.
+
+- La fiche affiche, dans la langue de la page :
+  - le résumé, la problématique et les objectifs chiffrés ;
+  - le statut et les dates ;
+  - les secteurs publics associés ;
+  - les étapes ordonnées, avec leur date, leur état et, s'il est renseigné, leur montant en FCFA ;
+  - les figures ;
+  - les résultats, une fois renseignés ;
+  - les entrées publiées du Journal de formation liées.
+- Le nom du binôme n'apparaît que si la case « accord obtenu » est cochée.
+- Aucun texte ne promet une prestation ni une vente, et la fiche n'affiche aucun résultat avant qu'il
+  ait été saisi.
+- Le changement de langue mène à la traduction du même projet.
+
+###### US-44 — Voir les figures
+
+En tant que visiteur, je veux voir les figures du projet, puis les explorer.
+
+- Chaque figure s'affiche comme une image optimisée (2 Mio au plus, 1 600 px), avec son alternative et
+  sa légende dans la langue de la page.
+- Si une version interactive est choisie, le lien « Version interactive » / « Interactive version »
+  ouvre une page statique du dépôt (`hub/static/hub/projets/…`), sans aucune ressource distante.
+
+###### US-45 — Administrer un projet
+
+En tant qu'administrateur du hub, je veux créer, mettre à jour et publier un projet dans Unfold.
+
+- Un projet se crée en brouillon. Il ne se publie que si tous ses textes requis, ses étapes et ses
+  figures sont complets en français et en anglais ; les erreurs nomment les champs manquants. Ses slugs
+  sont verrouillés après la première publication (RM-07).
+- Étapes et figures se gèrent en lignes ordonnées. Les nouvelles se lient au projet depuis la fiche de
+  la nouvelle.
+- La version interactive d'une figure se choisit dans une liste fermée de pages versionnées. Aucun
+  HTML, script ou chemin libre ne peut être saisi.
+- Dépublier un projet le retire du public sans supprimer les nouvelles liées. Un secteur lié à un
+  projet ne peut pas être supprimé.
+
+###### US-46 — Parcourir la rubrique sur mobile, au clavier et dans les deux thèmes
+
+- L'en-tête à cinq liens est revérifié de 320 à 1 280 px, en clair et en sombre, selon les mêmes
+  règles que l'en-tête actuel :
+  - une colonne jusqu'à 380 px, deux jusqu'à 700 px ;
+  - une seule ligne de 961 à 1 260 px ;
+  - cibles de 44 px, aucun débordement.
+- Les pages Projets respectent les mêmes exigences : focus visible, ordre de tabulation conforme,
+  icônes décoratives masquées, contraste lisible.
+
+#### 4. Règles métier
+
+| ID | Règle |
+| --- | --- |
+| RP-01 | Aucun achat ni aucune intervention sur le fluide n'a lieu avant la validation du dossier par le formateur ; les interventions sur le fluide se font à l'atelier, sous sa supervision. |
+| RP-02 | La régulation et les sécurités résident dans l'ESP32 ; le Pi, l'appli et le réseau ne font que superviser et transmettre des commandes bornées. |
+| RP-03 | Bornes de commande : consigne de 0 à +10 °C. L'ESP32 refuse et journalise toute valeur hors bornes, quelle qu'en soit la source. |
+| RP-04 | Les visiteurs sont en lecture seule ; l'opérateur commande ; l'administrateur paramètre. Toute commande est tracée avec son auteur et son accusé. |
+| RP-05 | Les instants sont stockés en UTC et affichés à l'heure de Douala. Les valeurs exportées sont canoniques, jamais formatées selon la langue. |
+| RP-06 | Une donnée périmée (plus de 60 s) n'est jamais présentée comme actuelle. Une cible non mesurée est « non vérifiée ». |
+| RP-07 | Aucun port de la maquette n'est exposé sur Internet ; l'accès distant passe uniquement par le VPN. |
+| RP-08 | Le hub ne reçoit aucune donnée automatique de la maquette ; ses résultats sont saisis à la main, résumés et datés. |
+| RP-09 | Un projet du hub n'est présenté ni comme une offre, ni comme une prestation. Un résultat n'y est publié qu'après sa mesure. |
+| RP-10 | Le nom du binôme n'est publié qu'avec son accord écrit. Sur le hub, les règles RJ s'appliquent : ni centre, ni formateur, ni source de cours. |
+| RP-11 | Une version interactive de figure est un fichier statique versionné, choisi dans une liste fermée ; elle n'est jamais saisie dans Unfold et ne charge aucune ressource distante. |
+| RP-12 | Le code de la maquette n'entre ni dans ce dépôt, ni sur PythonAnywhere. |
+
+#### 5. Modélisation logique des données
+
+##### 5.1 Maquette — base SQLite du Pi (dépôt dédié)
+
+| Entité | Attributs logiques | Contraintes |
+| --- | --- | --- |
+| Capteur | code, grandeur, unité, emplacement, coefficients d'étalonnage, actif | Code unique ; unité fixe par grandeur ; étalonnage modifiable par l'administrateur seulement |
+| Mesure | capteur, instant UTC, valeur | Unicité (capteur, instant) ; une toutes les 10 s par capteur ; purge après 30 jours |
+| Agrégat | capteur, période (minute ou heure), début, min, max, moyenne, nombre | Unicité (capteur, période, début) ; conservé indéfiniment ; recalculable depuis les mesures non purgées |
+| Paramètre | clé (consigne, hystérésis, seuils, temporisations), valeur, bornes, version, auteur, instant | Valeur dans ses bornes ; nouvelle version à chaque changement, aucune écrasée |
+| Commande | auteur, instant, type, valeur, état (en attente, appliquée, refusée), motif, instant d'accusé | Créée par un opérateur ou un administrateur ; l'état final vient de l'accusé de l'ESP32 |
+| Alarme | type, niveau, début, fin, valeur déclenchante, acquittée par, instant d'acquittement, message distant envoyé | Une seule alarme ouverte par type ; fin ≥ début |
+| Essai | nom, objectif, conditions, notes, début, fin, auteur | Fin ≥ début ; mesures rattachées par période, sans copie |
+| Utilisateur | identifiant, mot de passe haché, rôle (opérateur, administrateur) | Comptes Django ; aucun compte pour les visiteurs |
+
+Les valeurs suivantes sont calculées à l'affichage ou à l'export, sans être stockées : surchauffe,
+sous-refroidissement, bilan énergétique en Wh, rendement et COP, tableau « cible / mesuré / atteint ».
+L'ESP32 conserve dans sa mémoire non volatile la dernière consigne valide et les seuils de sécurité.
+
+```mermaid
+erDiagram
+    Capteur ||--o{ Mesure : produit
+    Capteur ||--o{ Agregat : resume
+    Utilisateur ||--o{ Commande : emet
+    Utilisateur ||--o{ Alarme : acquitte
+    Utilisateur ||--o{ Essai : conduit
+    Utilisateur ||--o{ Parametre : modifie
+```
+
+##### 5.2 Hub — rubrique Projets (ce dépôt, une migration)
+
+| Entité | Attributs logiques | Contraintes |
+| --- | --- | --- |
+| Projet (hérite de `Publication`) | titre, slug, résumé, problématique, objectifs, résultats (fr/en) ; statut (en conception, en validation, en réalisation, terminé) ; date de début, date de fin facultative ; binôme facultatif ; accord du binôme (booléen) ; ordre ; secteurs (M2M via ProjetSecteur) | Textes requis complets dans les deux langues à la publication ; résultats facultatifs ; slugs verrouillés après publication ; binôme affiché seulement si l'accord est coché |
+| ProjetSecteur | projet, secteur | Couple unique ; suppression d'un secteur référencé interdite |
+| ÉtapeProjet | projet, libellé (fr/en), date, état (à venir, en cours, fait), montant FCFA facultatif (entier ≥ 0), ordre | Libellés requis à la publication du projet ; tri par ordre puis par identifiant |
+| FigureProjet | projet, image (optimisée), alternative (fr/en), légende (fr/en), version interactive (choix fermé, facultatif), ordre | Mêmes règles d'image que `Nouvelle` (US-12) ; alternatives requises ; choix limité aux pages présentes dans le dépôt |
+| NouvelleProjet | nouvelle, projet | Couple unique ; facultatif ; seules les nouvelles publiées sont affichées |
+
+```mermaid
+erDiagram
+    Projet ||--o{ EtapeProjet : comprend
+    Projet ||--o{ FigureProjet : illustre
+    Projet ||--o{ ProjetSecteur : concerne
+    Secteur ||--o{ ProjetSecteur : est_associe
+    Projet ||--o{ NouvelleProjet : documente
+    Nouvelle ||--o{ NouvelleProjet : est_liee
+```
+
+Entités exclues : Budget détaillé (seuls les montants par étape sont publiés) ; Mesure et toute
+donnée de la maquette côté hub ; Commentaire ; Inscription.
+
+#### 6. Definition of Done — critères stricts de validation
+
+Ces cases sont cochées seulement sur preuve observée, pas par la rédaction de ce PRD.
+
+**Validation et budget (US-31)**
+
+- [ ] Dossier de validation complet en `.docx` et PDF, avec un bilan thermique écrit qui justifie le
+  dimensionnement.
+- [ ] Budget en FCFA avec deux devis par poste majeur, 10 % d'imprévus et les tranches T0 à T3.
+- [ ] Accord du formateur consigné et daté avant le premier achat ; tranches financées identifiées.
+
+**Maquette (US-32 à US-41), dans le dépôt dédié**
+
+- [ ] Fiche d'intervention signée par le formateur : brasage, épreuve à l'azote (pression tenue 24 h),
+  tirage au vide, charge pesée ≤ 150 g.
+- [ ] Logique de régulation de l'ESP32 testée sur PC en TDD : hystérésis, anti-court-cycle, délestage,
+  bornes, chien de garde. Chaque test a d'abord été vu en échec.
+- [ ] Supervision Django testée (pytest) : rôles, commandes et accusés, alarmes, essais, export CSV et
+  échappement, purge et agrégats, donnée périmée.
+- [ ] Essais mesurés et exportés : descente à vide en moins de 2 h ; ±1 °C en régime établi ; retour en
+  moins de 15 min après porte ouverte ; 48 h sans soleil.
+- [ ] Pannes provoquées : Pi arrêté (la régulation continue, l'alarme de liaison sonne) ; commande hors
+  bornes injectée par MQTT (refus journalisé).
+- [ ] Essais de charge et d'accès : 25 clients connectés sans dégradation de la régulation ; scan externe
+  sans port ouvert ; accès VPN avec compte opérateur réussi.
+- [ ] Chaque famille d'alarme déclenchée au moins une fois, avec buzzer, bandeau, acquittement et
+  message distant ; nouvel envoi observé après une coupure d'Internet.
+- [ ] Quatre figures `anatomy` interactives et en A4 PDF ; liste de sécurité du stand signée par le
+  formateur avant l'ouverture des JPO.
+- [ ] Rapport final avec un tableau des cibles (mesuré, atteint, non atteint ou non vérifié), courbes
+  tirées des exports, conclusion et perspectives.
+
+**Rubrique Projets (US-42 à US-46), dans ce dépôt**
+
+- [x] `tests/test_projects.py` écrit avant le code, échec observé pour la raison attendue, puis vert.
+  Cas couverts :
+  - [x] *Visibilité* : brouillon en 404 ; publication refusée si une traduction, une étape ou une figure
+    est incomplète ; slugs verrouillés ; changement de langue vers le même projet.
+  - [x] *Affichage* : étapes ordonnées avec leurs montants ; binôme masqué sans accord ; nouvelles
+    publiées seules affichées.
+  - [x] *Secteurs* : secteur dépublié masqué ; secteur référencé non supprimable.
+  - [x] *Figures* : version interactive limitée à la liste fermée.
+  - [x] *Navigation* : 5e lien du menu ; bloc « Projet en cours » présent selon le statut et absent pour
+    un projet terminé.
+  - [x] *Contenus* : aucun « devis », « prestation » ni « offre » dans les textes fixes ; texte de type
+    HTML échappé.
+- [x] Suite complète verte ; `manage.py check` et `makemigrations --check --dry-run` sans constat.
+  Migration appliquée sur une base neuve et sur une copie de la base locale, sans perte.
+  *18/11/2026 : 255 tests réussis, aucun échec (dont la correction de l'isolation de la suite : `config/test_settings.py`
+  écarte désormais `DJANGO_EMAIL_OTP`, `DJANGO_ALLOWED_HOSTS` et `DJANGO_SECRET_KEY` exportées par le shell, cause des trois
+  échecs observés auparavant) ; `0014` appliquée sur une copie de `db.sqlite3`, contenus inchangés.*
+- [ ] Aperçu (`scripts/preview_site.py`) : liste et fiche fr/en, accueil et fiche secteur, à 320, 360,
+  390, 768, 960, 961 et 1 280 px, en clair et en sombre, sans débordement ; en-tête à cinq liens conforme
+  à US-46 ; parcours clavier avec focus visible (`docs/validation-interface.md`).
+- [ ] Saisie d'un projet réel dans Unfold : création, étapes, figures, publication, dépublication.
+- [ ] `AGENTS.md`, `CLAUDE.md` et `docs/tdd.md` à jour ; commit sur `develop`. Ni fusion sur `main`, ni
+  déploiement sans accord explicite. Après accord : migration en production et fiche vérifiée en ligne
+  en fr et en en.
+- [ ] Le compte rendu distingue le vérifié du non vérifié (téléphone physique, accord écrit du binôme,
+  résultats encore non mesurés).
+
+**Décision modifiée (18 novembre 2026, demande explicite du porteur) :** après un passage en rédaction seule (« on
+décrit seulement le projet »), le porteur a demandé de recoder la rubrique, d'y publier la fiche et la figure, puis de
+déployer avec le skill `ventisax-deploy`. Rapport en ligne (Claude Docs) et figure interactive anatomy (puissance en
+rouge, commande en vert, fluide R600a en bleu, rôle de chaque organe au survol) rédigés ; la figure est versionnée dans
+`hub/static/hub/projets/chambre-froide-solaire.html` (page autonome, en français, thème du cookie ou du système) avec son
+image fixe `chambre-froide-solaire.jpg`. Ajustements : de 961 à 1 100 px l'en-tête se resserre pour garder les cinq liens
+et le thème sur une ligne (mesuré en fr et en en, 961 à 1 280 px, cibles de 44 px, aucun débordement) ; le montant de la
+tranche T0 est publié comme plafond (50 000 FCFA), les autres tranches « sur devis » (estimations non publiées) ; la page
+interactive n'existe qu'en français. Le contenu de la fiche est saisi en production par un script de console, comme les
+entrées du journal.
+
 Cette section synthétise les réponses stabilisées du grill et intègre l'exigence TDD demandée ensuite par l'utilisateur. **Statut : validée par l'utilisateur**, qui a demandé sa transformation en PRD. Sa rédaction n'autorise pas encore le développement de l'application.
 
 ### 1. Objectifs fonctionnels prioritaires

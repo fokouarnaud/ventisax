@@ -287,3 +287,22 @@ Suite complète : une première passe à 213 réussis et 1 échec
 d'Unfold, non touché par ce changement), vert en relance isolée ; seconde passe complète à 214 réussis, aucun échec.
 Test instable à surveiller, non corrigé dans cette passe.
 
+## Rubrique « Projets » du hub — 18 novembre 2026
+
+PRD « Chambre froide solaire connectée et rubrique Projets » (`AGENTS.md`). Ce dépôt porte les stories backend de la
+rubrique (US-42 à US-45) ; le firmware ESP32 et la supervision du Pi (US-31 à US-41) relèvent du dépôt dédié (RP-12).
+Une première implémentation a été retirée à la demande du porteur, puis refaite test d'abord.
+
+| Contrat | Échec observé avant code | Suite verte après code |
+| --- | --- | --- |
+| Modèle : `Projet` bilingue, résultats traduits, dates cohérentes, secteur protégé, valeurs par défaut ; étapes ordonnées et traduites, montant positif ; figure optimisée avec alternatives et version interactive en liste fermée ; nouvelle liée une fois ; image de figure nettoyée (US-43 à US-45, RP-09 à RP-11) | `AttributeError: … no attribute 'Projet'` (27 tests), `FIGURES_INTERACTIVES_DIR` absent (3) | 16 tests |
+| Liste `/fr/projets/`, `/en/projects/`, état vide, lien de menu ; fiche (textes de la langue, étapes et montants `45 000 FCFA` / `45,000 FCFA`, binôme avec accord seulement, résultats renseignés seulement, secteurs et nouvelles publiés, figure, texte échappé, aucune promesse) ; bloc « Projet en cours » (US-42 à US-44) | 404 sur `/fr/projets/` | 12 tests |
+| Unfold : publier, dépublier, refus nommant le champ, inlines, slugs verrouillés, liste fermée, lien depuis une nouvelle (US-45) | 404 sur `/admin/hub/projet/` | 5 tests |
+| Import d'une base : six mutations de projet, d'étape ou de figure refusées ; image de figure du backup conservée | 302 (import accepté) ; fichier supprimé | 7 tests |
+| La suite ignore `DJANGO_EMAIL_OTP`, `DJANGO_ALLOWED_HOSTS` et `DJANGO_SECRET_KEY` exportées par le shell | réglages de test avec l'OTP e-mail activé | 1 test, mutation vérifiée |
+
+Les POST simulés du formulaire Nouvelle (`test_admin.py`, `test_security.py`) envoient la ligne « projets liés » vide,
+comme le formulaire réel. Suite complète : 255 tests réussis, aucun échec ; `check` et `makemigrations --check` sans
+constat. Aperçu local avec la vraie fiche : pages en 200 (fr/en, liste, fiche, accueil, page interactive), en-tête à cinq
+liens sur une ligne de 961 à 1 280 px en fr et en en, aucun débordement à 320 et 390 px. Non vérifiés : thème sombre de
+la fiche, menu mobile ouvert, téléphone physique.

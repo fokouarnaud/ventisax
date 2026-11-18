@@ -209,7 +209,9 @@ def test_url_active_refusee_par_post_admin_sans_perte(verified_client, url):
            "liens-MAX_NUM_FORMS": "1000", "liens-0-url": url, "liens-0-libelle_fr": "Sonde",
            "liens-0-libelle_en": "Probe", "liens-0-ordre": "0",
            "nouvellesecteur_set-TOTAL_FORMS": "0", "nouvellesecteur_set-INITIAL_FORMS": "0",
-           "nouvellesecteur_set-MIN_NUM_FORMS": "0", "nouvellesecteur_set-MAX_NUM_FORMS": "1000"})
+           "nouvellesecteur_set-MIN_NUM_FORMS": "0", "nouvellesecteur_set-MAX_NUM_FORMS": "1000",
+           "nouvelleprojet_set-TOTAL_FORMS": "0", "nouvelleprojet_set-INITIAL_FORMS": "0",
+           "nouvelleprojet_set-MIN_NUM_FORMS": "0", "nouvelleprojet_set-MAX_NUM_FORMS": "1000"})
     response = verified_client.post(f"/admin/hub/nouvelle/{n.pk}/change/", payload)
     assert response.status_code == 200
     assert response.context["inline_admin_formsets"][0].formset.forms[0].errors["url"]

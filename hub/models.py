@@ -7,6 +7,7 @@ from django.utils import timezone
 from urllib.parse import parse_qs, quote, urlsplit
 import re
 import uuid
+from pathlib import Path
 from .images import optimize
 
 
@@ -233,7 +234,8 @@ def schedule_image_cleanup(name, storage):
     def cleanup():
         from .database_versions import backup_image_referenced
         in_use = (Nouvelle.objects.filter(image=name).exists()
-                  or ConfigurationGenerale.objects.filter(image_accueil=name).exists())
+                  or ConfigurationGenerale.objects.filter(image_accueil=name).exists()
+                  or FigureProjet.objects.filter(image=name).exists())
         if not in_use and not backup_image_referenced(name):
             storage.delete(name)
     transaction.on_commit(cleanup)
@@ -266,6 +268,139 @@ class LienNouvelle(ValidatedModel):
         super().clean()
         if self.nouvelle_id and Nouvelle.objects.filter(pk=self.nouvelle_id, publie=True).exists():
             self.validate_publication()
+
+
+class Projet(Publication):
+    """Projet technique mené pendant la formation (rubrique « Projets ») ; aucune offre commerciale (RP-09)."""
+    STATUTS = [("conception", "En conception"), ("validation", "En validation"),
+               ("realisation", "En réalisation"), ("termine", "Terminé")]
+    titre_fr = models.CharField(max_length=200, blank=True)
+    titre_en = models.CharField(max_length=200, blank=True)
+    resume_fr = models.TextField("résumé (fr)", blank=True)
+    resume_en = models.TextField("résumé (en)", blank=True)
+    problematique_fr = models.TextField("problématique (fr)", blank=True)
+    problematique_en = models.TextField("problématique (en)", blank=True)
+    objectifs_fr = models.TextField("objectifs chiffrés (fr)", blank=True)
+    objectifs_en = models.TextField("objectifs chiffrés (en)", blank=True)
+    resultats_fr = models.TextField("résultats mesurés (fr)", blank=True,
+                                    help_text="À renseigner seulement après mesure ; jamais de résultat anticipé.")
+    resultats_en = models.TextField("résultats mesurés (en)", blank=True)
+    statut = models.CharField(max_length=20, choices=STATUTS, default="conception")
+    date_debut = models.DateField("date de début")
+    date_fin = models.DateField("date de fin", null=True, blank=True)
+    binome = models.CharField("binôme", max_length=200, blank=True,
+                              help_text="Affiché seulement si l'accord écrit est obtenu.")
+    accord_binome = models.BooleanField("accord écrit du binôme obtenu", default=False)
+    ordre = models.PositiveIntegerField(default=0)
+    secteurs = models.ManyToManyField(Secteur, through="ProjetSecteur", related_name="projets", blank=True)
+    nouvelles = models.ManyToManyField(Nouvelle, through="NouvelleProjet", related_name="projets", blank=True)
+    translated_fields = ("titre", "resume", "problematique", "objectifs")
+
+    class Meta(Publication.Meta):
+        ordering = ["ordre", "pk"]
+        verbose_name = "projet"
+
+    def __str__(self):
+        return self.titre_fr or f"Projet {self.pk} (brouillon)"
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.date_fin and self.date_debut and self.date_fin < self.date_debut:
+            errors["date_fin"] = "La date de fin précède la date de début."
+        if self.publie and (self.resultats_fr.strip() or self.resultats_en.strip()):
+            errors.update(missing_text(self, ("resultats_fr", "resultats_en"), "Résultats traduits obligatoires."))
+        if self.publie and self.pk:
+            for step in self.etapes.all():
+                if missing_text(step, EtapeProjet.translated, ""):
+                    errors["__all__"] = f"Étape « {step} » : libellé traduit obligatoire."
+        if errors:
+            raise ValidationError(errors)
+
+
+class ProjetSecteur(models.Model):
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+    secteur = models.ForeignKey(Secteur, on_delete=models.PROTECT)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["projet", "secteur"], name="projet_secteur_unique")]
+
+
+class EtapeProjet(ValidatedModel):
+    ETATS = [("a_venir", "À venir"), ("en_cours", "En cours"), ("fait", "Fait")]
+    translated = ("libelle_fr", "libelle_en")
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name="etapes")
+    libelle_fr = models.CharField("libellé (fr)", max_length=200, blank=True)
+    libelle_en = models.CharField("libellé (en)", max_length=200, blank=True)
+    date = models.DateField(null=True, blank=True)
+    etat = models.CharField(max_length=20, choices=ETATS, default="a_venir")
+    montant_fcfa = models.PositiveIntegerField("montant (FCFA)", null=True, blank=True)
+    ordre = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["ordre", "pk"]
+        verbose_name = "étape de projet"
+
+    def __str__(self):
+        return self.libelle_fr or f"Étape {self.pk}"
+
+    def clean(self):
+        super().clean()
+        if self.projet_id and Projet.objects.filter(pk=self.projet_id, publie=True).exists():
+            errors = missing_text(self, self.translated, "Libellé traduit obligatoire.")
+            if errors:
+                raise ValidationError(errors)
+
+
+# Versions interactives des figures : pages statiques versionnées dans le dépôt, jamais saisies (RP-11).
+FIGURES_INTERACTIVES_DIR = Path(__file__).resolve().parent / "static" / "hub" / "projets"
+
+
+def interactive_choices():
+    folder = FIGURES_INTERACTIVES_DIR
+    return [(page.name, page.stem) for page in sorted(folder.glob("*.html"))] if folder.is_dir() else []
+
+
+class FigureProjet(ValidatedModel):
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name="figures")
+    image = models.ImageField(upload_to="projets/")
+    alt_fr = models.CharField("alternative (fr)", max_length=250, blank=True)
+    alt_en = models.CharField("alternative (en)", max_length=250, blank=True)
+    legende_fr = models.CharField("légende (fr)", max_length=250, blank=True)
+    legende_en = models.CharField("légende (en)", max_length=250, blank=True)
+    interactive = models.CharField("version interactive", max_length=100, blank=True, choices=interactive_choices,
+                                   help_text="Page statique versionnée dans hub/static/hub/projets/.")
+    ordre = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["ordre", "pk"]
+        verbose_name = "figure de projet"
+
+    def clean(self):
+        super().clean()
+        errors = missing_text(self, ("alt_fr", "alt_en"), "Alternative traduite obligatoire.")
+        if self.image and not self.image._committed:
+            optimize(self.image.file)
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return save_with_image(self, "image", super().save, *args, **kwargs)
+
+
+@receiver(post_delete, sender=FigureProjet)
+def cleanup_deleted_figure(sender, instance, **kwargs):
+    if instance.image:
+        schedule_image_cleanup(instance.image.name, instance.image.storage)
+
+
+class NouvelleProjet(models.Model):
+    nouvelle = models.ForeignKey(Nouvelle, on_delete=models.CASCADE)
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["nouvelle", "projet"], name="nouvelle_projet_unique")]
 
 
 class ConfigurationGenerale(ValidatedModel):

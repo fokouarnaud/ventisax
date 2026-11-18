@@ -104,3 +104,15 @@ def test_collectstatic_produit_des_noms_avec_empreinte_et_references_a_jour(tmp_
     assert re.search(r'url\("fonts/lexend-latin-wght\.[0-9a-f]{12}\.woff2"\)', content)
     assert re.search(r'url\("ventisax-mark\.[0-9a-f]{12}\.svg"\)', content)
     assert re.fullmatch(r"/static/hub/site\.[0-9a-f]{12}\.js", static("hub/site.js"))
+
+
+def test_reglages_de_test_ignorent_les_variables_django_du_shell():
+    """La suite est isolée d'un shell qui exporte DJANGO_EMAIL_OTP, DJANGO_ALLOWED_HOSTS ou DJANGO_SECRET_KEY."""
+    env = {k: v for k, v in os.environ.items() if k not in ("DJANGO_SETTINGS_MODULE", "PYTEST_CURRENT_TEST")}
+    env.update(DJANGO_EMAIL_OTP="1", DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1", DJANGO_SECRET_KEY="cle-du-shell")
+    code = ("from config import test_settings as s; import json; print(json.dumps({'email': "
+            "'two_factor.plugins.email' in s.INSTALLED_APPS, 'testserver': 'testserver' in s.ALLOWED_HOSTS, "
+            "'key': s.SECRET_KEY == 'cle-du-shell', 'debug': s.DEBUG}))")
+    result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout) == {"email": False, "testserver": True, "key": False, "debug": True}

@@ -19,7 +19,8 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 from .models import DatabaseVersion
-from .models import ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle, missing_text, social_host_errors
+from .models import (ConfigurationGenerale, EtapeProjet, FigureProjet, LienNouvelle, Nouvelle, Projet, Secteur,
+                     missing_text, social_host_errors)
 
 _lock = threading.RLock()
 
@@ -138,7 +139,7 @@ def validate(db):
         raise ValidationError('Intégrité SQLite ou associations invalides.')
     if set(db.execute('SELECT app, name FROM django_migrations')) != set(connection.connection.execute('SELECT app, name FROM django_migrations')):
         raise ValidationError('Base incompatible : migrations différentes.')
-    for model in (ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle):
+    for model in (ConfigurationGenerale, Secteur, Nouvelle, LienNouvelle, Projet, EtapeProjet, FigureProjet):
         fields = model._meta.concrete_fields
         names = [field.column for field in fields]
         for row in db.execute(f'SELECT {", ".join(names)} FROM {model._meta.db_table}'):
@@ -156,7 +157,7 @@ def validate(db):
                     if (Path(settings.MEDIA_ROOT).resolve() not in path.parents or not path.is_file()
                             or not obj.alt_accueil_fr.strip() or not obj.alt_accueil_en.strip()):
                         raise ValidationError("Image d'accueil manquante ou invalide. Restaurer les médias séparément avant de charger la base.")
-            if model in (Nouvelle, Secteur) and obj.publie and not obj.premiere_publication:
+            if model in (Nouvelle, Secteur, Projet) and obj.publie and not obj.premiere_publication:
                 raise ValidationError('Horodatage de première publication manquant.')
             if model == Nouvelle and obj.publie and not obj.date_jalon:
                 raise ValidationError('Date du jalon obligatoire pour une nouvelle publiée.')
@@ -165,15 +166,28 @@ def validate(db):
             if (model == Nouvelle and obj.publie and (obj.compte_rendu_fr.strip() or obj.compte_rendu_en.strip())
                     and missing_text(obj, ('compte_rendu_fr', 'compte_rendu_en'), '')):
                 raise ValidationError('Compte rendu traduit obligatoire pour une nouvelle publiée.')
+            if (model == Projet and obj.publie and (obj.resultats_fr.strip() or obj.resultats_en.strip())
+                    and missing_text(obj, ('resultats_fr', 'resultats_en'), '')):
+                raise ValidationError('Résultats traduits obligatoires pour un projet publié.')
+            if (model == EtapeProjet and missing_text(obj, EtapeProjet.translated, '')
+                    and db.execute('SELECT publie FROM hub_projet WHERE id=?', (obj.projet_id,)).fetchone() == (1,)):
+                raise ValidationError("Libellé d'étape traduit obligatoire pour un projet publié.")
+            if model == FigureProjet and missing_text(obj, ('alt_fr', 'alt_en'), ''):
+                raise ValidationError('Alternative traduite obligatoire pour une figure de projet.')
             if model == LienNouvelle and db.execute('SELECT publie FROM hub_nouvelle WHERE id=?', (obj.nouvelle_id,)).fetchone() == (1,):
                 obj.validate_publication()
     for table, fields in [('hub_secteur', ('nom', 'slug', 'description', 'apprentissages', 'prochaine_etape')),
-                          ('hub_nouvelle', ('titre', 'slug', 'corps'))]:
+                          ('hub_nouvelle', ('titre', 'slug', 'corps')),
+                          ('hub_projet', (*Projet.translated_fields, 'slug'))]:
         names = [f'{field}_{lang}' for field in fields for lang in ('fr', 'en')]
         for row in db.execute(f"SELECT {', '.join(names)} FROM {table} WHERE publie=1"):
             if any(not isinstance(value, str) or not value.strip() for value in row):
                 raise ValidationError('Base incompatible : publication bilingue incomplète.')
     root = Path(settings.MEDIA_ROOT).resolve()
+    for (name,) in db.execute("SELECT image FROM hub_figureprojet"):
+        path = (root / name).resolve()
+        if root not in path.parents or not path.is_file():
+            raise ValidationError('Figure de projet manquante. Restaurer les médias séparément avant de charger la base.')
     for name, fr, en, published in db.execute("SELECT image, alt_fr, alt_en, publie FROM hub_nouvelle WHERE image != ''"):
         path = (root / name).resolve()
         if root not in path.parents or not path.is_file() or (published and (not fr.strip() or not en.strip())):
@@ -275,10 +289,14 @@ def backup_image_referenced(name):
         with closing(open_readonly(path)) as db:
             if db.execute('SELECT 1 FROM hub_nouvelle WHERE image=? LIMIT 1', (name,)).fetchone():
                 return True
-            try:
-                return db.execute('SELECT 1 FROM hub_configurationgenerale WHERE image_accueil=? LIMIT 1',
-                                  (name,)).fetchone() is not None
-            except sqlite3.OperationalError:
-                return False  # Backup antérieur à l'image d'accueil.
+            # Tables absentes d'un backup antérieur à l'image d'accueil ou à la rubrique Projets : ignorées.
+            for query in ('SELECT 1 FROM hub_configurationgenerale WHERE image_accueil=? LIMIT 1',
+                          'SELECT 1 FROM hub_figureprojet WHERE image=? LIMIT 1'):
+                try:
+                    if db.execute(query, (name,)).fetchone():
+                        return True
+                except sqlite3.OperationalError:
+                    pass
+            return False
     except sqlite3.DatabaseError:
         return True

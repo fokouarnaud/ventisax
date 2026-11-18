@@ -319,6 +319,16 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   .main-nav > a:last-of-type { margin-left: 4px; padding-inline: 16px; }
   .theme-switch { margin-left: 4px; }
 }
+/* Cinq liens (rubrique Projets) : de 961 à 1 100 px, la ligne se resserre encore pour ne pas passer à la ligne. */
+@media (min-width: 961px) and (max-width: 1100px) {
+  .header-inner { gap: 8px; }
+  .language-link { white-space: nowrap; padding-inline: 10px; }
+  .main-nav { gap: 2px; }
+  .main-nav a { padding-inline: 7px; font-size: .86rem; }
+  .main-nav > a:last-of-type { margin-left: 2px; padding-inline: 14px; }
+  .main-nav .theme-switch a { min-width: 36px; }
+  .theme-switch { margin-left: 2px; }
+}
 @media (max-width: 960px) {
   .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; padding-block: 14px; min-height: 72px; }
   .main-nav { grid-column: 1 / -1; grid-row: 2; margin-left: 0; }
@@ -391,3 +401,11 @@ select { width: 100%; min-height: 48px; padding: 9px 36px 9px 14px; color: var(-
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* Rubrique Projets : étapes datées et figure du projet */
+.project-steps ol { margin: 0; padding-left: 1.25rem; display: grid; gap: 12px; }
+.project-steps li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; line-height: 1.5; }
+.project-steps li::marker { color: var(--muted); }
+.project-step-name { font-weight: 600; }
+.project-steps time, .project-step-amount { color: var(--muted); font-variant-numeric: tabular-nums; }
+.project-figure figcaption { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }

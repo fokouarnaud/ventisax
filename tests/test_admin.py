@@ -132,7 +132,10 @@ def test_creation_et_modification_reelles_dans_unfold(verified_client):
                       "liens-0-libelle_fr": "Formation", "liens-0-libelle_en": "Training", "liens-0-ordre": "0",
                       "nouvellesecteur_set-TOTAL_FORMS": "1", "nouvellesecteur_set-INITIAL_FORMS": "0",
                       "nouvellesecteur_set-MIN_NUM_FORMS": "0", "nouvellesecteur_set-MAX_NUM_FORMS": "1000",
-                      "nouvellesecteur_set-0-secteur": str(s.pk), "_save": "Enregistrer"})
+                      "nouvellesecteur_set-0-secteur": str(s.pk),
+                      "nouvelleprojet_set-TOTAL_FORMS": "0", "nouvelleprojet_set-INITIAL_FORMS": "0",
+                      "nouvelleprojet_set-MIN_NUM_FORMS": "0", "nouvelleprojet_set-MAX_NUM_FORMS": "1000",
+                      "_save": "Enregistrer"})
     response = verified_client.post("/admin/hub/nouvelle/add/", payload)
     assert response.status_code == 302
     n = Nouvelle.objects.get(slug_fr="saisie")

@@ -327,3 +327,59 @@ def test_upload_trop_grand_refuse_avant_stockage(verified_client, settings):
     response = verified_client.post('/admin/database/', {'action': 'upload_backup', 'database': SimpleUploadedFile('large.sqlite3', b'x' * 100000)})
     assert response.status_code == 413
     assert not (settings.DATABASE_BACKUP_DIR / 'backup.sqlite3').exists()
+
+
+@pytest.mark.parametrize('mutation', [
+    "UPDATE hub_projet SET titre_en='  ' WHERE publie=1",
+    "UPDATE hub_projet SET premiere_publication=NULL WHERE publie=1",
+    "UPDATE hub_projet SET resultats_fr='Mesuré', resultats_en='' WHERE publie=1",
+    "UPDATE hub_etapeprojet SET libelle_en=''",
+    "UPDATE hub_figureprojet SET interactive='../../config/settings.py'",
+    "UPDATE hub_figureprojet SET alt_fr=''",
+])
+def test_import_avec_projet_invalide_refuse(verified_client, settings, mutation, tmp_path):
+    """Rubrique Projets : une base importée respecte les mêmes règles que la saisie (PRD du 18/11/2026, US-45)."""
+    from io import BytesIO
+    from PIL import Image
+    from hub import models
+    settings.MEDIA_ROOT = tmp_path / 'media'
+    configuration()
+    p = models.Projet.objects.create(titre_fr='Projet', titre_en='Project', resume_fr='r', resume_en='r',
+                                     problematique_fr='p', problematique_en='p', objectifs_fr='o', objectifs_en='o',
+                                     slug_fr='projet', slug_en='project', date_debut='2026-11-18')
+    models.EtapeProjet.objects.create(projet=p, libelle_fr='Étape', libelle_en='Step')
+    stream = BytesIO()
+    Image.new('RGB', (40, 20), 'blue').save(stream, 'PNG')
+    models.FigureProjet.objects.create(projet=p, image=SimpleUploadedFile('f.png', stream.getvalue()),
+                                       alt_fr='Figure', alt_en='Figure')
+    p.publish()
+    data = exported(verified_client)
+    with closing(sqlite3.connect(':memory:')) as db:
+        db.deserialize(data)
+        db.execute(mutation)
+        db.commit()
+        bad = db.serialize()
+    response = verified_client.post('/admin/database/', {'action': 'upload_backup', 'confirm': 'on', 'database': SimpleUploadedFile('bad.sqlite3', bad)})
+    assert response.status_code == 200
+    assert not (settings.DATABASE_BACKUP_DIR / 'backup.sqlite3').exists()
+
+
+def test_image_de_figure_du_backup_conservee_au_remplacement(verified_client, settings, tmp_path):
+    from io import BytesIO
+    from pathlib import Path
+    from PIL import Image
+    from hub import models
+    settings.MEDIA_ROOT = tmp_path / 'media'
+    configuration()
+
+    def png(color):
+        stream = BytesIO()
+        Image.new('RGB', (24, 16), color).save(stream, 'PNG')
+        return SimpleUploadedFile('figure.png', stream.getvalue())
+    p = models.Projet.objects.create(slug_fr='projet', slug_en='project', date_debut='2026-11-18')
+    f = models.FigureProjet.objects.create(projet=p, image=png('red'), alt_fr='Figure', alt_en='Figure')
+    ancienne = Path(f.image.path)
+    verified_client.post('/admin/database/', {'action': 'save'})
+    f.image = png('blue')
+    f.save()
+    assert ancienne.exists()

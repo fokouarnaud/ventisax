@@ -10,7 +10,8 @@ from two_factor.admin import AdminSiteOTPRequiredMixin
 from unfold.sites import UnfoldAdminSite
 from unfold.admin import ModelAdmin, TabularInline
 
-from .models import ConfigurationGenerale, Secteur, Nouvelle, NouvelleSecteur, LienNouvelle
+from .models import (ConfigurationGenerale, EtapeProjet, FigureProjet, LienNouvelle, Nouvelle, NouvelleProjet,
+                     NouvelleSecteur, Projet, ProjetSecteur, Secteur)
 
 
 class SecureAdminSite(AdminSiteOTPRequiredMixin, UnfoldAdminSite):
@@ -82,11 +83,40 @@ class SecteurInline(TabularInline):
     extra = 0
 
 
+class NouvelleProjetInline(TabularInline):
+    model = NouvelleProjet
+    extra = 0
+    verbose_name = "projet lié"
+    verbose_name_plural = "projets liés"
+
+
 @admin.register(Nouvelle, site=site)
 class NouvelleAdmin(PublicationAdmin):
     list_display = ("titre_fr", "date_jalon", "publie", "premiere_publication")
     search_fields = ("titre_fr", "titre_en")
-    inlines = (LienInline, SecteurInline)
+    inlines = (LienInline, SecteurInline, NouvelleProjetInline)
+
+
+class EtapeInline(TabularInline):
+    model = EtapeProjet
+    extra = 0
+
+
+class FigureInline(TabularInline):
+    model = FigureProjet
+    extra = 0
+
+
+class ProjetSecteurInline(TabularInline):
+    model = ProjetSecteur
+    extra = 0
+
+
+@admin.register(Projet, site=site)
+class ProjetAdmin(PublicationAdmin):
+    list_display = ("titre_fr", "statut", "publie", "ordre")
+    search_fields = ("titre_fr", "titre_en")
+    inlines = (EtapeInline, FigureInline, ProjetSecteurInline)
 
 
 @admin.register(ConfigurationGenerale, site=site)

@@ -1,0 +1,2 @@
+<div class="container page-heading">{% include 'hub/partials/breadcrumbs.html' %}<h1>{{ labels.projects }}</h1></div>
+<div class="container content-section">{% if projets %}<div class="sector-grid">{% for projet in projets %}<article class="sector-card"><div class="card-top"><span class="status">{{ projet.statut }}</span></div><h2><a href="{{ projet.url }}">{{ projet.titre }}</a></h2><p>{{ projet.resume|linebreaksbr }}</p></article>{% endfor %}</div>{% else %}<div class="empty-state"><p>{{ labels.projects_empty }}</p></div>{% endif %}</div>

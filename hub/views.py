@@ -7,9 +7,10 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
+from django.templatetags.static import static
 
 from .context_processors import THEME_COOKIE
-from .models import SOCIAL_NAMES, ConfigurationGenerale, Nouvelle, Secteur
+from .models import SOCIAL_NAMES, ConfigurationGenerale, Nouvelle, Projet, Secteur
 
 
 LABELS = {
@@ -34,6 +35,13 @@ LABELS = {
                formation_text="Les cours, quiz et examens que nous suivons pour ce secteur sont en ligne, en français "
                               "et en anglais.",
                formation_open="Voir le programme",
+               projects="Projets", projects_empty="Aucun projet publié pour le moment.",
+               statuts=dict(conception="En conception", validation="En validation", realisation="En réalisation",
+                            termine="Terminé"),
+               etats=dict(a_venir="À venir", en_cours="En cours", fait="Fait"),
+               problem="Problématique", goals="Objectifs", steps="Étapes", results="Résultats", team="Binôme",
+               project_news="Entrées du journal liées", current_project="Projet en cours",
+               interactive="Version interactive",
                follow="Suivre Ventisax", theme="Thème", theme_system="Thème : système",
                theme_light="Thème : clair", theme_dark="Thème : sombre"),
     "en": dict(home="Home", about="About", news="Training log", contact="Contact", sectors="Sectors",
@@ -57,6 +65,13 @@ LABELS = {
                formation_text="The lessons, quizzes and exams we follow for this sector are online, in French and "
                               "in English.",
                formation_open="See the programme",
+               projects="Projects", projects_empty="No published project yet.",
+               statuts=dict(conception="In design", validation="In validation", realisation="In construction",
+                            termine="Completed"),
+               etats=dict(a_venir="Upcoming", en_cours="In progress", fait="Done"),
+               problem="Problem", goals="Objectives", steps="Steps", results="Results", team="Team",
+               project_news="Related log entries", current_project="Current project",
+               interactive="Interactive version",
                follow="Follow Ventisax", theme="Theme", theme_system="Theme: system",
                theme_light="Theme: light", theme_dark="Theme: dark"),
 }
@@ -91,6 +106,8 @@ def localized(obj, lang, kind=None):
         data["url"] = reverse(kind, kwargs={"lang": lang, "slug": getattr(obj, "slug_" + lang)})
     if isinstance(obj, Secteur):
         data.update(site_url=obj.site_url, formation_url=obj.formation_url, etat=LABELS[lang]["preparation" if obj.etat == "preparation" else "active"])
+    if isinstance(obj, Projet):
+        data.update(statut=LABELS[lang]["statuts"][obj.statut], date_debut=obj.date_debut, date_fin=obj.date_fin)
     if isinstance(obj, Nouvelle):
         data.update(date_jalon=obj.date_jalon, premiere_publication=obj.premiere_publication,
                     secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],
@@ -99,6 +116,29 @@ def localized(obj, lang, kind=None):
                     rapport=report_rows(getattr(obj, "compte_rendu_" + lang)))
         if hasattr(obj, "image") and obj.image:
             data.update(image_url=obj.image.url, image_width=obj.image.width, image_height=obj.image.height)
+    return data
+
+
+def fcfa(amount, lang):
+    """Montant entier en FCFA, séparateur de milliers de la langue (espace en français, virgule en anglais)."""
+    return f"{amount:,}".replace(",", " " if lang == "fr" else ",") + " FCFA"
+
+
+def project_details(obj, lang):
+    """Fiche d'un projet : étapes, figures, secteurs et nouvelles publiés ; binôme seulement avec son accord (RP-10)."""
+    labels = LABELS[lang]
+    data = localized(obj, lang, "project")
+    data.update(
+        binome=obj.binome if obj.accord_binome else "",
+        etapes=[{**localized(step, lang), "date": step.date, "etat": labels["etats"][step.etat],
+                 "montant": fcfa(step.montant_fcfa, lang) if step.montant_fcfa is not None else ""}
+                for step in obj.etapes.all()],
+        figures=[{**localized(fig, lang), "image_url": fig.image.url, "image_width": fig.image.width,
+                  "image_height": fig.image.height,
+                  "interactive_url": static("hub/projets/" + fig.interactive) if fig.interactive else ""}
+                 for fig in obj.figures.all()],
+        secteurs=[localized(s, lang, "sector") for s in obj.secteurs.filter(publie=True)],
+        nouvelles=[localized(n, lang, "detail") for n in obj.nouvelles.filter(publie=True)])
     return data
 
 
@@ -126,10 +166,16 @@ def public(request, lang, page="home", slug=None):
     elif page == "detail":
         obj = get_object_or_404(news, **{"slug_" + lang: slug})
         context["nouvelle"] = localized(obj, lang, "detail")
+    elif page == "project":
+        obj = get_object_or_404(Projet.objects.filter(publie=True), **{"slug_" + lang: slug})
+        context["projet"] = project_details(obj, lang)
+    elif page == "projects":
+        context["projets"] = [localized(p, lang, "project") for p in Projet.objects.filter(publie=True)]
     elif page == "news" and request.GET.get("secteur"):
         selected = get_object_or_404(sectors, **{"slug_" + lang: request.GET["secteur"]})
         news = news.filter(secteurs=selected).distinct()
-    route = {"home": "home", "about": "about", "contact": "contact", "news": "news", "sector": "sector", "detail": "detail"}[page]
+    route = {"home": "home", "about": "about", "contact": "contact", "news": "news", "sector": "sector", "detail": "detail",
+             "projects": "projects", "project": "project"}[page]
     kwargs = {"lang": other}
     if obj:
         kwargs["slug"] = getattr(obj, "slug_" + other)
@@ -161,6 +207,11 @@ def public(request, lang, page="home", slug=None):
             context[direction + "_url"] = "?" + urlencode(query)
     elif page == "home":
         context["nouvelles"] = [localized(n, lang, "detail") for n in news[:3]]
+    if page in ("home", "sector"):
+        current = Projet.objects.filter(publie=True).exclude(statut="termine")
+        if page == "sector":
+            current = current.filter(secteurs=obj).distinct()
+        context["projets_en_cours"] = [localized(p, lang, "project") for p in current]
     config = ConfigurationGenerale.objects.first()
     with translation.override(lang):
         if not config:

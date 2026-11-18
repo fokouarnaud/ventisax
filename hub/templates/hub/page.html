@@ -1,10 +1,12 @@
 {% extends 'hub/base.html' %}
-{% block title %}{% if page == 'detail' %}{{ nouvelle.titre }}{% elif page == 'sector' %}{{ secteur.nom }}{% elif page == 'home' %}{{ config.identite }}{% elif page == 'about' %}{{ labels.about }}{% elif page == 'news' %}{{ labels.news }}{% else %}{{ labels.contact }}{% endif %} · Ventisax{% endblock %}
+{% block title %}{% if page == 'detail' %}{{ nouvelle.titre }}{% elif page == 'project' %}{{ projet.titre }}{% elif page == 'sector' %}{{ secteur.nom }}{% elif page == 'home' %}{{ config.identite }}{% elif page == 'about' %}{{ labels.about }}{% elif page == 'news' %}{{ labels.news }}{% elif page == 'projects' %}{{ labels.projects }}{% else %}{{ labels.contact }}{% endif %} · Ventisax{% endblock %}
 {% block content %}
   {% if page == 'home' %}{% include 'hub/pages/home.html' %}{% endif %}
   {% if page == 'about' %}{% include 'hub/pages/about.html' %}{% endif %}
   {% if page == 'sector' %}{% include 'hub/pages/sector.html' %}{% endif %}
   {% if page == 'news' %}{% include 'hub/pages/news.html' %}{% endif %}
   {% if page == 'detail' %}{% include 'hub/pages/detail.html' %}{% endif %}
+  {% if page == 'projects' %}{% include 'hub/pages/projects.html' %}{% endif %}
+  {% if page == 'project' %}{% include 'hub/pages/project.html' %}{% endif %}
   {% if page == 'contact' %}{% include 'hub/pages/contact.html' %}{% endif %}
 {% endblock %}
